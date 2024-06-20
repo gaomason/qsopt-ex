@@ -375,7 +375,7 @@ int main (int ac,
 	}
 	/* ending */
 CLEANUP:
-	EGfree(solname);
+	if (printsol) EGfree(solname);
 	mpq_EGlpNumFreeArray (x_mpq);
 	mpq_EGlpNumFreeArray (y_mpq);
 	/* free the last allocated basis, and if we wanted to save it, do so */

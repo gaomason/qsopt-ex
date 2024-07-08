@@ -1582,16 +1582,12 @@ static void update_piv_values (
 	EGLPNUM_TYPENAME_EGlpNumClearVar (piv);
 }
 
-void EGLPNUM_TYPENAME_ILLfct_update_counts (
-	EGLPNUM_TYPENAME_lpinfo * lp,
-	int f,
-	int upi,
-	const EGLPNUM_TYPE upd)
-{
+void EGLPNUM_TYPENAME_ILLfct_update_counts (EGLPNUM_TYPENAME_lpinfo * lp, int f, int upi, const EGLPNUM_TYPE upd) {
 	EGLPNUM_TYPENAME_count_struct *c = lp->cnts;
 
-	switch (f)
-	{
+	// printf("%d\n", f);
+
+	switch (f) {
 	case CNT_PPHASE1ITER:
 		c->pI_iter++;
 		c->tot_iter++;

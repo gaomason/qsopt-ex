@@ -272,6 +272,7 @@ int main (int ac,
 		goto CLEANUP;
 	if (writebasis)
 	{
+		// basis is pointer to space allocated for final basis, set to all 0s
 		basis = EGsMalloc (QSbasis, 1);
 		memset (basis, 0, sizeof (QSbasis));
 	}
@@ -381,6 +382,7 @@ CLEANUP:
 	/* free the last allocated basis, and if we wanted to save it, do so */
 	if (basis)
 	{
+		// AP: basis written to writebasis (file provided with -b argument)
 		if (writebasis)
 			rval = mpq_QSwrite_basis (p_mpq, 0, writebasis);
 	}

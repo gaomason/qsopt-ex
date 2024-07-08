@@ -183,18 +183,13 @@ static int TRACE = 0;
 #include "lp_EGLPNUM_TYPENAME.h"
 
 
-void EGLPNUM_TYPENAME_QSset_precision (
-	const unsigned prec)
-{
+void EGLPNUM_TYPENAME_QSset_precision (const unsigned prec) {
 	EGlpNumSetPrecision (prec);
 	EGLPNUM_TYPENAME_ILLchange_precision ();
 	/* change the numbers */
 }
 
-static void init_basis (
-	QSbasis * B),
-  free_cache (
-	EGLPNUM_TYPENAME_QSdata * p);
+static void init_basis (QSbasis * B), free_cache (EGLPNUM_TYPENAME_QSdata * p);
 
 static int opt_work ( EGLPNUM_TYPENAME_QSdata * p, int *status, int primal_or_dual),
   qsbasis_to_illbasis ( QSbasis * qB, EGLPNUM_TYPENAME_ILLlp_basis * B),
@@ -1833,29 +1828,25 @@ CLEANUP:
 	EG_RETURN (rval);
 }
 
-EGLPNUM_TYPENAME_QSLIB_INTERFACE int EGLPNUM_TYPENAME_QSwrite_basis (
-	EGLPNUM_TYPENAME_QSdata * p,
-	QSbasis * B,
-	const char *filename)
-{
+// AP: EGLPNUM_TYPENAME in esolver.c is mpq so this becomes mpq_QSwrite_basis
+EGLPNUM_TYPENAME_QSLIB_INTERFACE int EGLPNUM_TYPENAME_QSwrite_basis (EGLPNUM_TYPENAME_QSdata * p, QSbasis * B, const char *filename) {
 	int rval = 0;
 	EGLPNUM_TYPENAME_ILLlp_basis iB, *basis = 0;
 
+	// AP: find def TODO
 	EGLPNUM_TYPENAME_ILLlp_basis_init (&iB);
 
 	rval = check_qsdata_pointer (p);
 	CHECKRVALG (rval, CLEANUP);
 
-	if (B)
-	{
+	if (B) {
 		rval = qsbasis_to_illbasis (B, &iB);
 		CHECKRVALG (rval, CLEANUP);
 		basis = &iB;
 	}
-	else
-	{
-		if (p->basis == 0)
-		{
+
+	else {
+		if (p->basis == 0) {
 			QSlog("no basis available in EGLPNUM_TYPENAME_QSwrite_basis");
 			rval = 1;
 			goto CLEANUP;

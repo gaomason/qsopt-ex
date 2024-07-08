@@ -38,6 +38,7 @@ static int TRACE = 0;
 #include "zeit.h"
 #include "util.h"
 
+// AP: misspelling ;-;
 #define QSOPT_CURRENT_PRECICION
 #include "basicdefs.h"
 #include "lpdata_EGLPNUM_TYPENAME.h"
@@ -806,15 +807,9 @@ static void restore_paraminfo (
 	pinf->d_strategy = pr->d_strategy;
 }
 
-int EGLPNUM_TYPENAME_ILLsimplex (
-	EGLPNUM_TYPENAME_lpinfo * lp,
-	int algorithm,
-	EGLPNUM_TYPENAME_ILLlp_basis * B,
-	EGLPNUM_TYPENAME_price_info * pinf,
-	int *status,
-	int sdisplay,
-	itcnt_t*itcnt)
-{
+// AP: starts with dbl, then goes to mpq?
+int EGLPNUM_TYPENAME_ILLsimplex (EGLPNUM_TYPENAME_lpinfo * lp, int algorithm, EGLPNUM_TYPENAME_ILLlp_basis * B,
+	EGLPNUM_TYPENAME_price_info * pinf, int *status, int sdisplay, itcnt_t*itcnt) {
 	int phase = -1;
 	int singular = -1;
 	int rval = 0;
@@ -1338,12 +1333,7 @@ static int test_progress (
 	}
 }
 
-static void monitor_iter (
-	EGLPNUM_TYPENAME_lpinfo * lp,
-	EGLPNUM_TYPENAME_price_info * p,
-	EGLPNUM_TYPENAME_iter_info * it,
-	int phase)
-{
+static void monitor_iter (EGLPNUM_TYPENAME_lpinfo * lp, EGLPNUM_TYPENAME_price_info * p, EGLPNUM_TYPENAME_iter_info * it, int phase) {
 	EGLPNUM_TYPE print_val;
 	double tottime = ILLutil_zeit () - lp->starttime;
 	int curtime = ILLutil_our_floor (tottime);	/* MONIKA */
@@ -1388,6 +1378,12 @@ static void monitor_iter (
 	}
 
 	aborted = report_value (lp, it, print_str, print_val);
+
+	// AP; below is my testcode, remove later
+	// if (it->sdisplay && it->itercnt % lp->iterskip == 0) {
+	// 	QSlog("AP: --------------------------------------------------------------(%d): %s = %f", it->itercnt, print_str, print_val);
+	// }
+
 	/*if (it->sdisplay && it->itercnt % lp->iterskip == 0) {
 	 * // QSlog("(%d): %s = %f", it->itercnt, print_str, print_val);
 	 * } */
@@ -1542,13 +1538,8 @@ CLEANUP:
 	return;
 }
 
-static int primal_phaseI_step (
-	EGLPNUM_TYPENAME_lpinfo * lp,
-	EGLPNUM_TYPENAME_price_info * pinf,
-	EGLPNUM_TYPENAME_svector * updz,
-	EGLPNUM_TYPENAME_svector * wz,
-	EGLPNUM_TYPENAME_iter_info * it)
-{
+static int primal_phaseI_step (EGLPNUM_TYPENAME_lpinfo * lp, EGLPNUM_TYPENAME_price_info * pinf,
+	EGLPNUM_TYPENAME_svector * updz, EGLPNUM_TYPENAME_svector * wz, EGLPNUM_TYPENAME_iter_info * it) {
 	int rval = 0;
 	int singular = 0;
 	int refactor = 0;
@@ -1592,8 +1583,7 @@ static int primal_phaseI_step (
 		lp->pIdz = EGLPNUM_TYPENAME_EGlpNumAllocArray (lp->nnbasic);
 
 		EGLPNUM_TYPENAME_ILLfct_compute_phaseI_piz (lp);
-		if (pinf->p_strategy == COMPLETE_PRICING)
-		{
+		if (pinf->p_strategy == COMPLETE_PRICING) {
 			EGLPNUM_TYPENAME_ILLfct_compute_phaseI_dz (lp);
 #if USEHEAP > 0
 			EGLPNUM_TYPENAME_ILLprice_free_heap (pinf);
@@ -2785,11 +2775,8 @@ CLEANUP:
 	return rval;
 }
 
-static void get_current_stat (
-	EGLPNUM_TYPENAME_lp_status_info * p,
-	int algorithm,
-	int *bstat)
-{
+static void get_current_stat (EGLPNUM_TYPENAME_lp_status_info * p, int algorithm, int *bstat) {
+	printf("every step???\n");
 	if (p->optimal)
 		*bstat = OPTIMAL;
 	else if (algorithm == PRIMAL_SIMPLEX)
@@ -2993,27 +2980,25 @@ CLEANUP:
 	EG_RETURN (rval);
 }
 
-static int report_value (
-	EGLPNUM_TYPENAME_lpinfo * lp,
-	EGLPNUM_TYPENAME_iter_info * it,
-	const char *value_name,
-	EGLPNUM_TYPE value)
-{
+static int report_value (EGLPNUM_TYPENAME_lpinfo * lp, EGLPNUM_TYPENAME_iter_info * it, const char *value_name, EGLPNUM_TYPE value) {
 	int rval = 0;
 
-	if (it->sdisplay && it->itercnt % lp->iterskip == 0)
-	{
+	// QSlog("AP: sdisplay %d", it->sdisplay);
+	// QSlog("AP: itercnt %d", it->itercnt);
+	// QSlog("AP: iterskip %d", lp->iterskip);
+	EGLPNUM_TYPENAME_ILLlib_writebasis(lp, 0, "basis_everystep");
+
+	if (it->sdisplay && it->itercnt % lp->iterskip == 0) {
 		char buffer[1024];
 
 		snprintf (buffer, (size_t) 1023, "(%d): %s = %10.7lf", it->itercnt,
 							value_name, EGLPNUM_TYPENAME_EGlpNumToLf (value));
 		rval = ILLstring_report (buffer, &lp->O->reporter);
 	}
-	else
-	{
+
+	else {
 		/* make sure ILLstring_report is called at least every 10 iterations */
-		if (it->itercnt % (lp->iterskip / 10))
-		{
+		if (it->itercnt % (lp->iterskip / 10)) {
 			rval = ILLstring_report (NULL, &lp->O->reporter);
 		}
 	}

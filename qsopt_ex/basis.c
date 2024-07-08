@@ -78,6 +78,8 @@ static int init_slack_basis (
 	int *irow,
 	int *rrow,
 	int *unitcol,
+
+	
 	int *icol,
 	int *rcol),
   get_initial_basis1 (
@@ -146,10 +148,7 @@ CLEANUP:
 	EG_RETURN (rval);
 }
 
-int EGLPNUM_TYPENAME_ILLbasis_load (
-	EGLPNUM_TYPENAME_lpinfo * lp,
-	EGLPNUM_TYPENAME_ILLlp_basis * B)
-{
+int EGLPNUM_TYPENAME_ILLbasis_load (EGLPNUM_TYPENAME_lpinfo * lp, EGLPNUM_TYPENAME_ILLlp_basis * B) {
 	int rval = 0;
 	char *cstat = B->cstat;
 	char *rstat = B->rstat;
@@ -1548,6 +1547,9 @@ int EGLPNUM_TYPENAME_ILLbasis_update (
 			QSlog("error while writing factor basis");
 		}
 	}
+
+	// AP: remove this
+	// mpq_ILLlib_writebasis(lp, singular, "basis_everystep");
 
 	EG_RETURN (rval);
 #endif

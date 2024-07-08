@@ -3959,11 +3959,7 @@ CLEANUP:
 	EG_RETURN (rval);
 }
 
-int EGLPNUM_TYPENAME_ILLlib_writebasis (
-	EGLPNUM_TYPENAME_lpinfo * lp,
-	EGLPNUM_TYPENAME_ILLlp_basis * B,
-	const char *fname)
-{
+int EGLPNUM_TYPENAME_ILLlib_writebasis (EGLPNUM_TYPENAME_lpinfo * lp, EGLPNUM_TYPENAME_ILLlp_basis * B, const char *fname) {
 	int rval = 0;
 	EGioFile_t *out = 0;
 	char *cstat = 0;
@@ -3990,7 +3986,9 @@ int EGLPNUM_TYPENAME_ILLlib_writebasis (
 	nstruct = qslp->nstruct;
 	nrows = qslp->nrows;
 
-	out = EGioOpen (fname, "w");
+	// out = EGioOpen (fname, "w");
+	// AP: below is my test code for writing basis
+	out = EGioOpen (fname, "a");
 	if (out == 0)
 	{
 		QSlog("unable to open %s for writing", fname);

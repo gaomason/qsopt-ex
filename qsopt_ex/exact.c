@@ -151,8 +151,7 @@ CLEANUP:
 }
 
 /* ========================================================================= */
-dbl_QSdata *QScopy_prob_mpq_dbl (mpq_QSdata * p,
-																 const char *newname)
+dbl_QSdata *QScopy_prob_mpq_dbl (mpq_QSdata * p, const char *newname)
 {
 	const int ncol = mpq_QSget_colcount(p);
 	const int nrow = mpq_QSget_rowcount(p);
@@ -178,7 +177,7 @@ dbl_QSdata *QScopy_prob_mpq_dbl (mpq_QSdata * p,
 	register int i;
 	mpq_t mpq_val;
 	double dbl_val;
-	mpq_init(mpq_val);
+	mpq_init(mpq_val); // AP: equivalent to mpq_EG1pNumInitVar(mpq_val)
 	/* get all information */
 	EGcallD(mpq_QSget_objsense(p,&objsense));
 	mpq_lb = mpq_EGlpNumAllocArray(ncol);
@@ -210,8 +209,7 @@ dbl_QSdata *QScopy_prob_mpq_dbl (mpq_QSdata * p,
 	dbl_EGlpNumFreeArray(dbl_lb);
 	dbl_EGlpNumFreeArray(dbl_ub);
 	dbl_EGlpNumFreeArray(dbl_obj);
-	EGcallD(dbl_QSadd_ranged_rows(p2, nrow, rowcnt, rowbeg, rowind, 
-																dbl_rowval, dbl_rhs, sense, dbl_range, 0));
+	EGcallD(dbl_QSadd_ranged_rows(p2, nrow, rowcnt, rowbeg, rowind, dbl_rowval, dbl_rhs, sense, dbl_range, 0));
 	/* set parameters */
 	EGcallD(mpq_QSget_param(p, QS_PARAM_PRIMAL_PRICING, &objsense));
 	EGcallD(dbl_QSset_param(p2, QS_PARAM_PRIMAL_PRICING, objsense));
@@ -266,8 +264,7 @@ dbl_QSdata *QScopy_prob_mpq_dbl (mpq_QSdata * p,
 }
 
 /* ========================================================================= */
-mpf_QSdata *QScopy_prob_mpq_mpf (mpq_QSdata * p,
-																 const char *newname)
+mpf_QSdata *QScopy_prob_mpq_mpf (mpq_QSdata * p, const char *newname)
 {
 	const int ncol = mpq_QSget_colcount(p);
 	const int nrow = mpq_QSget_rowcount(p);
@@ -817,8 +814,7 @@ CLEANUP:
 }
 
 /* ========================================================================= */
-int QSexact_infeasible_test (mpq_QSdata * p,
-														 mpq_t * d_sol)
+int QSexact_infeasible_test (mpq_QSdata * p, mpq_t * d_sol)
 {
 	/* local variables */
 	register int i,
@@ -1379,6 +1375,8 @@ int QSexact_verify (
           * the test here fails, i.e., if we would not perform the test here, than QSexact_basis_dualstatus() would normally not fail
           * something happens with the basis... if we do not set up the dbl-prob (?) ????????????????????????
           */
+
+         // AP: also confused by this
          p_dbl = QScopy_prob_mpq_dbl(p_mpq, "dbl_problem");
          dbl_QSload_basis(p_dbl, basis);
 
@@ -1435,12 +1433,7 @@ int QSexact_verify (
 }
 
 /* ========================================================================= */
-int QSexact_solver (mpq_QSdata * p_mpq,
-										mpq_t * const x,
-										mpq_t * const y,
-										QSbasis * const ebasis,
-										int simplexalgo,
-										int *status)
+int QSexact_solver (mpq_QSdata * p_mpq, mpq_t * const x, mpq_t * const y, QSbasis * const ebasis, int simplexalgo, int *status)
 {
 	/* local variables */
 	int last_status = 0, last_iter = 0;
@@ -1467,11 +1460,17 @@ int QSexact_solver (mpq_QSdata * p_mpq,
 	if (p_mpq->simplex_display || DEBUG >= __QS_SB_VERB)
 	{
 		QSlog("Trying double precision");
+
+		// AP: save double precision to file
+		EGioFile_t *out = 0;
+		out = EGioOpen ("time_precision_data", "a");
+		EGioPrintf (out, "64 ");
+		EGioClose (out);
 	}
 	p_dbl = QScopy_prob_mpq_dbl (p_mpq, "dbl_problem");
 	if(__QS_SB_VERB <= DEBUG) p_dbl->simplex_display = 1;
 	if (ebasis && ebasis->nstruct)
-		dbl_QSload_basis (p_dbl, ebasis);
+		dbl_QSload_basis (p_dbl, ebasis); // AP: EGLPNUM_TYPENAME_QSload_basis in qsopt.c
 	if (dbl_ILLeditor_solve (p_dbl, simplexalgo))
 	{
 		MESSAGE(p_mpq->simplex_display ? 0: __QS_SB_VERB, 
@@ -1480,9 +1479,7 @@ int QSexact_solver (mpq_QSdata * p_mpq,
 		goto MPF_PRECISION;
 	}
 	EGcallD(dbl_QSget_status (p_dbl, status));
-	if ((*status == QS_LP_INFEASIBLE) &&
-			(p_dbl->lp->final_phase != PRIMAL_PHASEI) &&
-			(p_dbl->lp->final_phase != DUAL_PHASEII))
+	if ((*status == QS_LP_INFEASIBLE) && (p_dbl->lp->final_phase != PRIMAL_PHASEI) && (p_dbl->lp->final_phase != DUAL_PHASEII))
 		dbl_QSopt_primal (p_dbl, status);
 	EGcallD(dbl_QSget_status (p_dbl, status));
 	last_status = *status;
@@ -1596,15 +1593,21 @@ int QSexact_solver (mpq_QSdata * p_mpq,
 		break;
 	}
 	/* if we reach this point, then we have to keep going, we use the previous
-	 * basis ONLY if the previous precision think that it has the optimal
+	 * basis ONLY if the previous precision thinks that it has the optimal
 	 * solution, otherwise we start from scratch. */
 	precision = 128;
 	MPF_PRECISION:
-	dbl_QSfree_prob (p_dbl);
+		dbl_QSfree_prob (p_dbl);
 	p_dbl = 0;
 	/* try with multiple precision floating points */
 	for (; it--; precision = (unsigned) (precision * 1.5))
 	{
+		// AP: save precision to file
+		EGioFile_t *out = 0;
+		out = EGioOpen ("time_precision_data", "a");
+		EGioPrintf (out, "%d ", precision);
+		EGioClose (out);
+
 		QSexact_set_precision (precision);
 		if (p_mpq->simplex_display || DEBUG >= __QS_SB_VERB)
 		{
@@ -1618,11 +1621,15 @@ int QSexact_solver (mpq_QSdata * p_mpq,
 		if(__QS_SB_VERB <= DEBUG) p_mpf->simplex_display = 1;
 		simplexalgo = PRIMAL_SIMPLEX;
 		if(!last_iter) last_status = QS_LP_UNSOLVED;
+
+		//AP : tester code
+		QSlog("HUZAHHHHHHHHHH %d %d", last_iter, last_status);
 		if(last_status == QS_LP_OPTIMAL || last_status == QS_LP_INFEASIBLE)
 		{
 			if (p_mpq->simplex_display || DEBUG >= __QS_SB_VERB)
 			{
 				QSlog("Re-using previous basis");
+
 			}
 			if (basis)
 			{
@@ -1650,6 +1657,7 @@ int QSexact_solver (mpq_QSdata * p_mpq,
 				QSlog("Not-using previous basis");
 			}
 		}
+
 		if (mpf_ILLeditor_solve (p_mpf, simplexalgo))
 		{
 			if (p_mpq->simplex_display || DEBUG >= __QS_SB_VERB)
@@ -1797,6 +1805,7 @@ void QSexactStart(void)
 	if(__QSexact_setup) return;
 	/* we should call EGlpNumStart() */
 	EGlpNumStart();
+	
 	/* now we call all setups */
 	EXutilDoInit();
 	dbl_ILLstart();

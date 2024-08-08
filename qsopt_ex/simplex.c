@@ -807,7 +807,6 @@ static void restore_paraminfo (
 	pinf->d_strategy = pr->d_strategy;
 }
 
-// AP: starts with dbl, then goes to mpq?
 int EGLPNUM_TYPENAME_ILLsimplex (EGLPNUM_TYPENAME_lpinfo * lp, int algorithm, EGLPNUM_TYPENAME_ILLlp_basis * B,
 	EGLPNUM_TYPENAME_price_info * pinf, int *status, int sdisplay, itcnt_t*itcnt) {
 	int phase = -1;
@@ -876,9 +875,9 @@ int EGLPNUM_TYPENAME_ILLsimplex (EGLPNUM_TYPENAME_lpinfo * lp, int algorithm, EG
 		/* depending on LP's reporter 
 		 * string is printed to stdout 
 		 * or handed to GUI */
+
 		rval = rval || ILLstring_report (buffer, &lp->O->reporter);
-		QSlog("Problem has %d rows and %d cols and %d nonzeros", lp->nrows,
-								lp->ncols, nonzero);
+		QSlog("Problem has %d rows and %d cols and %d nonzeros", lp->nrows, lp->ncols, nonzero);
 	}
 	EGLPNUM_TYPENAME_ILLfct_set_variable_type (lp);
 
@@ -1105,11 +1104,40 @@ START:
 #if SIMPLEX_DEBUG > 0
 	EGLPNUM_TYPENAME_ILLfct_print_counts (lp);
 #endif
+
 LIMIT_TERMINATE:
+	// AP: save time to file
+	EGioFile_t *out = 0;
+	out = EGioOpen ("time_precision_data", "a");
+	EGioPrintf (out, "%s %.3f: %f, %f, %f, %f\n", lp->O->probname, ILLutil_zeit () - lp->starttime, (double) lp->cnts->pI_iter / (double) lp->cnts->tot_iter,
+		(double) lp->cnts->pII_iter / (double) lp->cnts->tot_iter, (double) lp->cnts->dI_iter / (double) lp->cnts->tot_iter,
+		(double) lp->cnts->dII_iter / (double) lp->cnts->tot_iter);
+	EGioClose (out);
+
+	// AP: tester code for basis/scaling understanding
+	out = EGioOpen ("basis_scaling", "a");
+	EGioPrintf (out, "%s\n", lp->O->probname);
+	EGioClose (out);
+
 	rval = terminate_simplex (lp, phase, &it);
 	CHECKRVALG (rval, CLEANUP);
 
 TERMINATE:
+	// AP: save time to file
+	// EGioFile_t *out = 0;
+	if (!rval) {
+		out = EGioOpen ("time_precision_data", "a");
+		EGioPrintf (out, "%s %.3f: %f, %f, %f, %f\n", lp->O->probname, ILLutil_zeit () - lp->starttime, (double) lp->cnts->pI_iter / (double) lp->cnts->tot_iter,
+			(double) lp->cnts->pII_iter / (double) lp->cnts->tot_iter, (double) lp->cnts->dI_iter / (double) lp->cnts->tot_iter,
+			(double) lp->cnts->dII_iter / (double) lp->cnts->tot_iter);
+		EGioClose (out);
+
+		// AP: tester code for basis/scaling understanding
+		out = EGioOpen ("basis_scaling", "a");
+		EGioPrintf (out, "%s\n", lp->O->probname);
+		EGioClose (out);
+	}
+
 	restore_paraminfo (&it, pinf);
 
 	if (it.sdisplay)
@@ -1205,9 +1233,9 @@ TERMINATE:
 	{
 		int bstat = 0;
 
-		QSlog("time = %.3f, pI = %d, pII = %d, dI = %d, dII = %d,",
-								ILLutil_zeit () - lp->starttime, lp->cnts->pI_iter,
-								lp->cnts->pII_iter, lp->cnts->dI_iter, lp->cnts->dII_iter);
+		QSlog("time = %.3f, pI = %d, pII = %d, dI = %d, dII = %d,", ILLutil_zeit () - lp->starttime, lp->cnts->pI_iter,
+			lp->cnts->pII_iter, lp->cnts->dI_iter, lp->cnts->dII_iter);
+
 		get_current_stat (&(lp->basisstat), it.algorithm, &bstat);
 		switch (bstat)
 		{
@@ -1259,10 +1287,7 @@ CLEANUP:
 	}
 }
 
-static int terminate_simplex (
-	EGLPNUM_TYPENAME_lpinfo * lp,
-	int phase,
-	EGLPNUM_TYPENAME_iter_info * it)
+static int terminate_simplex (EGLPNUM_TYPENAME_lpinfo * lp, int phase, EGLPNUM_TYPENAME_iter_info * it)
 {
 	int rval = 0;
 	int sphase;
@@ -2776,7 +2801,6 @@ CLEANUP:
 }
 
 static void get_current_stat (EGLPNUM_TYPENAME_lp_status_info * p, int algorithm, int *bstat) {
-	printf("every step???\n");
 	if (p->optimal)
 		*bstat = OPTIMAL;
 	else if (algorithm == PRIMAL_SIMPLEX)
@@ -2983,10 +3007,7 @@ CLEANUP:
 static int report_value (EGLPNUM_TYPENAME_lpinfo * lp, EGLPNUM_TYPENAME_iter_info * it, const char *value_name, EGLPNUM_TYPE value) {
 	int rval = 0;
 
-	// QSlog("AP: sdisplay %d", it->sdisplay);
-	// QSlog("AP: itercnt %d", it->itercnt);
-	// QSlog("AP: iterskip %d", lp->iterskip);
-	EGLPNUM_TYPENAME_ILLlib_writebasis(lp, 0, "basis_everystep");
+	// EGLPNUM_TYPENAME_ILLlib_writebasis(lp, 0, "basis_everystep");
 
 	if (it->sdisplay && it->itercnt % lp->iterskip == 0) {
 		char buffer[1024];
@@ -2994,6 +3015,13 @@ static int report_value (EGLPNUM_TYPENAME_lpinfo * lp, EGLPNUM_TYPENAME_iter_inf
 		snprintf (buffer, (size_t) 1023, "(%d): %s = %10.7lf", it->itercnt,
 							value_name, EGLPNUM_TYPENAME_EGlpNumToLf (value));
 		rval = ILLstring_report (buffer, &lp->O->reporter);
+		// // QSlog("AP: precision is %lu", EGLPNUM_PRECISION);
+		if ((int) EGLPNUM_PRECISION != 128) {
+			EGioFile_t *out = 0;
+			out = EGioOpen ("precision_change", "a");
+			EGioPrintf (out, "%d, %d \n", lp->nrows, lp->ncols);
+			EGioClose (out);
+		}
 	}
 
 	else {

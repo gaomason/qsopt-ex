@@ -214,8 +214,8 @@ static int simple_presolve (
 ILL_PTRWORLD_ROUTINES (intptr, intptralloc, intptr_bulkalloc, intptrfree)
 ILL_PTRWORLD_LISTFREE_ROUTINE (intptr, intptr_listfree, intptrfree)
 ILL_PTRWORLD_LEAKS_ROUTINE (intptr, intptr_check_leaks, this_val, int)
-		 int EGLPNUM_TYPENAME_ILLlp_add_logicals (
-	EGLPNUM_TYPENAME_ILLlpdata * lp)
+
+int EGLPNUM_TYPENAME_ILLlp_add_logicals (EGLPNUM_TYPENAME_ILLlpdata * lp)
 {
 	int rval = 0;
 	int ncols, nrows, nzcount, i, aindex;
@@ -341,8 +341,7 @@ CLEANUP:
 	ILL_RETURN (rval, "EGLPNUM_TYPENAME_ILLlp_add_logicals");
 }
 
-int EGLPNUM_TYPENAME_ILLlp_scale (
-	EGLPNUM_TYPENAME_ILLlpdata * lp)
+int EGLPNUM_TYPENAME_ILLlp_scale (EGLPNUM_TYPENAME_ILLlpdata * lp)
 {
 	int rval = 0;
 	int i, j, k, col, row, nstruct, start, stop;

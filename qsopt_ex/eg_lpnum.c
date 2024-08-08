@@ -273,7 +273,7 @@ void EGlpNumStart(void)
 		mp_set_memory_functions(__EGgmp_malloc, __EGgmp_realloc, __EGgmp_free);
 	}
 
-	mpf_set_default_prec (EGLPNUM_PRECISION);
+	mpf_set_default_prec (EGLPNUM_PRECISION); // AP: set to 128 at the beginning
 	mpz_init (__zeroLpNum_mpz__);
 	mpz_init (__oneLpNum_mpz__);
 	mpz_init (__MaxLpNum_mpz__);

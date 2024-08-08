@@ -143,7 +143,6 @@
 #include "lp_EGLPNUM_TYPENAME.h"
 #include "mps_EGLPNUM_TYPENAME.h"
 
-
 static void check_pinf (
 	EGLPNUM_TYPENAME_price_info * pinf,
 	int *it_exists);
@@ -178,14 +177,8 @@ static int matrix_addrow (
   reset_rowindex (
 	EGLPNUM_TYPENAME_lpinfo * lp);
 
-int EGLPNUM_TYPENAME_ILLlib_optimize (
-	EGLPNUM_TYPENAME_lpinfo * lp,
-	EGLPNUM_TYPENAME_ILLlp_basis * B,
-	EGLPNUM_TYPENAME_price_info * pinf,
-	int algo,
-	int *status,
-	int simplex_display,
-	itcnt_t*itcnt)
+int EGLPNUM_TYPENAME_ILLlib_optimize (EGLPNUM_TYPENAME_lpinfo * lp, EGLPNUM_TYPENAME_ILLlp_basis * B, EGLPNUM_TYPENAME_price_info * pinf,
+	int algo,int *status,int simplex_display, itcnt_t*itcnt)
 {
 	int rval = 0;
 	int sol_status;
@@ -3598,6 +3591,7 @@ int EGLPNUM_TYPENAME_ILLlib_rowindex (
 
 CLEANUP:
 
+
 	EG_RETURN (rval);
 }
 
@@ -3969,6 +3963,9 @@ int EGLPNUM_TYPENAME_ILLlib_writebasis (EGLPNUM_TYPENAME_lpinfo * lp, EGLPNUM_TY
 
 	/* NOTE: non-basic free variables are encoded as non-basic at lower */
 
+	// QSlog("AP: %d", (*lp).nrows);
+	// QSlog("AP: %d", (*lp).ncols);
+
 	if (!lp)
 	{
 		QSlog("EGLPNUM_TYPENAME_ILLlib_writebasis called without an LP");
@@ -3987,7 +3984,7 @@ int EGLPNUM_TYPENAME_ILLlib_writebasis (EGLPNUM_TYPENAME_lpinfo * lp, EGLPNUM_TY
 	nrows = qslp->nrows;
 
 	// out = EGioOpen (fname, "w");
-	// AP: below is my test code for writing basis
+	// AP: changed to append
 	out = EGioOpen (fname, "a");
 	if (out == 0)
 	{
@@ -4048,6 +4045,19 @@ int EGLPNUM_TYPENAME_ILLlib_writebasis (EGLPNUM_TYPENAME_lpinfo * lp, EGLPNUM_TY
 			j++;
 		}
 	} while (i < nrows);
+
+	// AP: print entire lp matrix
+	// QSlog("rstat---------------------------------");
+	// for (i = 0; i < nrows; i++) {
+	// 	for (j = 0; j < qslp->ncols; j++) {
+	// 		QSlog("%d", rstat[i]);
+	// 	}
+
+	// 	QSlog("\n");
+	// }
+	// QSlog("----------------------------------------------------");
+	// QSlog("-------------------------------------%d", lp->baz);
+
 
 	/* Now go through and output the non-basic cols at upper bound */
 

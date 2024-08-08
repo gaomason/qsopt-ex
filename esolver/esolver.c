@@ -90,8 +90,8 @@ static void usage (char *s)
 
 /* ========================================================================= */
 /** @brief decide if a given file is mps or lp (only by extension) */
-static void get_ftype (char const *const name,
-											 int *ftype)
+// AP: ftype = 0 if MPS and 1 if LP
+static void get_ftype (char const *const name, int *ftype)
 {
 	char buff[4096],*argv[128];
 	int argc;
@@ -99,6 +99,7 @@ static void get_ftype (char const *const name,
 	snprintf(buff,4096,"%s",name);
 	EGioNParse(buff,128,"."," ",&argc,argv);
 	argc-=1;
+
 	if(argc)
 	{
 		if(strncmp(argv[argc],"gz",3)==0) argc-=1;
@@ -134,23 +135,34 @@ static int mem_limits(void)
 	struct rlimit mlim;
 	rval = getrlimit(RLIMIT_CPU,&mlim);
 	CHECKRVAL(rval);
-	fprintf(stderr, "Cur rtime limit %ld, trying to set to %lg\n", mlim.rlim_cur, max_rtime);
+
+	// AP: added line below, with correct printing
+	fprintf(stderr, "Cur rtime limit %ju, trying to set to %lg\n", (intmax_t) mlim.rlim_cur, max_rtime);
+		// fprintf(stderr, "Cur rtime limit %ld, trying to set to %lg\n", mlim.rlim_cur, max_rtime);
 	if(max_rtime > mlim.rlim_max) max_rtime = (double)mlim.rlim_max;
 	mlim.rlim_cur = (rlim_t)max_rtime;
+	
+	// const struct rlimit lim_test = {
+    // 	rlim_t rlim_cur = mlim.rlim_cur; /* Soft limit */
+    // 	rlim_t rlim_max = mlim.rlim_max; /* Hard limit (ceiling for rlim_cur) */
+	// };
+
 	rval = setrlimit(RLIMIT_CPU,&mlim);
 	TESTERRNOIF(rval);
-	fprintf(stderr, "New rtime limit %ld (%.3lg)\n", mlim.rlim_cur, max_rtime);
+	fprintf(stderr, "New rtime limit %ju (%.3lg)\n", (intmax_t) mlim.rlim_cur, max_rtime);
+		// fprintf(stderr, "New rtime limit %ld (%.3lg)\n", mlim.rlim_cur, max_rtime);
+	
 	rval = getrlimit(RLIMIT_DATA,&mlim);
 	TESTERRNOIF(rval);
-	fprintf(stderr, "Cur data limit %ld,%ld (soft,hard)\n", mlim.rlim_cur, 
-					mlim.rlim_max);
+	fprintf(stderr, "Cur data limit %ld,%ld (soft,hard)\n", mlim.rlim_cur, mlim.rlim_max);
+	
 	mlim.rlim_cur = memlimit;				
 	rval = setrlimit(RLIMIT_DATA,&mlim);				
 	TESTERRNOIF(rval);
 	rval = getrlimit(RLIMIT_DATA,&mlim);
 	TESTERRNOIF(rval);
-	fprintf(stderr, "New data limit %ld,%ld (soft,hard)\n", mlim.rlim_cur, 
-					mlim.rlim_max);
+	fprintf(stderr, "New data limit %ld,%ld (soft,hard)\n", mlim.rlim_cur, mlim.rlim_max);
+	
 	rval = getrlimit(RLIMIT_AS,&mlim);
 	TESTERRNOIF(rval);
 	fprintf(stderr, "Cur address space limit %ld,%ld (soft,hard)\n", 
@@ -175,16 +187,13 @@ static int mem_limits(void)
 }
 /* ========================================================================= */
 /** @brief parssing options for the program */
-static int parseargs (int ac,
-											char **av)
+static int parseargs (int ac, char **av)
 {
 	int c;
 	int boptind = 1;
 	char *boptarg = 0;
 
-	while ((c =
-					ILLutil_bix_getopt (ac, av, "b:B:d:EILm:O:p:P:R:Sv", &boptind,
-															&boptarg)) != EOF)
+	while ((c = ILLutil_bix_getopt (ac, av, "b:B:d:EILm:O:p:P:R:Sv", &boptind, &boptarg)) != EOF)
 		switch (c)
 		{
 		case 'm':
@@ -228,6 +237,7 @@ static int parseargs (int ac,
 			usage (av[0]);
 			return 1;
 		}
+
 	if ((boptind == ac) && (showversion))
 	{
 		char *buf = 0;
@@ -236,6 +246,7 @@ static int parseargs (int ac,
 		mpq_QSfree ((void *) buf);
 		exit(0);
 	}
+
 	if (boptind != (ac - 1))
 	{
 		usage (av[0]);
@@ -244,6 +255,7 @@ static int parseargs (int ac,
 
 	fname = av[boptind++];
 	fprintf (stderr, "Reading problem from %s\n", fname);
+
 	mem_limits();
 	return 0;
 }
@@ -251,20 +263,20 @@ static int parseargs (int ac,
 /* ========================================================================= */
 /** @brief the main thing! */
 /* ========================================================================= */
-int main (int ac,
-					char **av)
+int main (int ac, char **av)
 {
 	int rval = 0,
-	  status = 0;
+	status = 0;
 	mpq_QSdata *p_mpq = 0;
 	QSbasis *basis = 0;
 	ILLutil_timer timer_solve;
 	ILLutil_timer timer_read;
 	int ftype = 0;								/* 0 mps, 1 lp */
 	mpq_t *y_mpq = 0,
-	 *x_mpq = 0;
+	*x_mpq = 0;
 	QSopt_ex_version();
-	QSexactStart();
+	QSexactStart(); // AP: function in exact.c, calls EGlpNumStart in eg_lpnum.c 
+
 	/* parse arguments and initialize EGlpNum related things */
 	rval = parseargs (ac, av);
 	QSexact_set_precision (precision);
@@ -298,6 +310,12 @@ int main (int ac,
 		ftype = 1;
 	else
 		get_ftype (fname, &ftype);
+
+	// save file name to data sheet
+	EGioFile_t *out = 0;
+	out = EGioOpen ("time_precision_data", "a");
+	EGioPrintf (out, "%s\n", fname);
+	EGioClose (out);
 
 	/* read the mpq problem */
 	ILLutil_init_timer (&timer_read, "SOLVER_READ_MPQ");

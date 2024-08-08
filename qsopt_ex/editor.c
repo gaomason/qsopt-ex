@@ -331,9 +331,7 @@ CLEANUP:
 	EGLPNUM_TYPENAME_ILLfree_rawlpdata (lp);
 }
 
-int EGLPNUM_TYPENAME_ILLeditor_solve (
-	EGLPNUM_TYPENAME_QSdata * p,
-	int salgo)
+int EGLPNUM_TYPENAME_ILLeditor_solve (EGLPNUM_TYPENAME_QSdata * p, int salgo)
 {
 	int rval = 0;
 	int status = 0;

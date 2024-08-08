@@ -185,8 +185,7 @@ void EGLPNUM_TYPENAME_ILLstart ( void)
 }
 
 /* ========================================================================= */
-void EGLPNUM_TYPENAME_ILLchange_precision (
-	void)
+void EGLPNUM_TYPENAME_ILLchange_precision (void)
 {
 	EGLPNUM_TYPENAME_EGlpNumClearVar (EGLPNUM_TYPENAME_PFEAS_TOLER);
 	EGLPNUM_TYPENAME_EGlpNumClearVar (EGLPNUM_TYPENAME_BD_TOLER);
@@ -306,6 +305,13 @@ CLEANUP:
 		EGLPNUM_TYPENAME_QSfree_prob (p);
 		p = 0;
 	}
+
+	// AP: finding file sizesls
+	// EGioFile_t *out = 0;
+	// out = EGioOpen ("row_col_filename", "a");
+	// EGioPrintf (out, "%s: %d, %d \n", fname, lp->nrows, lp->ncols);
+	// EGioClose (out);
+
 	return p;
 }
 
@@ -421,11 +427,8 @@ void EGLPNUM_TYPENAME_ILLlpdata_free (
 	}
 }
 
-void EGLPNUM_TYPENAME_ILLlp_basis_init (
-	EGLPNUM_TYPENAME_ILLlp_basis * B)
-{
-	if (B)
-	{
+void EGLPNUM_TYPENAME_ILLlp_basis_init (EGLPNUM_TYPENAME_ILLlp_basis * B) {
+	if (B) {
 		B->cstat = 0;
 		B->rstat = 0;
 		B->rownorms = 0;

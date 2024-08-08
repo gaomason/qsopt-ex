@@ -198,9 +198,7 @@ static int opt_work ( EGLPNUM_TYPENAME_QSdata * p, int *status, int primal_or_du
   check_qsdata_pointer ( EGLPNUM_TYPENAME_QSdata * p);
 
 
-EGLPNUM_TYPENAME_QSLIB_INTERFACE int EGLPNUM_TYPENAME_QSopt_primal (
-	EGLPNUM_TYPENAME_QSdata * p,
-	int *status)
+EGLPNUM_TYPENAME_QSLIB_INTERFACE int EGLPNUM_TYPENAME_QSopt_primal (EGLPNUM_TYPENAME_QSdata * p, int *status)
 {
 	int rval = 0;
 
@@ -261,10 +259,7 @@ CLEANUP:
 	EG_RETURN (rval);
 }
 
-static int opt_work (
-	EGLPNUM_TYPENAME_QSdata * p,
-	int *status,
-	int primal_or_dual)
+static int opt_work (EGLPNUM_TYPENAME_QSdata * p, int *status, int primal_or_dual)
 {
 	int rval = 0;
 	int rstatus = QS_LP_UNSOLVED;
@@ -504,9 +499,7 @@ CLEANUP:
 	EG_RETURN (rval);
 }
 
-EGLPNUM_TYPENAME_QSLIB_INTERFACE EGLPNUM_TYPENAME_QSdata *EGLPNUM_TYPENAME_QScreate_prob (
-	const char *name,
-	int objsense)
+EGLPNUM_TYPENAME_QSLIB_INTERFACE EGLPNUM_TYPENAME_QSdata *EGLPNUM_TYPENAME_QScreate_prob (const char *name, int objsense)
 {
 	int rval = 0;
 	EGLPNUM_TYPENAME_QSdata *p = 0;
@@ -691,9 +684,7 @@ CLEANUP:
 	return p;
 }
 
-EGLPNUM_TYPENAME_QSLIB_INTERFACE EGLPNUM_TYPENAME_QSdata *EGLPNUM_TYPENAME_QScopy_prob (
-	EGLPNUM_TYPENAME_QSdata * p,
-	const char *newname)
+EGLPNUM_TYPENAME_QSLIB_INTERFACE EGLPNUM_TYPENAME_QSdata *EGLPNUM_TYPENAME_QScopy_prob (EGLPNUM_TYPENAME_QSdata * p, const char *newname)
 {
 	int rval = 0;
 	int j, col, beg, pindex, hit;
@@ -1672,9 +1663,7 @@ CLEANUP:
 	return qB;
 }
 
-EGLPNUM_TYPENAME_QSLIB_INTERFACE int EGLPNUM_TYPENAME_QSload_basis (
-	EGLPNUM_TYPENAME_QSdata * p,
-	QSbasis * B)
+EGLPNUM_TYPENAME_QSLIB_INTERFACE int EGLPNUM_TYPENAME_QSload_basis (EGLPNUM_TYPENAME_QSdata * p, QSbasis * B)
 {
 	int rval = 0;
 
@@ -1828,7 +1817,7 @@ CLEANUP:
 	EG_RETURN (rval);
 }
 
-// AP: EGLPNUM_TYPENAME in esolver.c is mpq so this becomes mpq_QSwrite_basis
+// AP: EGLPNUM_TYPENAME in esolver.c is mpq so this becomes mpq_QSwrite_basis, called with B = 0
 EGLPNUM_TYPENAME_QSLIB_INTERFACE int EGLPNUM_TYPENAME_QSwrite_basis (EGLPNUM_TYPENAME_QSdata * p, QSbasis * B, const char *filename) {
 	int rval = 0;
 	EGLPNUM_TYPENAME_ILLlp_basis iB, *basis = 0;
@@ -3573,8 +3562,7 @@ CLEANUP:
 	EG_RETURN (rval);
 }
 
-static int check_qsdata_pointer (
-	EGLPNUM_TYPENAME_QSdata * p)
+static int check_qsdata_pointer (EGLPNUM_TYPENAME_QSdata * p)
 {
 	if (p == NULL)
 	{

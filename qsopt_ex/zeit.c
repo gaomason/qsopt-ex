@@ -98,16 +98,19 @@
 
 #include "util.h"
 
+#include <sys/resource.h>
+
 #ifdef HAVE_GETRUSAGE
 
-#ifdef HAVE_SYS_RESOURCE_H
-# include <sys/resource.h>
-#endif
+// #include <sys/resource.h>
+
+// #ifdef HAVE_SYS_RESOURCE_H
+// # include <sys/resource.h>
+// #endif
 
 #define ZEIT_FCT "getrusage"
 
-double ILLutil_zeit (
-	void)
+double ILLutil_zeit (void)
 {
 	struct rusage ru;
 	double t;
@@ -116,6 +119,10 @@ double ILLutil_zeit (
 
 	t = ((double) ru.ru_utime.tv_sec) +
 		((double) ru.ru_utime.tv_usec) / 1000000.0;
+
+	// AP: testing code, remove
+	QSlog("zeit AP%lld %lld\n", (long long) ru.ru_utime.tv_sec, (long long) ru.ru_utime.tv_usec);
+	QSlog("zeit s_time AP%lld %lld\n", (long long) ru.ru_stime.tv_sec, (long long) ru.ru_stime.tv_usec);
 	return t;
 }
 #else	/* HAVE_GETRUSAGE */
@@ -137,8 +144,7 @@ double ILLutil_zeit (
 
 #define ZEIT_FCT "times"
 
-double ILLutil_zeit (
-	void)
+double ILLutil_zeit (void)
 {
 	struct tms now;
 
@@ -159,8 +165,7 @@ double ILLutil_zeit (
 
 #define ZEIT_FCT "clock"
 
-double ILLutil_zeit (
-	void)
+double ILLutil_zeit (void)
 {
 	return ((double) clock ()) / ((double) CLOCKS_PER_SEC);
 }
@@ -169,11 +174,24 @@ double ILLutil_zeit (
 
 #define ZEIT_FCT "???"
 
-double ILLutil_zeit (
-	void)
+double ILLutil_zeit (void)
 {
-	return 0.0;
+	// return 0.0;
+
+	struct rusage ru;
+	double t;
+
+	getrusage (RUSAGE_SELF, &ru);
+
+	t = ((double) ru.ru_utime.tv_sec) +
+		((double) ru.ru_utime.tv_usec) / 1000000.0;
+
+	// AP: testing code, remove
+	// QSlog("zeit AP%lld %lld\n", (long long) ru.ru_utime.tv_sec, (long long) ru.ru_utime.tv_usec);
+	// QSlog("zeit s_time AP%lld %lld\n", (long long) ru.ru_stime.tv_sec, (long long) ru.ru_stime.tv_usec);
+	return t;
 }
+
 #endif /* HAVE_CLOCK */
 #endif /* HAVE_TIMES */
 #endif /* HAVE_GETRUSAGE */
@@ -184,9 +202,7 @@ double ILLutil_real_zeit (
 	return time (0);
 }
 
-void ILLutil_init_timer (
-	ILLutil_timer * t,
-	const char *name)
+void ILLutil_init_timer (ILLutil_timer * t, const char *name)
 {
 	t->szeit = -1.0;
 	t->cum_zeit = 0.0;
@@ -202,8 +218,7 @@ void ILLutil_init_timer (
 	t->name[sizeof (t->name) - 1] = '\0';
 }
 
-void ILLutil_start_timer (
-	ILLutil_timer * t)
+void ILLutil_start_timer (ILLutil_timer * t)
 {
 	if (t->szeit != -1.0)
 	{

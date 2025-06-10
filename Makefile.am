@@ -20,7 +20,8 @@ MAIN_SOURCE_FILES = \
 	qsopt_ex/eg_macros.c \
 	qsopt_ex/eg_memslab.c \
 	qsopt_ex/sortrus_common.c \
-	qsopt_ex/QSopt_ex_version.c
+	qsopt_ex/QSopt_ex_version.c \
+	qsopt_ex/timing_log.c
 
 # Header files
 PUBLIC_HEADER_FILES = \
@@ -57,7 +58,8 @@ PRIVATE_HEADER_FILES = \
 	qsopt_ex/logging.h \
 	qsopt_ex/qs_config.h \
 	qsopt_ex/trace.h \
-	qsopt_ex/util.h
+	qsopt_ex/util.h \
+	qsopt_ex/timing_log.h
 
 # These source files have to be instantiated using the
 # type template mechanism

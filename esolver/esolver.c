@@ -34,6 +34,7 @@
 #include "except.h"
 #include "logging-private.h"
 #include "qs_config.h"
+#include "timing_log.h"
 
 /* ========================================================================= */
 /** @name static parameters for the main program */
@@ -265,6 +266,8 @@ static int parseargs (int ac, char **av)
 /* ========================================================================= */
 int main (int ac, char **av)
 {
+	// clock start for timing purposes
+    	clock_t start = clock();
 	int rval = 0,
 	status = 0;
 	mpq_QSdata *p_mpq = 0;
@@ -317,6 +320,9 @@ int main (int ac, char **av)
 	EGioPrintf (out, "%s\n", fname);
 	EGioClose (out);
 
+	// adds section header after fname is defined
+	log_session_header(fname);
+	
 	/* read the mpq problem */
 	ILLutil_init_timer (&timer_read, "SOLVER_READ_MPQ");
 	ILLutil_start_timer (&timer_read);
@@ -407,5 +413,12 @@ CLEANUP:
 	mpq_QSfree_basis (basis);
 	mpq_QSfree_prob (p_mpq);
 	QSexactClear();
+
+	// testing for log file
+    	clock_t end = clock();
+    	double duration = (double)(end - start) / CLOCKS_PER_SEC;
+   	log_timing("Total testing time ", duration);
+	log_session_footer(fname);
+
 	return rval;									/* main return */
 }

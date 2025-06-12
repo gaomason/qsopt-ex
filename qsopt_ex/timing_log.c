@@ -1,6 +1,7 @@
-#include <stdio.h>
 #include <time.h>
 #include <stdarg.h>
+#include <string.h>
+#include <stdio.h>  // Make sure stdio is included
 
 #define LOG_FILE "qsopt_timing.log"
 
@@ -9,8 +10,8 @@ void log_timing(const char *label, double seconds) {
     FILE *fp = fopen(LOG_FILE, "a");
     if (fp) {
         time_t now = time(NULL);
-        char *timestamp = ctime(&now);  
-        timestamp[strcspn(timestamp, "\n")] = 0;  // strips the extra newline provided by the line above
+        char *timestamp = ctime(&now);
+        timestamp[strcspn(timestamp, "\n")] = 0;  // strips the newline created by previous live
         fprintf(fp, "[%s] %s took %.6f seconds\n", timestamp, label, seconds);
         fclose(fp);
     }
@@ -24,6 +25,38 @@ void log_message(const char *format, ...) {
         va_start(args, format);
         vfprintf(fp, format, args);
         va_end(args);
+        fprintf(fp, "\n");
+        fclose(fp);
+    }
+}
+
+// session header
+void log_session_header(const char *label) {
+    FILE *fp = fopen(LOG_FILE, "a");
+    if (fp) {
+        time_t now = time(NULL);
+        char *timestamp = ctime(&now);
+        timestamp[strcspn(timestamp, "\n")] = 0;
+
+        fprintf(fp, "============================================================\n");
+        fprintf(fp, "LOG SESSION START — %s\n", timestamp);
+        fprintf(fp, "Solving Problem: %s\n", label);
+
+        fclose(fp);
+    }
+}
+
+// session footer
+void log_session_footer(const char *label) {
+    FILE *fp = fopen(LOG_FILE, "a");
+    if (fp) {
+        time_t now = time(NULL);
+        char *timestamp = ctime(&now);
+        timestamp[strcspn(timestamp, "\n")] = 0;
+
+        fprintf(fp, "Solved Problem: %s\n", label);
+        fprintf(fp, "LOG SESSION END — %s\n", timestamp);
+        fprintf(fp, "============================================================\n");
         fprintf(fp, "\n");
         fclose(fp);
     }

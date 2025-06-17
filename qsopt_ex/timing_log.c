@@ -1,7 +1,7 @@
 #include <time.h>
-#include <stdarg.h>
 #include <string.h>
-#include <stdio.h>  // Make sure stdio is included
+#include <stdarg.h>
+#include <stdio.h>  
 
 #define LOG_FILE "qsopt_timing.log"
 
@@ -12,7 +12,7 @@ void log_timing(const char *label, double seconds) {
         time_t now = time(NULL);
         char *timestamp = ctime(&now);
         timestamp[strcspn(timestamp, "\n")] = 0;  // strips the newline created by previous live
-        fprintf(fp, "[%s] %s took %.6f seconds\n", timestamp, label, seconds);
+        fprintf(fp, "[%s] %s%.10f seconds\n", timestamp, label, seconds);
         fclose(fp);
     }
 }

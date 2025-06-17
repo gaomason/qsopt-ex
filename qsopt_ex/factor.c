@@ -5476,11 +5476,13 @@ int EGLPNUM_TYPENAME_ILLfactor_update (
 	nupdate++;
 #endif
 
+	// retrieves the pivot row corresponding to the column being replaced.
 	row_p = f->ucindx[f->uc_inf[col_p].cbeg];
-
+	// removes the old column from the factorization.
 	rval = delete_column (f, col_p);
-	CHECKRVALG (rval, CLEANUP);
 
+	CHECKRVALG (rval, CLEANUP);
+	// computes the new column rank (rank_r) for pivot permutation.
 	rval = create_column (f, a, col_p, &rank_r);
 	/* if (rval) QSlog("create_column failed"); */
 	CHECKRVALG (rval, CLEANUP);
@@ -5512,7 +5514,7 @@ int EGLPNUM_TYPENAME_ILLfactor_update (
 #endif
 
 	shift_permutations (f, rank_p, rank_r);
-
+	// removes the row and performs sparse or dense elimination to update LU factors.
 	rval = delete_row (f, row_p, &f->xtmp);
 	CHECKRVALG(rval,CLEANUP);
 

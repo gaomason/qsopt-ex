@@ -267,7 +267,7 @@ static int parseargs (int ac, char **av)
 int main (int ac, char **av)
 {
 	// clock start for timing purposes
-    	clock_t start = clock();
+    clock_t start = clock();
 	int rval = 0,
 	status = 0;
 	mpq_QSdata *p_mpq = 0;

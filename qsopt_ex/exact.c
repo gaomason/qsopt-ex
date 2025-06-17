@@ -38,6 +38,7 @@
 #include "eg_timer.h"
 #include "eg_exutil.h"
 #include "except.h"
+#include "timing_log.h"
 
 #include "basis_mpq.h"
 #include "editor_dbl.h"
@@ -153,6 +154,9 @@ CLEANUP:
 /* ========================================================================= */
 dbl_QSdata *QScopy_prob_mpq_dbl (mpq_QSdata * p, const char *newname)
 {
+	// clock start for timing purposes
+        clock_t start = clock();
+	
 	const int ncol = mpq_QSget_colcount(p);
 	const int nrow = mpq_QSget_rowcount(p);
 	char*sense=0;
@@ -254,6 +258,11 @@ dbl_QSdata *QScopy_prob_mpq_dbl (mpq_QSdata * p, const char *newname)
 		dbl_QSfree_prob (p2);
 		p2 = 0;
 	}
+	// testing for log file
+        clock_t end = clock();
+        double duration = (double)(end - start) / CLOCKS_PER_SEC;
+        log_timing("QScopy_prob_mpq_dbl took ", duration);
+
 #if QSEXACT_SAVE_INT
 	else
 	{
@@ -389,6 +398,9 @@ int QSexact_optimal_test (mpq_QSdata * p,
 													mpq_t * d_sol,
 													QSbasis * basis)
 {
+	// clock start for timing purposes
+        clock_t start = clock();
+
 	/* local variables */
 	register int i,
 	  j;
@@ -803,6 +815,12 @@ int QSexact_optimal_test (mpq_QSdata * p,
 
 	/* ending */
 CLEANUP:
+	// testing for log file
+        clock_t end = clock();
+        double duration = (double)(end - start) / CLOCKS_PER_SEC;
+        log_timing("QSexact_optimal_test took ", duration);
+
+
 	mpq_EGlpNumFreeArray (dz);
 	mpq_EGlpNumFreeArray (rhs_copy);
 	mpq_clear (num1);
@@ -816,6 +834,9 @@ CLEANUP:
 /* ========================================================================= */
 int QSexact_infeasible_test (mpq_QSdata * p, mpq_t * d_sol)
 {
+	// clock start for timing purposes
+        clock_t start = clock();
+
 	/* local variables */
 	register int i,
 	  j;
@@ -914,6 +935,11 @@ int QSexact_infeasible_test (mpq_QSdata * p, mpq_t * d_sol)
 
 	/* ending */
 CLEANUP:
+	// testing for log file
+        clock_t end = clock();
+        double duration = (double)(end - start) / CLOCKS_PER_SEC;
+        log_timing("QSexact_infeasible_test took ", duration);
+
 	mpq_EGlpNumFreeArray (dl);
 	mpq_EGlpNumFreeArray (du);
 	mpq_clear (num1);
@@ -1001,6 +1027,9 @@ static int QSexact_basis_status (mpq_QSdata * p_mpq,
 																 const int msg_lvl,
 																 int *const simplexalgo)
 {
+	// clock start for timing purposes
+        clock_t start = clock();
+
 	int rval = 0,
 	singular;
 	mpq_feas_info fi;
@@ -1008,6 +1037,7 @@ static int QSexact_basis_status (mpq_QSdata * p_mpq,
 	mpq_EGlpNumInitVar (fi.totinfeas);
 	EGtimerReset (&local_timer);
 	EGtimerStart (&local_timer);
+	// load and check the basis
 	EGcallD(mpq_QSload_basis (p_mpq, basis));
 	if (p_mpq->cache) 
 	{
@@ -1026,16 +1056,20 @@ static int QSexact_basis_status (mpq_QSdata * p_mpq,
 		mpq_ILLlp_rows_clear (p_mpq->qslp->rA);
 		ILL_IFFREE(p_mpq->qslp->rA);
 	}
+	// rebuild internal lp 
 	mpq_free_internal_lpinfo (p_mpq->lp);
 	mpq_init_internal_lpinfo (p_mpq->lp);
 	EGcallD(mpq_build_internal_lpinfo (p_mpq->lp));
 	mpq_ILLfct_set_variable_type (p_mpq->lp);
+	// factoring of basis
 	EGcallD(mpq_ILLbasis_load (p_mpq->lp, p_mpq->basis));
 	EGcallD(mpq_ILLbasis_factor (p_mpq->lp, &singular));
 	memset (&(p_mpq->lp->basisstat), 0, sizeof (mpq_lp_status_info));
+	// feasibility check
 	mpq_ILLfct_compute_piz (p_mpq->lp);
 	mpq_ILLfct_compute_dz (p_mpq->lp);
 	mpq_ILLfct_compute_xbz (p_mpq->lp);
+	// primal and dual solution check
 	mpq_ILLfct_check_pfeasible (p_mpq->lp, &fi, mpq_zeroLpNum);
 	mpq_ILLfct_check_dfeasible (p_mpq->lp, &fi, mpq_zeroLpNum);
 	mpq_ILLfct_set_status_values (p_mpq->lp, fi.pstatus, fi.dstatus, PHASEII,
@@ -1080,6 +1114,11 @@ static int QSexact_basis_status (mpq_QSdata * p_mpq,
 					mpq_get_d(p_mpq->lp->dinfeas) : mpq_get_d(p_mpq->lp->objbound)) );
 	}
 CLEANUP:
+	// testing for log file
+        clock_t end = clock();
+        double duration = (double)(end - start) / CLOCKS_PER_SEC;
+        log_timing("QSexact_basis_status took ", duration);
+
 	mpq_EGlpNumClearVar (fi.totinfeas);
 	return rval;
 }
@@ -1434,7 +1473,10 @@ int QSexact_verify (
 
 /* ========================================================================= */
 int QSexact_solver (mpq_QSdata * p_mpq, mpq_t * const x, mpq_t * const y, QSbasis * const ebasis, int simplexalgo, int *status)
-{
+{ 
+	// clock start for timing purposes
+        clock_t start = clock();
+
 	/* local variables */
 	int last_status = 0, last_iter = 0;
 	QSbasis *basis = 0;
@@ -1793,6 +1835,12 @@ CLEANUP:
 	mpq_QSfree_basis (basis);
 	dbl_QSfree_prob (p_dbl);
 	mpf_QSfree_prob (p_mpf);
+
+	// testing for log file
+        clock_t end = clock();
+        double duration = (double)(end - start) / CLOCKS_PER_SEC;
+        log_timing("QSexact Solver took ", duration);
+
 	return rval;
 }
 

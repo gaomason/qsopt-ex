@@ -1,3 +1,10 @@
+Fork Reason
+===========
+The reason for this for in qsopt_ex is to add a timing function to certain functions. We wish to do this in order to hopefully improve the program. The log will be saved in /qsopt-ex/build/elsover as the file 'qsopt_timing.log'.
+
+'additionals' folder
+===========
+As opposed to the normal qsopt_ex there is an additional 'additionals' folder present in this fork. This is here as some functions that are used in the log are not present until the software is built. To use the logging functionality, first build qsopt_ex as normal following the original README below. Then afterwords, copy and paste all the files in the 'additionals' folder into /qsopt-ex/build/qsopt_ex and overwrite any files present. All this does is add timers to certain functions within these files.
 
 QSopt Exact
 ===========

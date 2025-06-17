@@ -1,0 +1,11 @@
+|  DOCUMENTATION FOR QSOPT_EX LOG        |
+|  NOT ALL LOGS WILL HAVE ALL FUNCTIONS  |
+
+- 'Total testing time': Total time that the program ran, present as the last time in the log.
+- 'QSexact Solver': Total time for all of the math functions that took place, does not include memory allocation. Should be slightly shorter than total time.
+- 'QScopy_prob_mpq_dbl': Function converts from exact rational (mpq_QSdata) to double precision floating point (dbl_QSdata). I believe it should be a mix of both exact and approximate. I believe precision is lost at this step as well.
+- 'dbl_ILLeditor_solve': Solves the LP with either primal or dual simplex, than retrieves the final objective value, and returns success or error code to determine if.
+- 'QSexact_optimal_test': Verifies whether a given solution and basis constitute an optimal solution to an exact rational linear program. It checks feasibility, dual feasibility, and complementary slackness conditions for both primal and dual solutions. Should provides an exact, bitwise-certifiable verification of LP optimality. This is a very complicated method so I might not be exactly right here, but this is what I believe it does.
+- 'QSexact_basis_status': Checks to see if the given basis (in mpq_QSdata) is correct. Then evaluates the primal and dual deasibility to determine the correct lp status (optimal, infeasible...). Also prints out 'Performing Rational Basic Solve on LP_PROBLEM, RAT-infeasible, PS I 5.7143e-07, DS I 4.28571e-06, in QSexact_basis_status'
+- 'mpq_ILLlp_rows_init': Makes a row wise representation of the LP's constraint matrix.
+- 'QSexact_infeasible_test': Verify if a given dual solution (d_sol) proves primal infeasibility in exact rational arithmetic. Very similar to QSexact_optimal_test

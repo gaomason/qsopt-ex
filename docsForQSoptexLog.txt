@@ -9,3 +9,6 @@
 - 'QSexact_basis_status': Checks to see if the given basis (in mpq_QSdata) is correct. Then evaluates the primal and dual deasibility to determine the correct lp status (optimal, infeasible...). Also prints out 'Performing Rational Basic Solve on LP_PROBLEM, RAT-infeasible, PS I 5.7143e-07, DS I 4.28571e-06, in QSexact_basis_status'
 - 'mpq_ILLlp_rows_init': Makes a row wise representation of the LP's constraint matrix.
 - 'QSexact_infeasible_test': Verify if a given dual solution (d_sol) proves primal infeasibility in exact rational arithmetic. Very similar to QSexact_optimal_test
+- 'DBL solve': Time for the DBL solve of QSopt_ex to be solved.
+- '---': Separates the DBL solve and MPF solve.
+- 'MPF solve at x bits': Time for an MPF to be solved. Includes the total number of bits for a solve. Should be able to combine with 'DBL solve' and all other 'MPF solves' and get a similar time to 'QSexact Solver' (+- .5).    

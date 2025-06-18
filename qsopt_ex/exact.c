@@ -1475,7 +1475,8 @@ int QSexact_verify (
 int QSexact_solver (mpq_QSdata * p_mpq, mpq_t * const x, mpq_t * const y, QSbasis * const ebasis, int simplexalgo, int *status)
 { 
 	// clock start for timing purposes
-        clock_t start = clock();
+        clock_t start = clock();     // full timer
+	clock_t dbl_start = clock(); // double timer
 
 	/* local variables */
 	int last_status = 0, last_iter = 0;
@@ -1520,6 +1521,13 @@ int QSexact_solver (mpq_QSdata * p_mpq, mpq_t * const x, mpq_t * const y, QSbasi
 						"continuing in extended precision", rval);
 		goto MPF_PRECISION;
 	}
+
+	// testing for log file
+	clock_t dbl_end = clock();
+        double duration = (double)(dbl_end - dbl_start) / CLOCKS_PER_SEC;
+        log_timing("DBL solve took ", duration);
+	log_message("------------------------------------------------------------");
+
 	EGcallD(dbl_QSget_status (p_dbl, status));
 	if ((*status == QS_LP_INFEASIBLE) && (p_dbl->lp->final_phase != PRIMAL_PHASEI) && (p_dbl->lp->final_phase != DUAL_PHASEII))
 		dbl_QSopt_primal (p_dbl, status);
@@ -1644,6 +1652,8 @@ int QSexact_solver (mpq_QSdata * p_mpq, mpq_t * const x, mpq_t * const y, QSbasi
 	/* try with multiple precision floating points */
 	for (; it--; precision = (unsigned) (precision * 1.5))
 	{
+		clock_t mpf_start = clock();
+
 		// AP: save precision to file
 		EGioFile_t *out = 0;
 		out = EGioOpen ("time_precision_data", "a");
@@ -1707,6 +1717,12 @@ int QSexact_solver (mpq_QSdata * p_mpq, mpq_t * const x, mpq_t * const y, QSbasi
 				QSlog("mpf_%u precision falied, error code %d, continuing with "
 										"next precision", precision, rval);
 			 }
+			// stop timing before exiting iteration
+            		clock_t mpf_end = clock();
+            		double elapsed_mpf = (double)(mpf_end - mpf_start) / CLOCKS_PER_SEC;
+            		char label[128];
+            		snprintf(label, sizeof(label), "MPF solve at %u bits took ", precision);
+            		log_timing(label, elapsed_mpf);
 			goto NEXT_PRECISION;
 		}
 		EGcallD(mpf_QSget_status (p_mpf, status));
@@ -1733,6 +1749,11 @@ int QSexact_solver (mpq_QSdata * p_mpq, mpq_t * const x, mpq_t * const y, QSbasi
 			if (QSexact_optimal_test (p_mpq, x_mpq, y_mpq, basis))
 			{
 				optimal_output (p_mpq, x, y, x_mpq, y_mpq);
+            			clock_t mpf_end = clock();
+            			double elapsed_mpf = (double)(mpf_end - mpf_start) / CLOCKS_PER_SEC;
+            			char label[128];
+            			snprintf(label, sizeof(label), "MPF solve at %u bits took ", precision);
+            			log_timing(label, elapsed_mpf);
 				goto CLEANUP;
 			}
 			else
@@ -1746,6 +1767,11 @@ int QSexact_solver (mpq_QSdata * p_mpq, mpq_t * const x, mpq_t * const y, QSbasi
 					if (QSexact_optimal_test (p_mpq, x_mpq, y_mpq, basis))
 					{
 						optimal_output (p_mpq, x, y, x_mpq, y_mpq);
+            					clock_t mpf_end = clock();
+            					double elapsed_mpf = (double)(mpf_end - mpf_start) / CLOCKS_PER_SEC;
+            					char label[128];
+            					snprintf(label, sizeof(label), "MPF solve at %u bits took ", precision);
+            					log_timing(label, elapsed_mpf);
 						goto CLEANUP;
 					}
 					else
@@ -1767,6 +1793,11 @@ int QSexact_solver (mpq_QSdata * p_mpq, mpq_t * const x, mpq_t * const y, QSbasi
 			if (QSexact_infeasible_test (p_mpq, y_mpq))
 			{
 				infeasible_output (p_mpq, y, y_mpq);
+            			clock_t mpf_end = clock();
+            			double elapsed_mpf = (double)(mpf_end - mpf_start) / CLOCKS_PER_SEC;
+            			char label[128];
+            			snprintf(label, sizeof(label), "MPF solve at %u bits took ", precision);
+            			log_timing(label, elapsed_mpf);
 				goto CLEANUP;
 			}
 			else
@@ -1811,6 +1842,12 @@ int QSexact_solver (mpq_QSdata * p_mpq, mpq_t * const x, mpq_t * const y, QSbasi
 			break;
 		}
 	NEXT_PRECISION:
+		clock_t mpf_end = clock();
+        	double elapsed_mpf = (double)(mpf_end - mpf_start) / CLOCKS_PER_SEC;
+        	char label[128];
+        	snprintf(label, sizeof(label), "MPF solve at %u bits took ", precision);
+        	log_timing(label, elapsed_mpf);	
+	
 		mpf_QSfree_prob (p_mpf);
 		p_mpf = 0;
 	}
@@ -1838,8 +1875,8 @@ CLEANUP:
 
 	// testing for log file
         clock_t end = clock();
-        double duration = (double)(end - start) / CLOCKS_PER_SEC;
-        log_timing("QSexact Solver took ", duration);
+        double total_duration = (double)(end - start) / CLOCKS_PER_SEC;
+        log_timing("QSexact Solver took ", total_duration);
 
 	return rval;
 }

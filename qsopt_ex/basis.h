@@ -56,7 +56,8 @@ int EGLPNUM_TYPENAME_ILLbasis_build_basisinfo (
 	int algorithm),
   EGLPNUM_TYPENAME_ILLbasis_load (
 	EGLPNUM_TYPENAME_lpinfo * lp,
-	EGLPNUM_TYPENAME_ILLlp_basis * B),
+	EGLPNUM_TYPENAME_ILLlp_basis * B,
+	int *cached_baz),
   EGLPNUM_TYPENAME_ILLbasis_tableau_row (
 	EGLPNUM_TYPENAME_lpinfo * lp,
 	int row,

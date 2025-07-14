@@ -37,6 +37,8 @@
 #include "qstruct_dbl.h"
 #include "qstruct_mpq.h"
 #include "qstruct_mpf.h"
+#include "factor_mpq.h"
+#include "factor_dbl.h"
 
 /* ========================================================================= */
 /** @defgroup Esolver Esolver
@@ -337,6 +339,22 @@ int QSexact_solver (mpq_QSdata * p_mpq,
 										QSbasis * const basis,
 										int simplexalgo,
 										int *status);
+
+/* ========================================================================= */
+/** @brief Convert an mpq_factor_work structure to a dbl_factor_work structure.
+ * @param dest Destination dbl_factor_work structure (should be uninitialized).
+ * @param src Source mpq_factor_work structure to convert from.
+ * @return 0 on success, non-zero on failure.
+ */
+int mpq_factor_work_to_dbl_factor_work(dbl_factor_work *dest, const mpq_factor_work *src);
+
+/* ========================================================================= */
+/** @brief Convert an mpq_factor_work structure to a mpf_factor_work structure.
+ * @param dest Destination mpf_factor_work structure (should be uninitialized).
+ * @param src Source mpq_factor_work structure to convert from.
+ * @return 0 on success, non-zero on failure.
+ */
+int mpq_factor_work_to_mpf_factor_work(mpf_factor_work *dest, const mpq_factor_work *src);
 
 /* ========================================================================= */
 /** @brief Initializator for global data, this is needed mainly for defining

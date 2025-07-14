@@ -148,7 +148,7 @@ CLEANUP:
 	EG_RETURN (rval);
 }
 
-int EGLPNUM_TYPENAME_ILLbasis_load (EGLPNUM_TYPENAME_lpinfo * lp, EGLPNUM_TYPENAME_ILLlp_basis * B) {
+int EGLPNUM_TYPENAME_ILLbasis_load (EGLPNUM_TYPENAME_lpinfo * lp, EGLPNUM_TYPENAME_ILLlp_basis * B, int *cached_baz) {
 	int rval = 0;
 	char *cstat = B->cstat;
 	char *rstat = B->rstat;
@@ -249,6 +249,30 @@ int EGLPNUM_TYPENAME_ILLbasis_load (EGLPNUM_TYPENAME_lpinfo * lp, EGLPNUM_TYPENA
 				QSlog("unknown row basis stat 3");
 				rval = 1;
 				goto CLEANUP;
+			}
+		}
+	}
+	if (cached_baz != 0) {
+		int nrows_cached = lp->O->nrows;
+		int pos, k, target_pos;
+		
+		for (pos = 0; pos < nrows_cached; ++pos) {
+			int cached_element = cached_baz[pos];
+			
+			// Find where currently is in baz
+			target_pos = -1;
+			for (k = 0; k < nrows_cached; ++k) {
+				if (lp->baz[k] == cached_element) {
+					target_pos = k;
+					break;
+				}
+			}
+			// If the element found and not in the right position
+			if (target_pos != -1 && target_pos != pos) {
+				// Swap
+				int tmp_var = lp->baz[pos];
+				lp->baz[pos] = lp->baz[target_pos];
+				lp->baz[target_pos] = tmp_var;
 			}
 		}
 	}

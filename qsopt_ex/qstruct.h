@@ -43,6 +43,9 @@ typedef struct EGLPNUM_TYPENAME_qsdata
 	itcnt_t itcnt;
 	EGLPNUM_TYPE uobjlim;
 	EGLPNUM_TYPE lobjlim;
+
+	struct EGLPNUM_TYPENAME_factor_work *cached_lu;
+	int *cached_baz;
 }
 EGLPNUM_TYPENAME_QSdata;
 

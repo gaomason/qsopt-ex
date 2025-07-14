@@ -3745,6 +3745,85 @@ void EGLPNUM_TYPENAME_ILLfactor_ftran (
 	return;
 }
 
+int EGLPNUM_TYPENAME_compute_spike (
+    EGLPNUM_TYPENAME_factor_work * f,
+    EGLPNUM_TYPENAME_svector * a,
+    EGLPNUM_TYPENAME_svector * spike)
+{
+    int i;
+    int nzcnt;
+    int sparse;
+    int *aindx;
+    EGLPNUM_TYPE *acoef;
+    EGLPNUM_TYPE *work_coef = f->work_coef;
+
+    // Determine if we should use sparse or dense methods
+    if (a->nzcnt >= SPARSE_FACTOR * f->dim)
+    {
+        // Dense case: copy input to work array
+        aindx = a->indx;
+        acoef = a->coef;
+        nzcnt = a->nzcnt;
+        for (i = 0; i < nzcnt; i++)
+        {
+            EGLPNUM_TYPENAME_EGlpNumCopy(work_coef[aindx[i]], acoef[i]);
+        }
+        sparse = 0;
+    }
+    else
+    {
+        sparse = 1;
+    }
+
+    // Apply L^{-1}
+    if (sparse)
+    {
+        ILLfactor_ftranl3(f, a, spike);  // Note: spike, not &spike
+        // Check if result became dense
+        if (spike->nzcnt >= SPARSE_FACTOR * f->dim)
+        {
+            nzcnt = spike->nzcnt;
+            aindx = spike->indx;
+            acoef = spike->coef;
+            for (i = 0; i < nzcnt; i++)
+            {
+                EGLPNUM_TYPENAME_EGlpNumCopy(work_coef[aindx[i]], acoef[i]);
+            }
+            sparse = 0;
+        }
+    }
+    else
+    {
+        ILLfactor_ftranl(f, work_coef);
+    }
+
+    // Apply E^{-1} (eta factors)
+    if (sparse)
+    {
+        ILLfactor_ftrane2(f, spike);
+    }
+    else
+    {
+        ILLfactor_ftrane(f, work_coef);
+        // Convert dense result back to sparse
+        nzcnt = 0;
+        aindx = spike->indx;
+        acoef = spike->coef;
+        for (i = 0; i < f->dim; i++)
+        {
+            if (EGLPNUM_TYPENAME_EGlpNumIsNeqZero(work_coef[i], f->szero_tol))
+            {
+                aindx[nzcnt] = i;
+                EGLPNUM_TYPENAME_EGlpNumCopy(acoef[nzcnt], work_coef[i]);
+                nzcnt++;
+            }
+            EGLPNUM_TYPENAME_EGlpNumZero(work_coef[i]); // Clean up
+        }
+        spike->nzcnt = nzcnt;
+    }
+	return 0;
+}
+
 /* EGLPNUM_TYPENAME_ILLfactor_ftran_update solves Bx=a for x, and also returns upd, where Ux=upd */
 void EGLPNUM_TYPENAME_ILLfactor_ftran_update (
 	EGLPNUM_TYPENAME_factor_work * f,
@@ -5601,4 +5680,247 @@ int EGLPNUM_TYPENAME_ILLfactor_update (
 CLEANUP:
 	if(rval != E_UPDATE_SINGULAR_COL) EG_RETURN (rval);							/* Bico 031209 - chg from RETURN */
 	return rval;
+}
+
+/**
+ * @brief Creates a deep copy of an EGLPNUM_TYPENAME_factor_work struct.
+ *
+ * This function allocates new memory for all pointer-based members of the struct
+ * and copies the values from the source struct. It uses the memory management
+ * conventions of the qsopt-ex library (ILL_SAFE_MALLOC, etc.).
+ *
+ * @param dest A pointer to the destination struct. This should be an uninitialized struct.
+ * @param src A pointer to the source struct to be copied.
+ * @return 0 on success, non-zero on memory allocation failure.
+ */
+ int EGLPNUM_TYPENAME_ILLfactor_deep_copy(
+    EGLPNUM_TYPENAME_factor_work *dest,
+    const EGLPNUM_TYPENAME_factor_work *src)
+{
+    int i;
+    int rval = 0;
+    int dsize;
+  
+    // Use the project's initialization function to set defaults.
+    EGLPNUM_TYPENAME_ILLfactor_init_factor_work(dest);
+    // Copy scalar fields from src to dest.
+    dest->max_k = src->max_k;
+    EGLPNUM_TYPENAME_EGlpNumCopy(dest->fzero_tol, src->fzero_tol);
+    EGLPNUM_TYPENAME_EGlpNumCopy(dest->szero_tol, src->szero_tol);
+    EGLPNUM_TYPENAME_EGlpNumCopy(dest->partial_tol, src->partial_tol);
+    dest->ur_space_mul = src->ur_space_mul;
+    dest->uc_space_mul = src->uc_space_mul;
+    dest->lc_space_mul = src->lc_space_mul;
+    dest->lr_space_mul = src->lr_space_mul;
+    dest->er_space_mul = src->er_space_mul;
+    dest->grow_mul = src->grow_mul;
+    dest->p = src->p;
+    dest->etamax = 500; //TODO: make this dynamic
+    dest->minmult = src->minmult;
+    dest->maxmult = src->maxmult;
+    dest->updmaxmult = src->updmaxmult;
+    dest->dense_fract = src->dense_fract;
+    dest->dense_min = src->dense_min;
+    EGLPNUM_TYPENAME_EGlpNumCopy(dest->maxelem_orig, src->maxelem_orig);
+    dest->nzcnt_orig = src->nzcnt_orig;
+    EGLPNUM_TYPENAME_EGlpNumCopy(dest->maxelem_factor, src->maxelem_factor);
+    dest->nzcnt_factor = src->nzcnt_factor;
+    EGLPNUM_TYPENAME_EGlpNumCopy(dest->maxelem_cur, src->maxelem_cur);
+    dest->nzcnt_cur = src->nzcnt_cur;
+    EGLPNUM_TYPENAME_EGlpNumCopy(dest->partial_cur, src->partial_cur);
+    dest->dim = src->dim;
+    dest->stage = src->stage;
+    dest->nstages = src->nstages;
+    dest->etacnt = src->etacnt;
+    dest->ur_space = src->ur_space;
+    dest->uc_space = src->uc_space;
+    dest->lc_space = src->lc_space;
+    dest->lr_space = src->lr_space;
+    dest->er_space = src->er_space;
+    dest->ur_freebeg = src->ur_freebeg;
+    dest->uc_freebeg = src->uc_freebeg;
+    dest->lc_freebeg = src->lc_freebeg;
+    dest->lr_freebeg = src->lr_freebeg;
+    dest->er_freebeg = src->er_freebeg;
+    dest->drows = src->drows;
+    dest->dcols = src->dcols;
+    dest->dense_base = src->dense_base;
+
+    // shallow copy.
+    dest->p_nsing = src->p_nsing;
+    dest->p_singr = src->p_singr;
+    dest->p_singc = src->p_singc;
+
+
+
+    if (src->work_coef) {
+        dest->work_coef = EGLPNUM_TYPENAME_EGlpNumAllocArray(src->dim);
+        if (!dest->work_coef) { rval = 1; goto CLEANUP; }
+        for (i = 0; i < src->dim; i++) {
+            EGLPNUM_TYPENAME_EGlpNumCopy(dest->work_coef[i], src->work_coef[i]);
+        }
+    }
+
+    if (src->work_indx) {
+        ILL_SAFE_MALLOC(dest->work_indx, src->dim, int);
+        memcpy(dest->work_indx, src->work_indx, src->dim * sizeof(int));
+    }
+    
+    // Info structs
+    if (src->uc_inf) {
+        ILL_SAFE_MALLOC(dest->uc_inf, src->dim + src->max_k + 1, EGLPNUM_TYPENAME_uc_info);
+        memcpy(dest->uc_inf, src->uc_inf, (src->dim + src->max_k + 1) * sizeof(EGLPNUM_TYPENAME_uc_info));
+    }
+    if (src->ur_inf) {
+        ILL_SAFE_MALLOC(dest->ur_inf, src->dim + src->max_k + 1, EGLPNUM_TYPENAME_ur_info);
+        memcpy(dest->ur_inf, src->ur_inf, (src->dim + src->max_k + 1) * sizeof(EGLPNUM_TYPENAME_ur_info));
+        for (i = 0; i < src->dim + src->max_k + 1; i++) {
+            EGLPNUM_TYPENAME_EGlpNumInitVar(dest->ur_inf[i].max);
+            EGLPNUM_TYPENAME_EGlpNumCopy(dest->ur_inf[i].max, src->ur_inf[i].max);
+        }
+    }
+    if (src->lc_inf) {
+        ILL_SAFE_MALLOC(dest->lc_inf, src->dim, EGLPNUM_TYPENAME_lc_info);
+        memcpy(dest->lc_inf, src->lc_inf, src->dim * sizeof(EGLPNUM_TYPENAME_lc_info));
+    }
+    if (src->lr_inf) {
+        ILL_SAFE_MALLOC(dest->lr_inf, src->dim, EGLPNUM_TYPENAME_lr_info);
+        memcpy(dest->lr_inf, src->lr_inf, src->dim * sizeof(EGLPNUM_TYPENAME_lr_info));
+    }
+    if (src->er_inf) {
+        ILL_SAFE_MALLOC(dest->er_inf, src->etamax, EGLPNUM_TYPENAME_er_info);
+        memcpy(dest->er_inf, src->er_inf, src->etamax * sizeof(EGLPNUM_TYPENAME_er_info));
+    }
+	
+    // U matrix data
+    if (src->ucindx) {
+        ILL_SAFE_MALLOC(dest->ucindx, src->uc_space + 1, int);
+        memcpy(dest->ucindx, src->ucindx, (src->uc_space + 1) * sizeof(int));
+    }
+    if (src->ucrind) {
+        ILL_SAFE_MALLOC(dest->ucrind, src->uc_space, int);
+        memcpy(dest->ucrind, src->ucrind, src->uc_space * sizeof(int));
+    }
+
+    if (src->uccoef) {
+        dest->uccoef = EGLPNUM_TYPENAME_EGlpNumAllocArray(src->uc_space);
+        if (!dest->uccoef) { rval = 1; goto CLEANUP; }
+        for (i = 0; i < src->uc_space; i++) {
+            EGLPNUM_TYPENAME_EGlpNumCopy(dest->uccoef[i], src->uccoef[i]);
+        }
+    }
+
+    if (src->urindx) {
+        ILL_SAFE_MALLOC(dest->urindx, src->ur_space + 1, int);
+        memcpy(dest->urindx, src->urindx, (src->ur_space + 1) * sizeof(int));
+    }
+    if (src->urcind) {
+        ILL_SAFE_MALLOC(dest->urcind, src->ur_space, int);
+        memcpy(dest->urcind, src->urcind, src->ur_space * sizeof(int));
+    }
+    if (src->urcoef) {
+        dest->urcoef = EGLPNUM_TYPENAME_EGlpNumAllocArray(src->ur_space);
+        if (!dest->urcoef) { rval = 1; goto CLEANUP; }
+        for (i = 0; i < src->ur_space; i++) {
+            EGLPNUM_TYPENAME_EGlpNumCopy(dest->urcoef[i], src->urcoef[i]);
+        }
+    }
+	
+    // L matrix data
+    if (src->lcindx) {
+        ILL_SAFE_MALLOC(dest->lcindx, src->lc_space, int);
+        memcpy(dest->lcindx, src->lcindx, src->lc_space * sizeof(int));
+    }
+
+    if (src->lccoef) {
+        dest->lccoef = EGLPNUM_TYPENAME_EGlpNumAllocArray(src->lc_space);
+        if (!dest->lccoef) { rval = 1; goto CLEANUP; }
+        for (i = 0; i < src->lc_space; i++) {
+            EGLPNUM_TYPENAME_EGlpNumCopy(dest->lccoef[i], src->lccoef[i]);
+        }
+    }
+				  
+	if (src->lrindx) {
+		int lr_nzcnt = 0;
+		for (i = 0; i < src->dim; i++) {
+			lr_nzcnt += src->lr_inf[i].nzcnt;
+		}
+		ILL_SAFE_MALLOC(dest->lrindx, lr_nzcnt + 1, int);
+		memcpy(dest->lrindx, src->lrindx, (lr_nzcnt + 1) * sizeof(int));
+	}
+
+	if (src->lrcoef) {
+		int lr_nzcnt = 0;
+		for (i = 0; i < src->dim; i++) {
+			lr_nzcnt += src->lr_inf[i].nzcnt;
+		}
+		dest->lrcoef = EGLPNUM_TYPENAME_EGlpNumAllocArray(lr_nzcnt);
+		if (!dest->lrcoef) { rval = 1; goto CLEANUP; }
+		for (i = 0; i < lr_nzcnt; i++) {
+			EGLPNUM_TYPENAME_EGlpNumCopy(dest->lrcoef[i], src->lrcoef[i]);
+		}
+	}
+
+    // Eta data
+    if (src->erindx) {
+        ILL_SAFE_MALLOC(dest->erindx, src->er_space, int);
+        memcpy(dest->erindx, src->erindx, src->er_space * sizeof(int));
+    }
+	
+    if (src->ercoef) {
+        dest->ercoef = EGLPNUM_TYPENAME_EGlpNumAllocArray(src->er_space);
+        if (!dest->ercoef) { rval = 1; goto CLEANUP; }
+        for (i = 0; i < src->er_space; i++) {
+            EGLPNUM_TYPENAME_EGlpNumCopy(dest->ercoef[i], src->ercoef[i]);
+        }
+    }
+
+    // Permutations
+    if (src->rperm) {
+        ILL_SAFE_MALLOC(dest->rperm, src->dim, int);
+        memcpy(dest->rperm, src->rperm, src->dim * sizeof(int));
+    }
+    if (src->rrank) {
+        ILL_SAFE_MALLOC(dest->rrank, src->dim, int);
+        memcpy(dest->rrank, src->rrank, src->dim * sizeof(int));
+    }
+    if (src->cperm) {
+        ILL_SAFE_MALLOC(dest->cperm, src->dim, int);
+        memcpy(dest->cperm, src->cperm, src->dim * sizeof(int));
+    }
+    if (src->crank) {
+        ILL_SAFE_MALLOC(dest->crank, src->dim, int);
+        memcpy(dest->crank, src->crank, src->dim * sizeof(int));
+    }
+    
+    // Dense Matrix
+    if (src->dmat) {
+        dsize = src->drows * src->dcols;
+        dest->dmat = EGLPNUM_TYPENAME_EGlpNumAllocArray(dsize);
+        if (!dest->dmat) { rval = 1; goto CLEANUP; }
+        for (i = 0; i < dsize; i++) {
+            EGLPNUM_TYPENAME_EGlpNumCopy(dest->dmat[i], src->dmat[i]);
+        }
+    }
+
+    // svector xtmp
+    rval = EGLPNUM_TYPENAME_ILLsvector_alloc(&dest->xtmp, src->dim);
+    if (rval) goto CLEANUP;
+    dest->xtmp.nzcnt = src->xtmp.nzcnt;
+    if (src->xtmp.nzcnt > 0) {
+        memcpy(dest->xtmp.indx, src->xtmp.indx, src->xtmp.nzcnt * sizeof(int));
+        for (i = 0; i < src->xtmp.nzcnt; i++) {
+            EGLPNUM_TYPENAME_EGlpNumCopy(dest->xtmp.coef[i], src->xtmp.coef[i]);
+        }
+    }
+    	
+    goto FINAL;
+
+CLEANUP:
+    // If any allocation fails, FREE
+	printf("Error allocating memory for factor work copy.\n");
+    EGLPNUM_TYPENAME_ILLfactor_free_factor_work(dest);
+
+FINAL:
+    return rval;
 }

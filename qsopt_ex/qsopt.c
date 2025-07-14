@@ -521,6 +521,9 @@ EGLPNUM_TYPENAME_QSLIB_INTERFACE EGLPNUM_TYPENAME_QSdata *EGLPNUM_TYPENAME_QScre
 	p->qstatus = QS_LP_UNSOLVED;
 	p->factorok = 0;
 
+	p->cached_lu = 0;
+	p->cached_baz = 0;
+
 	p->itcnt.pI_iter = 0;
 	p->itcnt.pII_iter = 0;
 	p->itcnt.dI_iter = 0;

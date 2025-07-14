@@ -1096,7 +1096,7 @@ int EGLPNUM_TYPENAME_ILLlib_addrows (
 		lp->bz = lp->O->rhs;
 		lp->nnbasic = lp->ncols - lp->nrows;
 
-		rval = EGLPNUM_TYPENAME_ILLbasis_load (lp, B);
+		rval = EGLPNUM_TYPENAME_ILLbasis_load (lp, B, 0);
 		CHECKRVALG (rval, CLEANUP);
 
 		if (lp->f)
@@ -1590,7 +1590,7 @@ int EGLPNUM_TYPENAME_ILLlib_delrows (
 	/* if the base is OK, we MUST load the status variables again */
 	if(bok)
 	{
-		rval = EGLPNUM_TYPENAME_ILLbasis_load( lp, B);
+		rval = EGLPNUM_TYPENAME_ILLbasis_load( lp, B, 0);
 		CHECKRVALG (rval, CLEANUP);
 	}
 CLEANUP:
@@ -1699,7 +1699,7 @@ int EGLPNUM_TYPENAME_ILLlib_delcols (
 	/* if the base is OK, we MUST load the status variables again */
 	if(bok)
 	{
-		rval = EGLPNUM_TYPENAME_ILLbasis_load( lp, B);
+		rval = EGLPNUM_TYPENAME_ILLbasis_load( lp, B, 0);
 		CHECKRVALG (rval, CLEANUP);
 	}
 #if 0

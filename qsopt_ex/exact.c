@@ -46,6 +46,14 @@
 #include "fct_mpq.h"
 #include "lpdata_mpq.h"
 #include "simplex_mpq.h"
+#include "factor_mpq.h"
+#include "factor_dbl.h"
+#include "factor_mpf.h"
+#include "basis_dbl.h"
+#include "lpdata_dbl.h"
+#include "fct_dbl.h"
+#include "simplex_dbl.h"
+#include "simplex_mpf.h"
 
 /* ========================================================================= */
 int QSexact_print_sol (mpq_QSdata * p,
@@ -1062,8 +1070,221 @@ static int QSexact_basis_status (mpq_QSdata * p_mpq,
 	EGcallD(mpq_build_internal_lpinfo (p_mpq->lp));
 	mpq_ILLfct_set_variable_type (p_mpq->lp);
 	// factoring of basis
-	EGcallD(mpq_ILLbasis_load (p_mpq->lp, p_mpq->basis));
-	EGcallD(mpq_ILLbasis_factor (p_mpq->lp, &singular));
+	EGcallD(mpq_ILLbasis_load (p_mpq->lp, p_mpq->basis, p_mpq->cached_baz));
+	if (p_mpq->cached_lu == 0) 
+	{
+		EGcallD(mpq_ILLbasis_factor (p_mpq->lp, &singular));
+		ILL_SAFE_MALLOC (p_mpq->cached_lu, 1, mpq_factor_work);
+		mpq_EGlpNumInitVar (p_mpq->cached_lu->fzero_tol);
+		mpq_EGlpNumInitVar (p_mpq->cached_lu->szero_tol); 
+		mpq_EGlpNumInitVar (p_mpq->cached_lu->partial_tol);
+		mpq_EGlpNumInitVar (p_mpq->cached_lu->maxelem_orig);
+		mpq_EGlpNumInitVar (p_mpq->cached_lu->maxelem_factor);
+		mpq_EGlpNumInitVar (p_mpq->cached_lu->maxelem_cur);
+		mpq_EGlpNumInitVar (p_mpq->cached_lu->partial_cur);
+		rval = mpq_ILLfactor_deep_copy(p_mpq->cached_lu, p_mpq->lp->f);
+		if (rval) {
+			printf("Failed to deep copy factor work");
+			goto CLEANUP;
+		}
+		//cache the basis deep copy
+		ILL_SAFE_MALLOC (p_mpq->cached_baz, p_mpq->lp->O->nrows, int);
+		for (int i = 0; i < p_mpq->lp->O->nrows; ++i) {
+			p_mpq->cached_baz[i] = p_mpq->lp->baz[i];
+		}
+	}
+	else {
+		int refactor = 0;
+		// Collect all mismatch indices up front
+		int* mismatch_indices = NULL;
+		ILL_SAFE_MALLOC(mismatch_indices, p_mpq->lp->O->nrows, int);
+		int mismatch_count = 0;
+		for (int i = 0; i < p_mpq->lp->O->nrows; ++i) {
+			if (p_mpq->cached_baz[i] != p_mpq->lp->baz[i]) {
+				mismatch_indices[mismatch_count++] = i;
+			}
+		}
+		if (mismatch_count / p_mpq->lp->O->nrows > 0.1 ) {
+			refactor = 1;
+			free(mismatch_indices);
+		}
+		log_message("Mismatch's: %d/%d", mismatch_count, p_mpq->lp->O->nrows);
+		while (!refactor) {
+			int changed = 0;
+			int update_pos = -1;
+			int leaving_col = -1;
+
+			// Find the next column that has changed
+			for (int i = 0; i < mismatch_count; ++i) {
+				if (p_mpq->cached_baz[mismatch_indices[i]] != p_mpq->lp->baz[mismatch_indices[i]]) {
+					update_pos = mismatch_indices[i];
+					leaving_col = p_mpq->cached_baz[update_pos];
+					changed = 1;
+					break;
+				}
+			}
+
+			if (!changed) {
+				break; // Bases are now in sync
+			}
+			else {
+				int entering_col = p_mpq->lp->baz[update_pos];
+
+				// Create a_s for the entering column
+				mpq_svector a_s;
+				a_s.nzcnt = p_mpq->lp->matcnt[entering_col];
+				a_s.indx = &(p_mpq->lp->matind[p_mpq->lp->matbeg[entering_col]]);
+				a_s.coef = &(p_mpq->lp->matval[p_mpq->lp->matbeg[entering_col]]);
+		
+				// Allocate and compute the spike vector
+				mpq_svector spike, direction;
+				mpq_ILLsvector_alloc(&spike, p_mpq->lp->nrows);
+				mpq_ILLsvector_alloc(&direction, p_mpq->lp->nrows);
+				
+				// Use cached MPF 128-bit LU for faster and more accurate direction computation
+				unsigned original_precision = EGLPNUM_PRECISION;
+				QSexact_set_precision(128);  
+				
+				mpf_factor_work *mpf_cached_lu = NULL;
+				mpf_svector mpf_a_s, mpf_spike, mpf_direction;
+				
+				ILL_SAFE_MALLOC(mpf_cached_lu, 1, mpf_factor_work);
+				rval = mpq_factor_work_to_mpf_factor_work(mpf_cached_lu, p_mpq->cached_lu);
+				if (rval) {
+					QSlog("Failed to convert mpq_factor_work to mpf_factor_work");
+					QSexact_set_precision(original_precision);
+					refactor = 1;
+					break;
+				}	
+				
+				// Convert a_s to mpf precision
+				mpf_ILLsvector_alloc(&mpf_a_s, p_mpq->lp->nrows);
+				mpf_ILLsvector_alloc(&mpf_spike, p_mpq->lp->nrows);
+				mpf_ILLsvector_alloc(&mpf_direction, p_mpq->lp->nrows);
+				
+				mpf_a_s.nzcnt = a_s.nzcnt;
+				memcpy(mpf_a_s.indx, a_s.indx, a_s.nzcnt * sizeof(int));
+				for (int j = 0; j < a_s.nzcnt; j++) {
+					mpf_set_q(mpf_a_s.coef[j], a_s.coef[j]);
+				}
+				
+				mpf_ILLfactor_ftran_update(mpf_cached_lu, &mpf_a_s, &mpf_spike, &mpf_direction);
+				
+				direction.nzcnt = mpf_direction.nzcnt;
+				memcpy(direction.indx, mpf_direction.indx, mpf_direction.nzcnt * sizeof(int));
+				for (int j = 0; j < mpf_direction.nzcnt; j++) {
+					mpq_set_f(direction.coef[j], mpf_direction.coef[j]);
+				}
+				
+				mpq_compute_spike(p_mpq->cached_lu, &a_s, &spike);
+				
+				// Clean up mpf precision structures
+				mpf_ILLsvector_free(&mpf_a_s);
+				mpf_ILLsvector_free(&mpf_spike);
+				mpf_ILLsvector_free(&mpf_direction);
+				mpf_ILLfactor_free_factor_work(mpf_cached_lu);
+				ILL_IFFREE(mpf_cached_lu);
+				
+				// Restore original precision
+				QSexact_set_precision(original_precision);
+
+				// Look through mismatches for direction vector entry != 0
+				int swap_pos = -1;
+				char* is_mismatch = calloc(p_mpq->lp->O->nrows, sizeof(char));
+				for (int j = 0; j < mismatch_count; ++j) {
+					int pos = mismatch_indices[j];
+					if (p_mpq->cached_baz[pos] != p_mpq->lp->baz[pos]) {
+						is_mismatch[pos] = 1;
+					}
+				}
+				
+				// Find the mismatch position with maximum absolute value in direction vector
+				double max_abs_val = 0.0;
+				for (int k = 0; k < direction.nzcnt; ++k) {
+					int pos = direction.indx[k];
+					if (is_mismatch[pos]) {
+						double abs_val = fabs(mpq_get_d(direction.coef[k]));
+						if (abs_val > max_abs_val) {
+							max_abs_val = abs_val;
+							swap_pos = pos;
+						}
+					}
+				}
+				// If we found a position with direction > 0 within cached basis, we need to update that position in the current basis
+				if (swap_pos != -1 && swap_pos != update_pos) {
+				
+					int temp_col = p_mpq->lp->baz[update_pos];
+					p_mpq->lp->baz[update_pos] = p_mpq->lp->baz[swap_pos];
+					p_mpq->lp->baz[swap_pos] = temp_col;
+					update_pos = swap_pos;
+				}
+				if (swap_pos == -1) {
+					QSlog("No swap found, increase copy precision");
+					refactor = 1;
+					break;
+				}
+
+				rval = mpq_ILLfactor_update(p_mpq->cached_lu, &spike, update_pos, &refactor);
+
+				if (refactor || rval) {
+					QSlog("LU update at position %d triggered refactorization (refactor=%d, rval=%d)\n", update_pos, refactor, rval);
+				refactor = 1; 
+				break; 
+				}
+				
+				// Update was successful, update the cached basis for this position
+				p_mpq->cached_baz[update_pos] = entering_col;
+
+				mpq_ILLsvector_free(&spike);
+				mpq_ILLsvector_free(&direction);
+				free(is_mismatch);
+				
+				// Remove the mismatch from the list
+				for (int idx = 0; idx < mismatch_count; ++idx) {
+					if (mismatch_indices[idx] == update_pos) {
+						/* swap current entry with the last one and shrink */
+						mismatch_indices[idx] = mismatch_indices[mismatch_count - 1];
+						mismatch_count--;
+						break;
+					}
+				}
+
+				// If no mismatches are left, we can stop looping
+				if (mismatch_count == 0) {
+					break;
+				}
+			}
+		}
+		if (refactor) {
+		    int singular;
+   			// Perform full refactorization
+    		EGcallD(mpq_ILLbasis_factor(p_mpq->lp, &singular));
+    		// Deep copy the new LU factorization into the cache
+    		rval = mpq_ILLfactor_deep_copy(p_mpq->cached_lu, p_mpq->lp->f);
+    		// Update cached_baz to match current baz
+    		for (int i = 0; i < p_mpq->lp->O->nrows; ++i) {
+        		p_mpq->cached_baz[i] = p_mpq->lp->baz[i];
+    		}
+
+		}
+		mpq_factor_work *temp_lu;
+		ILL_SAFE_MALLOC (temp_lu, 1, mpq_factor_work);	
+		mpq_EGlpNumInitVar (temp_lu->fzero_tol);
+		mpq_EGlpNumInitVar (temp_lu->szero_tol); 
+		mpq_EGlpNumInitVar (temp_lu->partial_tol);
+		mpq_EGlpNumInitVar (temp_lu->maxelem_orig);
+		mpq_EGlpNumInitVar (temp_lu->maxelem_factor);
+		mpq_EGlpNumInitVar (temp_lu->maxelem_cur);
+		mpq_EGlpNumInitVar (temp_lu->partial_cur);
+		rval = mpq_ILLfactor_deep_copy(temp_lu, p_mpq->cached_lu);
+		if (rval) {
+			printf("Failed to deep copy factor work after refactorization");
+			goto CLEANUP;
+		}
+		p_mpq->lp->f = temp_lu;
+		QSlog("Updated cached lu");
+		free(mismatch_indices);
+	}
 	memset (&(p_mpq->lp->basisstat), 0, sizeof (mpq_lp_status_info));
 	// feasibility check
 	mpq_ILLfct_compute_piz (p_mpq->lp);
@@ -1175,7 +1396,7 @@ int QSexact_basis_optimalstatus(
 
    mpq_ILLfct_set_variable_type (p_mpq->lp);
 
-   EGcallD(mpq_ILLbasis_load (p_mpq->lp, p_mpq->basis));
+   EGcallD(mpq_ILLbasis_load (p_mpq->lp, p_mpq->basis, p_mpq->cached_baz));
    EGcallD(mpq_ILLbasis_factor (p_mpq->lp, &singular));
 
    memset (&(p_mpq->lp->basisstat), 0, sizeof (mpq_lp_status_info));
@@ -1258,7 +1479,7 @@ int QSexact_basis_dualstatus(
 	mpq_init_internal_lpinfo (p_mpq->lp);
 	EGcallD(mpq_build_internal_lpinfo (p_mpq->lp));
 	mpq_ILLfct_set_variable_type (p_mpq->lp);
-	EGcallD(mpq_ILLbasis_load (p_mpq->lp, p_mpq->basis));
+	EGcallD(mpq_ILLbasis_load (p_mpq->lp, p_mpq->basis, p_mpq->cached_baz));
 	EGcallD(mpq_ILLbasis_factor (p_mpq->lp, &singular));
 
 	memset (&(p_mpq->lp->basisstat), 0, sizeof (mpq_lp_status_info));
@@ -1357,7 +1578,7 @@ int QSexact_verify (
          p_dbl = QScopy_prob_mpq_dbl(p_mpq, "dbl_problem");
    
          dbl_QSload_basis(p_dbl, basis);
-         rval = dbl_ILLeditor_solve(p_dbl, DUAL_SIMPLEX);
+		rval = dbl_ILLeditor_solve(p_dbl, DUAL_SIMPLEX);
          CHECKRVALG(rval, CLEANUP);
       
          rval = dbl_QSget_status(p_dbl, &status);
@@ -1915,4 +2136,525 @@ void QSexactClear(void)
 /* ========================================================================= */
 /** @} */
 /* end of exact.c */
+
+/* ========================================================================= */
+int mpq_factor_work_to_dbl_factor_work(dbl_factor_work *dest, const mpq_factor_work *src)
+{
+	int i;
+	int rval = 0;
+	int dsize;
+
+	// Initialize the destination structure with defaults
+	dbl_ILLfactor_init_factor_work(dest);
+
+	// Copy scalar fields from src to dest, converting mpq_t to double where necessary
+	dest->max_k = src->max_k;
+	dest->fzero_tol = mpq_get_d(src->fzero_tol);
+	dest->szero_tol = mpq_get_d(src->szero_tol);
+	dest->partial_tol = mpq_get_d(src->partial_tol);
+	dest->ur_space_mul = src->ur_space_mul;
+	dest->uc_space_mul = src->uc_space_mul;
+	dest->lc_space_mul = src->lc_space_mul;
+	dest->lr_space_mul = src->lr_space_mul;
+	dest->er_space_mul = src->er_space_mul;
+	dest->grow_mul = src->grow_mul;
+	dest->p = src->p;
+	dest->etamax = src->etamax;
+	dest->minmult = src->minmult;
+	dest->maxmult = src->maxmult;
+	dest->updmaxmult = src->updmaxmult;
+	dest->dense_fract = src->dense_fract;
+	dest->dense_min = src->dense_min;
+	dest->maxelem_orig = mpq_get_d(src->maxelem_orig);
+	dest->nzcnt_orig = src->nzcnt_orig;
+	dest->maxelem_factor = mpq_get_d(src->maxelem_factor);
+	dest->nzcnt_factor = src->nzcnt_factor;
+	dest->maxelem_cur = mpq_get_d(src->maxelem_cur);
+	dest->nzcnt_cur = src->nzcnt_cur;
+	dest->partial_cur = mpq_get_d(src->partial_cur);
+	dest->dim = src->dim;
+	dest->stage = src->stage;
+	dest->nstages = src->nstages;
+	dest->etacnt = src->etacnt;
+	dest->ur_space = src->ur_space;
+	dest->uc_space = src->uc_space;
+	dest->lc_space = src->lc_space;
+	dest->lr_space = src->lr_space;
+	dest->er_space = src->er_space;
+	dest->ur_freebeg = src->ur_freebeg;
+	dest->uc_freebeg = src->uc_freebeg;
+	dest->lc_freebeg = src->lc_freebeg;
+	dest->lr_freebeg = src->lr_freebeg;
+	dest->er_freebeg = src->er_freebeg;
+	dest->drows = src->drows;
+	dest->dcols = src->dcols;
+	dest->dense_base = src->dense_base;
+
+	// Shallow copy for these pointers (they point to shared data)
+	dest->p_nsing = src->p_nsing;
+	dest->p_singr = src->p_singr;
+	dest->p_singc = src->p_singc;
+
+	// Convert work arrays
+	if (src->work_coef) {
+		dest->work_coef = dbl_EGlpNumAllocArray(src->dim);
+		if (!dest->work_coef) { rval = 1; goto CLEANUP; }
+		for (i = 0; i < src->dim; i++) {
+			dest->work_coef[i] = mpq_get_d(src->work_coef[i]);
+		}
+	}
+
+	if (src->work_indx) {
+		ILL_SAFE_MALLOC(dest->work_indx, src->dim, int);
+		memcpy(dest->work_indx, src->work_indx, src->dim * sizeof(int));
+	}
+
+	// Convert info structs
+	if (src->uc_inf) {
+		ILL_SAFE_MALLOC(dest->uc_inf, src->dim + src->max_k + 1, dbl_uc_info);
+		for (i = 0; i < src->dim + src->max_k + 1; i++) {
+			dest->uc_inf[i].cbeg = src->uc_inf[i].cbeg;
+			dest->uc_inf[i].nzcnt = src->uc_inf[i].nzcnt;
+			dest->uc_inf[i].next = src->uc_inf[i].next;
+			dest->uc_inf[i].prev = src->uc_inf[i].prev;
+			dest->uc_inf[i].delay = src->uc_inf[i].delay;
+		}
+	}
+
+	if (src->ur_inf) {
+		ILL_SAFE_MALLOC(dest->ur_inf, src->dim + src->max_k + 1, dbl_ur_info);
+		for (i = 0; i < src->dim + src->max_k + 1; i++) {
+			dest->ur_inf[i].max = mpq_get_d(src->ur_inf[i].max);
+			dest->ur_inf[i].rbeg = src->ur_inf[i].rbeg;
+			dest->ur_inf[i].nzcnt = src->ur_inf[i].nzcnt;
+			dest->ur_inf[i].pivcnt = src->ur_inf[i].pivcnt;
+			dest->ur_inf[i].next = src->ur_inf[i].next;
+			dest->ur_inf[i].prev = src->ur_inf[i].prev;
+			dest->ur_inf[i].delay = src->ur_inf[i].delay;
+		}
+	}
+
+	if (src->lc_inf) {
+		ILL_SAFE_MALLOC(dest->lc_inf, src->dim, dbl_lc_info);
+		for (i = 0; i < src->dim; i++) {
+			dest->lc_inf[i].cbeg = src->lc_inf[i].cbeg;
+			dest->lc_inf[i].nzcnt = src->lc_inf[i].nzcnt;
+			dest->lc_inf[i].c = src->lc_inf[i].c;
+			dest->lc_inf[i].crank = src->lc_inf[i].crank;
+			dest->lc_inf[i].delay = src->lc_inf[i].delay;
+		}
+	}
+
+	if (src->lr_inf) {
+		ILL_SAFE_MALLOC(dest->lr_inf, src->dim, dbl_lr_info);
+		for (i = 0; i < src->dim; i++) {
+			dest->lr_inf[i].rbeg = src->lr_inf[i].rbeg;
+			dest->lr_inf[i].nzcnt = src->lr_inf[i].nzcnt;
+			dest->lr_inf[i].r = src->lr_inf[i].r;
+			dest->lr_inf[i].rrank = src->lr_inf[i].rrank;
+			dest->lr_inf[i].delay = src->lr_inf[i].delay;
+		}
+	}
+
+	if (src->er_inf) {
+		ILL_SAFE_MALLOC(dest->er_inf, src->etamax, dbl_er_info);
+		for (i = 0; i < src->etamax; i++) {
+			dest->er_inf[i].rbeg = src->er_inf[i].rbeg;
+			dest->er_inf[i].nzcnt = src->er_inf[i].nzcnt;
+			dest->er_inf[i].r = src->er_inf[i].r;
+		}
+	}
+
+	// Convert U matrix data
+	if (src->ucindx) {
+		ILL_SAFE_MALLOC(dest->ucindx, src->uc_space + 1, int);
+		memcpy(dest->ucindx, src->ucindx, (src->uc_space + 1) * sizeof(int));
+	}
+
+	if (src->ucrind) {
+		ILL_SAFE_MALLOC(dest->ucrind, src->uc_space, int);
+		memcpy(dest->ucrind, src->ucrind, src->uc_space * sizeof(int));
+	}
+
+	if (src->uccoef) {
+		dest->uccoef = dbl_EGlpNumAllocArray(src->uc_space);
+		if (!dest->uccoef) { rval = 1; goto CLEANUP; }
+		for (i = 0; i < src->uc_space; i++) {
+			dest->uccoef[i] = mpq_get_d(src->uccoef[i]);
+		}
+	}
+
+	if (src->urindx) {
+		ILL_SAFE_MALLOC(dest->urindx, src->ur_space + 1, int);
+		memcpy(dest->urindx, src->urindx, (src->ur_space + 1) * sizeof(int));
+	}
+
+	if (src->urcind) {
+		ILL_SAFE_MALLOC(dest->urcind, src->ur_space, int);
+		memcpy(dest->urcind, src->urcind, src->ur_space * sizeof(int));
+	}
+
+	if (src->urcoef) {
+		dest->urcoef = dbl_EGlpNumAllocArray(src->ur_space);
+		if (!dest->urcoef) { rval = 1; goto CLEANUP; }
+		for (i = 0; i < src->ur_space; i++) {
+			dest->urcoef[i] = mpq_get_d(src->urcoef[i]);
+		}
+	}
+
+	// Convert L matrix data
+	if (src->lcindx) {
+		ILL_SAFE_MALLOC(dest->lcindx, src->lc_space, int);
+		memcpy(dest->lcindx, src->lcindx, src->lc_space * sizeof(int));
+	}
+
+	if (src->lccoef) {
+		dest->lccoef = dbl_EGlpNumAllocArray(src->lc_space);
+		if (!dest->lccoef) { rval = 1; goto CLEANUP; }
+		for (i = 0; i < src->lc_space; i++) {
+			dest->lccoef[i] = mpq_get_d(src->lccoef[i]);
+		}
+	}
+
+	if (src->lrindx) {
+		int lr_nzcnt = 0;
+		for (i = 0; i < src->dim; i++) {
+			lr_nzcnt += src->lr_inf[i].nzcnt;
+		}
+		ILL_SAFE_MALLOC(dest->lrindx, lr_nzcnt + 1, int);
+		memcpy(dest->lrindx, src->lrindx, (lr_nzcnt + 1) * sizeof(int));
+	}
+
+	if (src->lrcoef) {
+		int lr_nzcnt = 0;
+		for (i = 0; i < src->dim; i++) {
+			lr_nzcnt += src->lr_inf[i].nzcnt;
+		}
+		dest->lrcoef = dbl_EGlpNumAllocArray(lr_nzcnt);
+		if (!dest->lrcoef) { rval = 1; goto CLEANUP; }
+		for (i = 0; i < lr_nzcnt; i++) {
+			dest->lrcoef[i] = mpq_get_d(src->lrcoef[i]);
+		}
+	}
+
+	// Convert Eta data
+	if (src->erindx) {
+		ILL_SAFE_MALLOC(dest->erindx, src->er_space, int);
+		memcpy(dest->erindx, src->erindx, src->er_space * sizeof(int));
+	}
+
+	if (src->ercoef) {
+		dest->ercoef = dbl_EGlpNumAllocArray(src->er_space);
+		if (!dest->ercoef) { rval = 1; goto CLEANUP; }
+		for (i = 0; i < src->er_space; i++) {
+			dest->ercoef[i] = mpq_get_d(src->ercoef[i]);
+		}
+	}
+
+	// Convert permutations
+	if (src->rperm) {
+		ILL_SAFE_MALLOC(dest->rperm, src->dim, int);
+		memcpy(dest->rperm, src->rperm, src->dim * sizeof(int));
+	}
+
+	if (src->rrank) {
+		ILL_SAFE_MALLOC(dest->rrank, src->dim, int);
+		memcpy(dest->rrank, src->rrank, src->dim * sizeof(int));
+	}
+
+	if (src->cperm) {
+		ILL_SAFE_MALLOC(dest->cperm, src->dim, int);
+		memcpy(dest->cperm, src->cperm, src->dim * sizeof(int));
+	}
+
+	if (src->crank) {
+		ILL_SAFE_MALLOC(dest->crank, src->dim, int);
+		memcpy(dest->crank, src->crank, src->dim * sizeof(int));
+	}
+
+	// Convert dense matrix
+	if (src->dmat) {
+		dsize = src->drows * src->dcols;
+		dest->dmat = dbl_EGlpNumAllocArray(dsize);
+		if (!dest->dmat) { rval = 1; goto CLEANUP; }
+		for (i = 0; i < dsize; i++) {
+			dest->dmat[i] = mpq_get_d(src->dmat[i]);
+		}
+	}
+
+	// Convert svector xtmp
+	rval = dbl_ILLsvector_alloc(&dest->xtmp, src->dim);
+	if (rval) goto CLEANUP;
+	dest->xtmp.nzcnt = src->xtmp.nzcnt;
+	if (src->xtmp.nzcnt > 0) {
+		memcpy(dest->xtmp.indx, src->xtmp.indx, src->xtmp.nzcnt * sizeof(int));
+		for (i = 0; i < src->xtmp.nzcnt; i++) {
+			dest->xtmp.coef[i] = mpq_get_d(src->xtmp.coef[i]);
+		}
+	}
+
+	goto FINAL;
+
+CLEANUP:
+	// If any allocation fails, clean up
+	printf("Error allocating memory for mpq_factor_work to dbl_factor_work conversion.\n");
+	dbl_ILLfactor_free_factor_work(dest);
+
+FINAL:
+	return rval;
+}
+
+/* ========================================================================= */
+int mpq_factor_work_to_mpf_factor_work(mpf_factor_work *dest, const mpq_factor_work *src)
+{
+	int i;
+	int rval = 0;
+	int dsize;
+	// Initialize all mpf_t variables in the structure before calling init_factor_work
+	mpf_EGlpNumInitVar(dest->fzero_tol);
+	mpf_EGlpNumInitVar(dest->szero_tol);
+	mpf_EGlpNumInitVar(dest->partial_tol);
+	mpf_EGlpNumInitVar(dest->maxelem_orig);
+	mpf_EGlpNumInitVar(dest->maxelem_factor);
+	mpf_EGlpNumInitVar(dest->maxelem_cur);
+	mpf_EGlpNumInitVar(dest->partial_cur);
+	
+	// Initialize the destination structure with defaults
+	mpf_ILLfactor_init_factor_work(dest);
+	// Copy scalar fields from src to dest, converting mpq_t to mpf_t where necessary
+	dest->max_k = src->max_k;
+	mpf_set_q(dest->fzero_tol, src->fzero_tol);
+	mpf_set_q(dest->szero_tol, src->szero_tol);
+	mpf_set_q(dest->partial_tol, src->partial_tol);
+	dest->ur_space_mul = src->ur_space_mul;
+	dest->uc_space_mul = src->uc_space_mul;
+	dest->lc_space_mul = src->lc_space_mul;
+	dest->lr_space_mul = src->lr_space_mul;
+	dest->er_space_mul = src->er_space_mul;
+	dest->grow_mul = src->grow_mul;
+	dest->p = src->p;
+	dest->etamax = src->etamax;
+	dest->minmult = src->minmult;
+	dest->maxmult = src->maxmult;
+	dest->updmaxmult = src->updmaxmult;
+	dest->dense_fract = src->dense_fract;
+	dest->dense_min = src->dense_min;
+	mpf_set_q(dest->maxelem_orig, src->maxelem_orig);
+	dest->nzcnt_orig = src->nzcnt_orig;
+	mpf_set_q(dest->maxelem_factor, src->maxelem_factor);
+	dest->nzcnt_factor = src->nzcnt_factor;
+	mpf_set_q(dest->maxelem_cur, src->maxelem_cur);
+	dest->nzcnt_cur = src->nzcnt_cur;
+	mpf_set_q(dest->partial_cur, src->partial_cur);
+	dest->dim = src->dim;
+	dest->stage = src->stage;
+	dest->nstages = src->nstages;
+	dest->etacnt = src->etacnt;
+	dest->ur_space = src->ur_space;
+	dest->uc_space = src->uc_space;
+	dest->lc_space = src->lc_space;
+	dest->lr_space = src->lr_space;
+	dest->er_space = src->er_space;
+	dest->ur_freebeg = src->ur_freebeg;
+	dest->uc_freebeg = src->uc_freebeg;
+	dest->lc_freebeg = src->lc_freebeg;
+	dest->lr_freebeg = src->lr_freebeg;
+	dest->er_freebeg = src->er_freebeg;
+	dest->drows = src->drows;
+	dest->dcols = src->dcols;
+	dest->dense_base = src->dense_base;
+
+	// Shallow copy for these pointers (they point to shared data)
+	dest->p_nsing = src->p_nsing;
+	dest->p_singr = src->p_singr;
+	dest->p_singc = src->p_singc;
+	// Convert work arrays
+	if (src->work_coef) {
+		dest->work_coef = mpf_EGlpNumAllocArray(src->dim);
+		if (!dest->work_coef) { rval = 1; goto CLEANUP; }
+		for (i = 0; i < src->dim; i++) {
+			mpf_set_q(dest->work_coef[i], src->work_coef[i]);
+		}
+	}
+	if (src->work_indx) {
+		ILL_SAFE_MALLOC(dest->work_indx, src->dim, int);
+		memcpy(dest->work_indx, src->work_indx, src->dim * sizeof(int));
+	}
+	// Convert info structs
+	if (src->uc_inf) {
+		ILL_SAFE_MALLOC(dest->uc_inf, src->dim + src->max_k + 1, mpf_uc_info);
+		for (i = 0; i < src->dim + src->max_k + 1; i++) {
+			dest->uc_inf[i].cbeg = src->uc_inf[i].cbeg;
+			dest->uc_inf[i].nzcnt = src->uc_inf[i].nzcnt;
+			dest->uc_inf[i].next = src->uc_inf[i].next;
+			dest->uc_inf[i].prev = src->uc_inf[i].prev;
+			dest->uc_inf[i].delay = src->uc_inf[i].delay;
+		}
+	}
+	if (src->ur_inf) {
+		ILL_SAFE_MALLOC(dest->ur_inf, src->dim + src->max_k + 1, mpf_ur_info);
+		for (i = 0; i < src->dim + src->max_k + 1; i++) {
+			mpf_EGlpNumInitVar(dest->ur_inf[i].max);  // Initialize before setting!
+			mpf_set_q(dest->ur_inf[i].max, src->ur_inf[i].max);
+			dest->ur_inf[i].rbeg = src->ur_inf[i].rbeg;
+			dest->ur_inf[i].nzcnt = src->ur_inf[i].nzcnt;
+			dest->ur_inf[i].pivcnt = src->ur_inf[i].pivcnt;
+			dest->ur_inf[i].next = src->ur_inf[i].next;
+			dest->ur_inf[i].prev = src->ur_inf[i].prev;
+			dest->ur_inf[i].delay = src->ur_inf[i].delay;
+		}
+	}
+	if (src->lc_inf) {
+		ILL_SAFE_MALLOC(dest->lc_inf, src->dim, mpf_lc_info);
+		for (i = 0; i < src->dim; i++) {
+			dest->lc_inf[i].cbeg = src->lc_inf[i].cbeg;
+			dest->lc_inf[i].nzcnt = src->lc_inf[i].nzcnt;
+			dest->lc_inf[i].c = src->lc_inf[i].c;
+			dest->lc_inf[i].crank = src->lc_inf[i].crank;
+			dest->lc_inf[i].delay = src->lc_inf[i].delay;
+		}
+	}	
+	if (src->lr_inf) {
+		ILL_SAFE_MALLOC(dest->lr_inf, src->dim, mpf_lr_info);
+		for (i = 0; i < src->dim; i++) {
+			dest->lr_inf[i].rbeg = src->lr_inf[i].rbeg;
+			dest->lr_inf[i].nzcnt = src->lr_inf[i].nzcnt;
+			dest->lr_inf[i].r = src->lr_inf[i].r;
+			dest->lr_inf[i].rrank = src->lr_inf[i].rrank;
+			dest->lr_inf[i].delay = src->lr_inf[i].delay;
+		}
+	}
+	if (src->er_inf) {
+		ILL_SAFE_MALLOC(dest->er_inf, src->etamax, mpf_er_info);
+		for (i = 0; i < src->etamax; i++) {
+			dest->er_inf[i].rbeg = src->er_inf[i].rbeg;
+			dest->er_inf[i].nzcnt = src->er_inf[i].nzcnt;
+			dest->er_inf[i].r = src->er_inf[i].r;
+		}
+	}
+	// Convert U matrix data
+	if (src->ucindx) {
+		ILL_SAFE_MALLOC(dest->ucindx, src->uc_space + 1, int);
+		memcpy(dest->ucindx, src->ucindx, (src->uc_space + 1) * sizeof(int));
+	}
+	if (src->ucrind) {
+		ILL_SAFE_MALLOC(dest->ucrind, src->uc_space, int);
+		memcpy(dest->ucrind, src->ucrind, src->uc_space * sizeof(int));
+	}
+	if (src->uccoef) {
+		dest->uccoef = mpf_EGlpNumAllocArray(src->uc_space);
+		if (!dest->uccoef) { rval = 1; goto CLEANUP; }
+		for (i = 0; i < src->uc_space; i++) {
+			mpf_set_q(dest->uccoef[i], src->uccoef[i]);
+		}
+	}
+	if (src->urindx) {
+		ILL_SAFE_MALLOC(dest->urindx, src->ur_space + 1, int);
+		memcpy(dest->urindx, src->urindx, (src->ur_space + 1) * sizeof(int));
+	}
+	if (src->urcind) {
+		ILL_SAFE_MALLOC(dest->urcind, src->ur_space, int);
+		memcpy(dest->urcind, src->urcind, src->ur_space * sizeof(int));
+	}
+	if (src->urcoef) {
+		dest->urcoef = mpf_EGlpNumAllocArray(src->ur_space);
+		if (!dest->urcoef) { rval = 1; goto CLEANUP; }
+		for (i = 0; i < src->ur_space; i++) {
+			mpf_set_q(dest->urcoef[i], src->urcoef[i]);
+		}
+	}
+	// Convert L matrix data
+	if (src->lcindx) {
+		ILL_SAFE_MALLOC(dest->lcindx, src->lc_space, int);
+		memcpy(dest->lcindx, src->lcindx, src->lc_space * sizeof(int));
+	}
+	if (src->lccoef) {
+		dest->lccoef = mpf_EGlpNumAllocArray(src->lc_space);
+		if (!dest->lccoef) { rval = 1; goto CLEANUP; }
+		for (i = 0; i < src->lc_space; i++) {
+			mpf_set_q(dest->lccoef[i], src->lccoef[i]);
+		}
+	}
+	if (src->lrindx) {
+		int lr_nzcnt = 0;
+		for (i = 0; i < src->dim; i++) {
+			lr_nzcnt += src->lr_inf[i].nzcnt;
+		}
+		ILL_SAFE_MALLOC(dest->lrindx, lr_nzcnt + 1, int);
+		memcpy(dest->lrindx, src->lrindx, (lr_nzcnt + 1) * sizeof(int));
+	}
+	if (src->lrcoef) {
+		int lr_nzcnt = 0;
+		for (i = 0; i < src->dim; i++) {
+			lr_nzcnt += src->lr_inf[i].nzcnt;
+		}
+		dest->lrcoef = mpf_EGlpNumAllocArray(lr_nzcnt);
+		if (!dest->lrcoef) { rval = 1; goto CLEANUP; }
+		for (i = 0; i < lr_nzcnt; i++) {
+			mpf_set_q(dest->lrcoef[i], src->lrcoef[i]);
+		}
+	}	
+	// Convert Eta data
+	if (src->erindx) {
+		ILL_SAFE_MALLOC(dest->erindx, src->er_space, int);
+		memcpy(dest->erindx, src->erindx, src->er_space * sizeof(int));
+	}
+	if (src->ercoef) {
+		dest->ercoef = mpf_EGlpNumAllocArray(src->er_space);
+		if (!dest->ercoef) { rval = 1; goto CLEANUP; }
+		for (i = 0; i < src->er_space; i++) {
+			mpf_set_q(dest->ercoef[i], src->ercoef[i]);
+		}
+	}
+	// Convert permutations
+	if (src->rperm) {
+		ILL_SAFE_MALLOC(dest->rperm, src->dim, int);
+		memcpy(dest->rperm, src->rperm, src->dim * sizeof(int));
+	}
+	if (src->rrank) {
+		ILL_SAFE_MALLOC(dest->rrank, src->dim, int);
+		memcpy(dest->rrank, src->rrank, src->dim * sizeof(int));
+	}
+	if (src->cperm) {
+		ILL_SAFE_MALLOC(dest->cperm, src->dim, int);
+		memcpy(dest->cperm, src->cperm, src->dim * sizeof(int));
+	}
+	if (src->crank) {
+		ILL_SAFE_MALLOC(dest->crank, src->dim, int);
+		memcpy(dest->crank, src->crank, src->dim * sizeof(int));
+	}
+
+	// Convert dense matrix
+	if (src->dmat) {
+		dsize = src->drows * src->dcols;
+		dest->dmat = mpf_EGlpNumAllocArray(dsize);
+		if (!dest->dmat) { rval = 1; goto CLEANUP; }
+		for (i = 0; i < dsize; i++) {
+			mpf_set_q(dest->dmat[i], src->dmat[i]);
+		}
+	}
+
+	// Convert svector xtmp
+	rval = mpf_ILLsvector_alloc(&dest->xtmp, src->dim);
+	if (rval) goto CLEANUP;
+	dest->xtmp.nzcnt = src->xtmp.nzcnt;
+	if (src->xtmp.nzcnt > 0) {
+		memcpy(dest->xtmp.indx, src->xtmp.indx, src->xtmp.nzcnt * sizeof(int));
+		for (i = 0; i < src->xtmp.nzcnt; i++) {
+			mpf_set_q(dest->xtmp.coef[i], src->xtmp.coef[i]);
+		}
+	}
+
+	goto FINAL;
+
+CLEANUP:
+	// If any allocation fails, clean up
+	printf("Error allocating memory for mpq_factor_work to mpf_factor_work conversion.\n");
+	mpf_ILLfactor_free_factor_work(dest);
+
+FINAL:
+	return rval;
+}
+
+/* ========================================================================= */
 

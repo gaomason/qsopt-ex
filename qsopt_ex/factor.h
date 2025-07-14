@@ -201,6 +201,13 @@ int EGLPNUM_TYPENAME_ILLfactor_create_factor_work (
 	EGLPNUM_TYPENAME_factor_work * f,
 	EGLPNUM_TYPENAME_svector * a,
 	int col,
-	int *p_refact);
+	int *p_refact),
+	EGLPNUM_TYPENAME_ILLfactor_deep_copy (
+		EGLPNUM_TYPENAME_factor_work * dest,
+		const EGLPNUM_TYPENAME_factor_work * src),
+	EGLPNUM_TYPENAME_compute_spike (
+		EGLPNUM_TYPENAME_factor_work * f,
+		EGLPNUM_TYPENAME_svector * a,
+		EGLPNUM_TYPENAME_svector * spike);
 
 #endif /* EGLPNUM_TYPENAME___QS_FACTOR_H_ */

@@ -1,0 +1,1493 @@
+/cygdrive/c/Users/mason/Downloads/nPolyBowl_8_7_8.mps
+64 scaled_lp 0.000: 0.000000, 1.000000, 0.000000, 0.000000
+scaled_lp 0.000: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.000: -nan, -nan, -nan, -nan
+128 mpf_problem 0.016: 0.000000, 0.000000, 0.347826, 0.652174
+mpf_problem 0.016: 0.000000, 0.000000, 0.347826, 0.652174
+/cygdrive/c/Users/mason/Downloads/nPolyBowl_128_7_32.mps
+64 scaled_lp 0.297: 0.000000, 1.000000, 0.000000, 0.000000
+scaled_lp 0.297: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.093: -nan, -nan, -nan, -nan
+128 mpf_problem 54.594: 0.000000, 0.000000, 0.211454, 0.788546
+mpf_problem 54.594: 0.000000, 0.000000, 0.211454, 0.788546
+/cygdrive/c/Users/mason/Downloads/nPolyBowl_256_7_8.mps
+64 scaled_lp 0.093: 0.000000, 1.000000, 0.000000, 0.000000
+scaled_lp 0.093: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.032: -nan, -nan, -nan, -nan
+128 mpf_problem 80.672: 0.000000, 0.000000, 0.297568, 0.702432
+mpf_problem 80.672: 0.000000, 0.000000, 0.297568, 0.702432
+/cygdrive/c/Users/mason/Downloads/nPolyBowl_128_7_32.mps
+64 scaled_lp 0.297: 0.000000, 1.000000, 0.000000, 0.000000
+scaled_lp 0.297: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.078: -nan, -nan, -nan, -nan
+64 mpf_problem 26.438: 0.000000, 0.000000, 0.211454, 0.788546
+mpf_problem 26.454: 0.000000, 0.000000, 0.211454, 0.788546
+/cygdrive/c/Users/mason/Downloads/nPolyBowl_256_7_8.mps
+64 scaled_lp 0.078: 0.000000, 1.000000, 0.000000, 0.000000
+scaled_lp 0.078: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.031: -nan, -nan, -nan, -nan
+64 mpf_problem 53.187: 0.000000, 0.000000, 0.297568, 0.702432
+mpf_problem 53.187: 0.000000, 0.000000, 0.297568, 0.702432
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_nesm.mps
+64 scaled_lp 0.094: 0.355428, 0.644572, 0.000000, 0.000000
+scaled_lp 0.094: 0.355428, 0.644572, 0.000000, 0.000000
+dbl_problem 0.000: -nan, -nan, -nan, -nan
+64 mpf_problem 0.031: 0.000000, 0.000000, 0.000000, 1.000000
+mpf_problem 0.031: 0.000000, 0.000000, 0.000000, 1.000000
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_d2q06c.mps
+64 scaled_lp 2.594: 0.175696, 0.824304, 0.000000, 0.000000
+scaled_lp 2.594: 0.175696, 0.824304, 0.000000, 0.000000
+dbl_problem 0.453: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.453: 0.000000, 1.000000, 0.000000, 0.000000
+64 mpf_problem 0.078: -nan, -nan, -nan, -nan
+76 scaled_lp 86.359: 0.171401, 0.828599, 0.000000, 0.000000
+scaled_lp 86.359: 0.171401, 0.828599, 0.000000, 0.000000
+mpf_problem 0.032: -nan, -nan, -nan, -nan
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_d2q06c.mps
+64 scaled_lp 2.578: 0.175696, 0.824304, 0.000000, 0.000000
+scaled_lp 2.578: 0.175696, 0.824304, 0.000000, 0.000000
+dbl_problem 0.438: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.438: 0.000000, 1.000000, 0.000000, 0.000000
+64 mpf_problem 0.047: -nan, -nan, -nan, -nan
+76 scaled_lp 83.657: 0.171401, 0.828599, 0.000000, 0.000000
+scaled_lp 83.657: 0.171401, 0.828599, 0.000000, 0.000000
+mpf_problem 0.047: -nan, -nan, -nan, -nan
+88 mpf_problem 0.047: -nan, -nan, -nan, -nan
+100 scaled_lp 80.032: 0.171401, 0.828599, 0.000000, 0.000000
+scaled_lp 80.032: 0.171401, 0.828599, 0.000000, 0.000000
+mpf_problem 0.094: -nan, -nan, -nan, -nan
+112 mpf_problem 0.031: -nan, -nan, -nan, -nan
+124 scaled_lp 61.157: 0.195082, 0.804918, 0.000000, 0.000000
+scaled_lp 61.157: 0.195082, 0.804918, 0.000000, 0.000000
+mpf_problem 0.078: -nan, -nan, -nan, -nan
+136 mpf_problem 0.047: -nan, -nan, -nan, -nan
+148 scaled_lp 77.984: 0.190578, 0.809422, 0.000000, 0.000000
+scaled_lp 77.984: 0.190578, 0.809422, 0.000000, 0.000000
+mpf_problem 0.094: -nan, -nan, -nan, -nan
+/cygdrive/c/Users/mason/Downloads/nPolyBowl_8_7_8.mps
+64 scaled_lp 0.000: 0.000000, 1.000000, 0.000000, 0.000000
+scaled_lp 0.000: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.000: -nan, -nan, -nan, -nan
+64 mpf_problem 0.000: 0.000000, 0.000000, 0.347826, 0.652174
+mpf_problem 0.000: 0.000000, 0.000000, 0.347826, 0.652174
+/cygdrive/c/Users/mason/Downloads/nPolyBowl_128_7_32.mps
+64 scaled_lp 0.265: 0.000000, 1.000000, 0.000000, 0.000000
+scaled_lp 0.265: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.094: -nan, -nan, -nan, -nan
+64 mpf_problem 30.062: 0.000000, 0.000000, 0.211454, 0.788546
+mpf_problem 30.062: 0.000000, 0.000000, 0.211454, 0.788546
+76 /cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_d2q06c.mps
+64 scaled_lp 2.328: 0.175696, 0.824304, 0.000000, 0.000000
+scaled_lp 2.328: 0.175696, 0.824304, 0.000000, 0.000000
+dbl_problem 0.406: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.406: 0.000000, 1.000000, 0.000000, 0.000000
+64 mpf_problem 0.031: -nan, -nan, -nan, -nan
+76 /cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_d2q06c.mps
+64 scaled_lp 2.328: 0.175696, 0.824304, 0.000000, 0.000000
+scaled_lp 2.328: 0.175696, 0.824304, 0.000000, 0.000000
+dbl_problem 0.406: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.406: 0.000000, 1.000000, 0.000000, 0.000000
+64 mpf_problem 0.031: -nan, -nan, -nan, -nan
+76 /cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_d2q06c.mps
+64 scaled_lp 2.266: 0.175696, 0.824304, 0.000000, 0.000000
+scaled_lp 2.266: 0.175696, 0.824304, 0.000000, 0.000000
+dbl_problem 0.406: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.406: 0.000000, 1.000000, 0.000000, 0.000000
+64 mpf_problem 0.047: -nan, -nan, -nan, -nan
+76 scaled_lp 49.719: 0.171401, 0.828599, 0.000000, 0.000000
+scaled_lp 49.719: 0.171401, 0.828599, 0.000000, 0.000000
+mpf_problem 0.031: -nan, -nan, -nan, -nan
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_d2q06c.mps
+64 scaled_lp 1.719: 0.175696, 0.824304, 0.000000, 0.000000
+scaled_lp 1.719: 0.175696, 0.824304, 0.000000, 0.000000
+dbl_problem 0.265: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.265: 0.000000, 1.000000, 0.000000, 0.000000
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_d2q06c.mps
+64 scaled_lp 2.969: 0.375752, 0.608684, 0.015564, 0.000000
+scaled_lp 2.969: 0.375752, 0.608684, 0.015564, 0.000000
+dbl_problem 6.891: 0.636926, 0.362141, 0.000933, 0.000000
+dbl_problem 6.891: 0.636926, 0.362141, 0.000933, 0.000000
+64 /cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_d2q06c.mps
+64 scaled_lp 1.500: 0.175696, 0.824304, 0.000000, 0.000000
+scaled_lp 1.500: 0.175696, 0.824304, 0.000000, 0.000000
+dbl_problem 0.250: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.250: 0.000000, 1.000000, 0.000000, 0.000000
+64 mpf_problem 0.031: -nan, -nan, -nan, -nan
+76 scaled_lp 40.984: 0.171401, 0.828599, 0.000000, 0.000000
+scaled_lp 40.984: 0.171401, 0.828599, 0.000000, 0.000000
+mpf_problem 0.031: -nan, -nan, -nan, -nan
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_d2q06c.mps
+64 scaled_lp 1.547: 0.175696, 0.824304, 0.000000, 0.000000
+scaled_lp 1.563: 0.175696, 0.824304, 0.000000, 0.000000
+dbl_problem 0.234: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.234: 0.000000, 1.000000, 0.000000, 0.000000
+64 mpf_problem 0.031: -nan, -nan, -nan, -nan
+76 scaled_lp 39.859: 0.171401, 0.828599, 0.000000, 0.000000
+scaled_lp 39.859: 0.171401, 0.828599, 0.000000, 0.000000
+mpf_problem 0.031: -nan, -nan, -nan, -nan
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_d2q06c.mps
+64 scaled_lp 1.594: 0.175696, 0.824304, 0.000000, 0.000000
+scaled_lp 1.594: 0.175696, 0.824304, 0.000000, 0.000000
+dbl_problem 0.250: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.250: 0.000000, 1.000000, 0.000000, 0.000000
+64 mpf_problem 0.031: -nan, -nan, -nan, -nan
+76 scaled_lp 33.703: 0.171401, 0.828599, 0.000000, 0.000000
+scaled_lp 33.703: 0.171401, 0.828599, 0.000000, 0.000000
+mpf_problem 0.031: -nan, -nan, -nan, -nan
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_dfl001.mps
+64 scaled_lp 26.844: 0.294014, 0.705986, 0.000000, 0.000000
+scaled_lp 26.844: 0.294014, 0.705986, 0.000000, 0.000000
+dbl_problem 0.016: -nan, -nan, -nan, -nan
+64 mpf_problem 0.109: -nan, -nan, -nan, -nan
+76 /cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_scsd6.mps
+64 scaled_lp 0.000: 0.417391, 0.582609, 0.000000, 0.000000
+scaled_lp 0.000: 0.417391, 0.582609, 0.000000, 0.000000
+dbl_problem 0.000: -nan, -nan, -nan, -nan
+64 mpf_problem 0.484: 0.000000, 0.000000, 0.822718, 0.177282
+mpf_problem 0.484: 0.000000, 0.000000, 0.822718, 0.177282
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_etamacro.mps
+64 scaled_lp 0.000: 0.673469, 0.326531, 0.000000, 0.000000
+scaled_lp 0.000: 0.673469, 0.326531, 0.000000, 0.000000
+dbl_problem 0.000: -nan, -nan, -nan, -nan
+64 mpf_problem 0.078: 0.612179, 0.370192, 0.017628, 0.000000
+mpf_problem 0.078: 0.612179, 0.370192, 0.017628, 0.000000
+76 mpf_problem 0.015: 0.000000, 0.000000, 0.750000, 0.250000
+mpf_problem 0.015: 0.000000, 0.000000, 0.750000, 0.250000
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_pilot4.mps
+64 scaled_lp 0.046: 0.437059, 0.562941, 0.000000, 0.000000
+scaled_lp 0.046: 0.437059, 0.562941, 0.000000, 0.000000
+dbl_problem 0.000: -nan, -nan, -nan, -nan
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_nesm.mps
+64 scaled_lp 0.031: 0.355428, 0.644572, 0.000000, 0.000000
+scaled_lp 0.031: 0.355428, 0.644572, 0.000000, 0.000000
+dbl_problem 0.000: -nan, -nan, -nan, -nan
+64 mpf_problem 0.000: 0.000000, 0.000000, 0.000000, 1.000000
+mpf_problem 0.000: 0.000000, 0.000000, 0.000000, 1.000000
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_d2q06c.mps
+64 scaled_lp 1.641: 0.175696, 0.824304, 0.000000, 0.000000
+scaled_lp 1.641: 0.175696, 0.824304, 0.000000, 0.000000
+dbl_problem 0.250: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.250: 0.000000, 1.000000, 0.000000, 0.000000
+64 mpf_problem 0.032: -nan, -nan, -nan, -nan
+76 scaled_lp 36.640: 0.171401, 0.828599, 0.000000, 0.000000
+scaled_lp 36.640: 0.171401, 0.828599, 0.000000, 0.000000
+mpf_problem 0.047: -nan, -nan, -nan, -nan
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_d2q06c.mps
+64 scaled_lp 1.547: 0.175696, 0.824304, 0.000000, 0.000000
+scaled_lp 1.547: 0.175696, 0.824304, 0.000000, 0.000000
+dbl_problem 0.250: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.250: 0.000000, 1.000000, 0.000000, 0.000000
+64 mpf_problem 0.031: -nan, -nan, -nan, -nan
+76 scaled_lp 40.047: 0.171401, 0.828599, 0.000000, 0.000000
+scaled_lp 40.047: 0.171401, 0.828599, 0.000000, 0.000000
+mpf_problem 0.032: -nan, -nan, -nan, -nan
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/30n20b8.mps
+64 scaled_lp 0.016: 0.271523, 0.728477, 0.000000, 0.000000
+scaled_lp 0.016: 0.271523, 0.728477, 0.000000, 0.000000
+dbl_problem 0.000: -nan, -nan, -nan, -nan
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/bg512142.mps
+64 scaled_lp 0.047: 0.433677, 0.566323, 0.000000, 0.000000
+scaled_lp 0.047: 0.433677, 0.566323, 0.000000, 0.000000
+dbl_problem 0.000: -nan, -nan, -nan, -nan
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/academictimetablebig.mps
+64 /cygdrive/c/Users/mason/Downloads/nPolyBowl_256_7_8.mps
+64 scaled_lp 0.063: 0.000000, 1.000000, 0.000000, 0.000000
+scaled_lp 0.063: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.016: -nan, -nan, -nan, -nan
+64 mpf_problem 28.953: 0.000000, 0.000000, 0.297568, 0.702432
+mpf_problem 28.953: 0.000000, 0.000000, 0.297568, 0.702432
+76 mpf_problem 0.579: -nan, -nan, -nan, -nan
+88 /cygdrive/c/Users/mason/Downloads/nPolyBowl_256_7_8.mps
+64 scaled_lp 0.062: 0.000000, 1.000000, 0.000000, 0.000000
+scaled_lp 0.062: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.016: -nan, -nan, -nan, -nan
+64 mpf_problem 30.282: 0.000000, 0.000000, 0.297568, 0.702432
+mpf_problem 30.282: 0.000000, 0.000000, 0.297568, 0.702432
+76 /cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_d2q06c.mps
+64 scaled_lp 2.437: 0.175696, 0.824304, 0.000000, 0.000000
+scaled_lp 2.437: 0.175696, 0.824304, 0.000000, 0.000000
+dbl_problem 0.344: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.360: 0.000000, 1.000000, 0.000000, 0.000000
+64 mpf_problem 0.078: -nan, -nan, -nan, -nan
+76 scaled_lp 76.344: 0.171401, 0.828599, 0.000000, 0.000000
+scaled_lp 76.344: 0.171401, 0.828599, 0.000000, 0.000000
+mpf_problem 0.047: -nan, -nan, -nan, -nan
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_d2q06c.mps
+64 scaled_lp 1.546: 0.175696, 0.824304, 0.000000, 0.000000
+scaled_lp 1.546: 0.175696, 0.824304, 0.000000, 0.000000
+dbl_problem 0.297: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.297: 0.000000, 1.000000, 0.000000, 0.000000
+64 mpf_problem 0.032: -nan, -nan, -nan, -nan
+76 scaled_lp 37.875: 0.171401, 0.828599, 0.000000, 0.000000
+scaled_lp 37.875: 0.171401, 0.828599, 0.000000, 0.000000
+mpf_problem 0.031: -nan, -nan, -nan, -nan
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_d2q06c.mps
+64 scaled_lp 1.547: 0.175696, 0.824304, 0.000000, 0.000000
+scaled_lp 1.547: 0.175696, 0.824304, 0.000000, 0.000000
+dbl_problem 0.250: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.250: 0.000000, 1.000000, 0.000000, 0.000000
+64 mpf_problem 0.015: -nan, -nan, -nan, -nan
+76 scaled_lp 49.297: 0.171401, 0.828599, 0.000000, 0.000000
+scaled_lp 49.313: 0.171401, 0.828599, 0.000000, 0.000000
+mpf_problem 0.031: -nan, -nan, -nan, -nan
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_d2q06c.mps
+64 scaled_lp 2.265: 0.175696, 0.824304, 0.000000, 0.000000
+scaled_lp 2.281: 0.175696, 0.824304, 0.000000, 0.000000
+dbl_problem 0.641: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.641: 0.000000, 1.000000, 0.000000, 0.000000
+64 mpf_problem 0.047: -nan, -nan, -nan, -nan
+76 scaled_lp 43.125: 0.171401, 0.828599, 0.000000, 0.000000
+scaled_lp 43.141: 0.171401, 0.828599, 0.000000, 0.000000
+mpf_problem 0.031: -nan, -nan, -nan, -nan
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_d2q06c.mps
+64 scaled_lp 2.484: 0.175696, 0.824304, 0.000000, 0.000000
+scaled_lp 2.484: 0.175696, 0.824304, 0.000000, 0.000000
+dbl_problem 0.531: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.531: 0.000000, 1.000000, 0.000000, 0.000000
+64 mpf_problem 0.047: -nan, -nan, -nan, -nan
+76 scaled_lp 49.875: 0.171401, 0.828599, 0.000000, 0.000000
+scaled_lp 49.875: 0.171401, 0.828599, 0.000000, 0.000000
+mpf_problem 0.063: -nan, -nan, -nan, -nan
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_d2q06c.mps
+64 scaled_lp 1.687: 0.175696, 0.824304, 0.000000, 0.000000
+scaled_lp 1.687: 0.175696, 0.824304, 0.000000, 0.000000
+dbl_problem 0.250: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.250: 0.000000, 1.000000, 0.000000, 0.000000
+64 mpf_problem 0.031: -nan, -nan, -nan, -nan
+76 scaled_lp 40.891: 0.171401, 0.828599, 0.000000, 0.000000
+scaled_lp 40.891: 0.171401, 0.828599, 0.000000, 0.000000
+mpf_problem 0.031: -nan, -nan, -nan, -nan
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/decom_pilot
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/decom_pilot.mps
+64 scaled_lp 1.562: 0.669604, 0.330396, 0.000000, 0.000000
+scaled_lp 1.562: 0.669604, 0.330396, 0.000000, 0.000000
+dbl_problem 0.125: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.125: 0.000000, 1.000000, 0.000000, 0.000000
+64 mpf_problem 2.484: 0.000000, 0.000000, 0.166667, 0.833333
+mpf_problem 2.484: 0.000000, 0.000000, 0.166667, 0.833333
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/decom_pilot.mps
+64 scaled_lp 1.640: 0.669604, 0.330396, 0.000000, 0.000000
+scaled_lp 1.656: 0.669604, 0.330396, 0.000000, 0.000000
+dbl_problem 0.094: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.094: 0.000000, 1.000000, 0.000000, 0.000000
+64 mpf_problem 2.593: 0.000000, 0.000000, 0.166667, 0.833333
+mpf_problem 2.593: 0.000000, 0.000000, 0.166667, 0.833333
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/decom_fit1d.mps
+64 scaled_lp 0.000: 0.000000, 1.000000, 0.000000, 0.000000
+scaled_lp 0.015: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.000: -nan, -nan, -nan, -nan
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/decom_pilotnov.mps
+64 scaled_lp 0.141: 0.751862, 0.248138, 0.000000, 0.000000
+scaled_lp 0.141: 0.751862, 0.248138, 0.000000, 0.000000
+dbl_problem 0.000: -nan, -nan, -nan, -nan
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/decom_maros-r7.mps
+64 scaled_lp 0.985: 0.961538, 0.038462, 0.000000, 0.000000
+scaled_lp 0.985: 0.961538, 0.038462, 0.000000, 0.000000
+dbl_problem 2.719: 0.700253, 0.000000, 0.000000, 0.299747
+128 /cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/decom_pilot87.mps
+64 scaled_lp 3.890: 0.541962, 0.458038, 0.000000, 0.000000
+scaled_lp 3.890: 0.541962, 0.458038, 0.000000, 0.000000
+dbl_problem 0.375: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.375: 0.000000, 1.000000, 0.000000, 0.000000
+/cygdrive/c/Users/mason/Downloads/nPolyBowl_8_7_8.mps
+64 scaled_lp 0.000: 0.000000, 1.000000, 0.000000, 0.000000
+scaled_lp 0.000: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.000: -nan, -nan, -nan, -nan
+64 mpf_problem 0.016: 0.000000, 0.000000, 0.347826, 0.652174
+mpf_problem 0.016: 0.000000, 0.000000, 0.347826, 0.652174
+/cygdrive/c/Users/mason/Downloads/nPolyBowl_8_7_8.mps
+64 scaled_lp 0.000: 0.000000, 1.000000, 0.000000, 0.000000
+scaled_lp 0.000: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.000: -nan, -nan, -nan, -nan
+64 mpf_problem 0.000: 0.000000, 0.000000, 0.347826, 0.652174
+mpf_problem 0.000: 0.000000, 0.000000, 0.347826, 0.652174
+/cygdrive/c/Users/mason/Downloads/nPolyBowl_8_7_8.mps
+64 scaled_lp 0.000: 0.000000, 1.000000, 0.000000, 0.000000
+scaled_lp 0.000: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.000: -nan, -nan, -nan, -nan
+64 mpf_problem 0.000: 0.000000, 0.000000, 0.347826, 0.652174
+mpf_problem 0.000: 0.000000, 0.000000, 0.347826, 0.652174
+/cygdrive/c/Users/mason/Downloads/nPolyBowl_8_7_8.mps
+64 scaled_lp 0.000: 0.000000, 1.000000, 0.000000, 0.000000
+scaled_lp 0.000: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.000: -nan, -nan, -nan, -nan
+64 mpf_problem 0.000: 0.000000, 0.000000, 0.347826, 0.652174
+mpf_problem 0.000: 0.000000, 0.000000, 0.347826, 0.652174
+/cygdrive/c/Users/mason/Downloads/nPolyBowl_8_7_8.mps
+64 scaled_lp 0.000: 0.000000, 1.000000, 0.000000, 0.000000
+scaled_lp 0.000: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.000: -nan, -nan, -nan, -nan
+64 mpf_problem 0.000: 0.000000, 0.000000, 0.347826, 0.652174
+mpf_problem 0.000: 0.000000, 0.000000, 0.347826, 0.652174
+/cygdrive/c/Users/mason/Downloads/nPolyBowl_8_7_8.mps
+64 scaled_lp 0.000: 0.000000, 1.000000, 0.000000, 0.000000
+scaled_lp 0.000: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.000: -nan, -nan, -nan, -nan
+64 mpf_problem 0.000: 0.000000, 0.000000, 0.347826, 0.652174
+mpf_problem 0.000: 0.000000, 0.000000, 0.347826, 0.652174
+/cygdrive/c/Users/mason/Downloads/nPolyBowl_8_7_8.mps
+64 scaled_lp 0.000: 0.000000, 1.000000, 0.000000, 0.000000
+scaled_lp 0.000: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.000: -nan, -nan, -nan, -nan
+64 mpf_problem 0.000: 0.000000, 0.000000, 0.347826, 0.652174
+mpf_problem 0.000: 0.000000, 0.000000, 0.347826, 0.652174
+/cygdrive/c/Users/mason/Downloads/nPolyBowl_8_7_8.mps
+64 scaled_lp 0.000: 0.000000, 1.000000, 0.000000, 0.000000
+scaled_lp 0.000: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.000: -nan, -nan, -nan, -nan
+64 mpf_problem 0.000: 0.000000, 0.000000, 0.347826, 0.652174
+mpf_problem 0.000: 0.000000, 0.000000, 0.347826, 0.652174
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/decom_pilot.mps
+64 scaled_lp 1.672: 0.669604, 0.330396, 0.000000, 0.000000
+scaled_lp 1.688: 0.669604, 0.330396, 0.000000, 0.000000
+dbl_problem 0.140: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.140: 0.000000, 1.000000, 0.000000, 0.000000
+64 mpf_problem 2.468: 0.000000, 0.000000, 0.166667, 0.833333
+mpf_problem 2.468: 0.000000, 0.000000, 0.166667, 0.833333
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/decom_pilot.mps
+64 scaled_lp 2.641: 0.669604, 0.330396, 0.000000, 0.000000
+scaled_lp 2.641: 0.669604, 0.330396, 0.000000, 0.000000
+dbl_problem 0.234: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.234: 0.000000, 1.000000, 0.000000, 0.000000
+64 mpf_problem 3.187: 0.000000, 0.000000, 0.166667, 0.833333
+mpf_problem 3.187: 0.000000, 0.000000, 0.166667, 0.833333
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/decom_pilot.mps
+64 scaled_lp 2.594: 0.669604, 0.330396, 0.000000, 0.000000
+scaled_lp 2.594: 0.669604, 0.330396, 0.000000, 0.000000
+dbl_problem 0.219: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.219: 0.000000, 1.000000, 0.000000, 0.000000
+64 mpf_problem 3.234: 0.000000, 0.000000, 0.166667, 0.833333
+mpf_problem 3.234: 0.000000, 0.000000, 0.166667, 0.833333
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_d2q06c.mps
+64 scaled_lp 2.625: 0.175696, 0.824304, 0.000000, 0.000000
+scaled_lp 2.625: 0.175696, 0.824304, 0.000000, 0.000000
+dbl_problem 0.422: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.422: 0.000000, 1.000000, 0.000000, 0.000000
+64 mpf_problem 0.032: -nan, -nan, -nan, -nan
+76 scaled_lp 51.204: 0.171401, 0.828599, 0.000000, 0.000000
+scaled_lp 51.204: 0.171401, 0.828599, 0.000000, 0.000000
+mpf_problem 0.047: -nan, -nan, -nan, -nan
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_d2q06c.mps
+64 scaled_lp 1.579: 0.175696, 0.824304, 0.000000, 0.000000
+scaled_lp 1.579: 0.175696, 0.824304, 0.000000, 0.000000
+dbl_problem 0.296: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.296: 0.000000, 1.000000, 0.000000, 0.000000
+64 mpf_problem 0.031: -nan, -nan, -nan, -nan
+76 scaled_lp 33.891: 0.171401, 0.828599, 0.000000, 0.000000
+scaled_lp 33.891: 0.171401, 0.828599, 0.000000, 0.000000
+mpf_problem 0.031: -nan, -nan, -nan, -nan
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_d2q06c.mps
+64 scaled_lp 1.437: 0.175696, 0.824304, 0.000000, 0.000000
+scaled_lp 1.437: 0.175696, 0.824304, 0.000000, 0.000000
+dbl_problem 0.250: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.250: 0.000000, 1.000000, 0.000000, 0.000000
+64 mpf_problem 0.000: -nan, -nan, -nan, -nan
+76 scaled_lp 36.031: 0.171401, 0.828599, 0.000000, 0.000000
+scaled_lp 36.031: 0.171401, 0.828599, 0.000000, 0.000000
+mpf_problem 0.032: -nan, -nan, -nan, -nan
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_d2q06c.mps
+64 scaled_lp 1.610: 0.175696, 0.824304, 0.000000, 0.000000
+scaled_lp 1.610: 0.175696, 0.824304, 0.000000, 0.000000
+dbl_problem 0.234: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.234: 0.000000, 1.000000, 0.000000, 0.000000
+64 mpf_problem 0.016: -nan, -nan, -nan, -nan
+76 scaled_lp 34.922: 0.171401, 0.828599, 0.000000, 0.000000
+scaled_lp 34.922: 0.171401, 0.828599, 0.000000, 0.000000
+mpf_problem 0.016: -nan, -nan, -nan, -nan
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_d2q06c.mps
+64 scaled_lp 1.515: 0.175696, 0.824304, 0.000000, 0.000000
+scaled_lp 1.515: 0.175696, 0.824304, 0.000000, 0.000000
+dbl_problem 0.250: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.250: 0.000000, 1.000000, 0.000000, 0.000000
+64 mpf_problem 0.031: -nan, -nan, -nan, -nan
+76 /cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_d2q06c.mps
+64 scaled_lp 1.469: 0.175696, 0.824304, 0.000000, 0.000000
+scaled_lp 1.469: 0.175696, 0.824304, 0.000000, 0.000000
+dbl_problem 0.235: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.235: 0.000000, 1.000000, 0.000000, 0.000000
+64 mpf_problem 0.015: -nan, -nan, -nan, -nan
+76 scaled_lp 39.531: 0.171401, 0.828599, 0.000000, 0.000000
+scaled_lp 39.531: 0.171401, 0.828599, 0.000000, 0.000000
+mpf_problem 0.031: -nan, -nan, -nan, -nan
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_d2q06c.mps
+64 scaled_lp 1.547: 0.175696, 0.824304, 0.000000, 0.000000
+scaled_lp 1.547: 0.175696, 0.824304, 0.000000, 0.000000
+dbl_problem 0.234: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.234: 0.000000, 1.000000, 0.000000, 0.000000
+64 mpf_problem 0.047: -nan, -nan, -nan, -nan
+76 /cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_d2q06c.mps
+64 scaled_lp 1.562: 0.175696, 0.824304, 0.000000, 0.000000
+scaled_lp 1.578: 0.175696, 0.824304, 0.000000, 0.000000
+dbl_problem 0.250: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.266: 0.000000, 1.000000, 0.000000, 0.000000
+64 mpf_problem 0.031: -nan, -nan, -nan, -nan
+76 scaled_lp 35.281: 0.171401, 0.828599, 0.000000, 0.000000
+scaled_lp 35.297: 0.171401, 0.828599, 0.000000, 0.000000
+mpf_problem 0.031: -nan, -nan, -nan, -nan
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_d2q06c.mps
+64 scaled_lp 1.594: 0.175696, 0.824304, 0.000000, 0.000000
+scaled_lp 1.594: 0.175696, 0.824304, 0.000000, 0.000000
+dbl_problem 0.265: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.265: 0.000000, 1.000000, 0.000000, 0.000000
+64 mpf_problem 0.031: -nan, -nan, -nan, -nan
+76 scaled_lp 34.703: 0.171401, 0.828599, 0.000000, 0.000000
+scaled_lp 34.703: 0.171401, 0.828599, 0.000000, 0.000000
+mpf_problem 0.031: -nan, -nan, -nan, -nan
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_d2q06c.mps
+64 scaled_lp 1.547: 0.175696, 0.824304, 0.000000, 0.000000
+scaled_lp 1.547: 0.175696, 0.824304, 0.000000, 0.000000
+dbl_problem 0.266: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.266: 0.000000, 1.000000, 0.000000, 0.000000
+64 mpf_problem 0.032: -nan, -nan, -nan, -nan
+76 scaled_lp 34.719: 0.171401, 0.828599, 0.000000, 0.000000
+scaled_lp 34.719: 0.171401, 0.828599, 0.000000, 0.000000
+mpf_problem 0.000: -nan, -nan, -nan, -nan
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_d2q06c.mps
+64 scaled_lp 1.625: 0.175696, 0.824304, 0.000000, 0.000000
+scaled_lp 1.625: 0.175696, 0.824304, 0.000000, 0.000000
+dbl_problem 0.266: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.266: 0.000000, 1.000000, 0.000000, 0.000000
+64 mpf_problem 0.031: -nan, -nan, -nan, -nan
+76 scaled_lp 35.515: 0.171401, 0.828599, 0.000000, 0.000000
+scaled_lp 35.515: 0.171401, 0.828599, 0.000000, 0.000000
+mpf_problem 0.016: -nan, -nan, -nan, -nan
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_d2q06c.mps
+64 scaled_lp 1.625: 0.175696, 0.824304, 0.000000, 0.000000
+scaled_lp 1.641: 0.175696, 0.824304, 0.000000, 0.000000
+dbl_problem 0.265: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.265: 0.000000, 1.000000, 0.000000, 0.000000
+64 mpf_problem 0.032: -nan, -nan, -nan, -nan
+67 scaled_lp 38.938: 0.171429, 0.828571, 0.000000, 0.000000
+scaled_lp 38.938: 0.171429, 0.828571, 0.000000, 0.000000
+mpf_problem 0.031: -nan, -nan, -nan, -nan
+70 mpf_problem 1.140: 0.000000, 0.000000, 0.666667, 0.333333
+mpf_problem 1.140: 0.000000, 0.000000, 0.666667, 0.333333
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/decom_pilot.mps
+64 scaled_lp 1.765: 0.669604, 0.330396, 0.000000, 0.000000
+scaled_lp 1.765: 0.669604, 0.330396, 0.000000, 0.000000
+dbl_problem 0.110: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.110: 0.000000, 1.000000, 0.000000, 0.000000
+64 mpf_problem 2.172: 0.000000, 0.000000, 0.166667, 0.833333
+mpf_problem 2.172: 0.000000, 0.000000, 0.166667, 0.833333
+/cygdrive/c/Users/mason/Downloads/nPolyBowl_8_7_8.mps
+64 scaled_lp 0.000: 0.000000, 1.000000, 0.000000, 0.000000
+scaled_lp 0.000: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.000: -nan, -nan, -nan, -nan
+64 mpf_problem 0.000: 0.000000, 0.000000, 0.347826, 0.652174
+mpf_problem 0.000: 0.000000, 0.000000, 0.347826, 0.652174
+/cygdrive/c/Users/mason/Downloads/nPolyBowl_8_7_8.mps
+64 scaled_lp 0.000: 0.000000, 1.000000, 0.000000, 0.000000
+scaled_lp 0.000: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.000: -nan, -nan, -nan, -nan
+64 mpf_problem 0.000: 0.000000, 0.000000, 0.347826, 0.652174
+mpf_problem 0.000: 0.000000, 0.000000, 0.347826, 0.652174
+/cygdrive/c/Users/mason/Downloads/nPolyBowl_8_7_8.mps
+64 scaled_lp 0.000: 0.000000, 1.000000, 0.000000, 0.000000
+scaled_lp 0.000: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.000: -nan, -nan, -nan, -nan
+64 mpf_problem 0.000: 0.000000, 0.000000, 0.347826, 0.652174
+mpf_problem 0.000: 0.000000, 0.000000, 0.347826, 0.652174
+/cygdrive/c/Users/mason/Downloads/nPolyBowl_8_7_8.mps
+64 scaled_lp 0.000: 0.000000, 1.000000, 0.000000, 0.000000
+scaled_lp 0.000: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.000: -nan, -nan, -nan, -nan
+64 mpf_problem 0.000: 0.000000, 0.000000, 0.347826, 0.652174
+mpf_problem 0.000: 0.000000, 0.000000, 0.347826, 0.652174
+/cygdrive/c/Users/mason/Downloads/nPolyBowl_8_7_8.mps
+64 scaled_lp 0.000: 0.000000, 1.000000, 0.000000, 0.000000
+scaled_lp 0.000: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.000: -nan, -nan, -nan, -nan
+64 mpf_problem 0.016: 0.000000, 0.000000, 0.347826, 0.652174
+mpf_problem 0.016: 0.000000, 0.000000, 0.347826, 0.652174
+/cygdrive/c/Users/mason/Downloads/nPolyBowl_8_7_8.mps
+64 scaled_lp 0.000: 0.000000, 1.000000, 0.000000, 0.000000
+scaled_lp 0.000: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.000: -nan, -nan, -nan, -nan
+64 mpf_problem 0.000: 0.000000, 0.000000, 0.347826, 0.652174
+mpf_problem 0.000: 0.000000, 0.000000, 0.347826, 0.652174
+/cygdrive/c/Users/mason/Downloads/nPolyBowl_8_7_8.mps
+64 scaled_lp 0.000: 0.000000, 1.000000, 0.000000, 0.000000
+scaled_lp 0.000: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.000: -nan, -nan, -nan, -nan
+64 mpf_problem 0.000: 0.000000, 0.000000, 0.347826, 0.652174
+mpf_problem 0.000: 0.000000, 0.000000, 0.347826, 0.652174
+/cygdrive/c/Users/mason/Downloads/nPolyBowl_8_7_8.mps
+64 scaled_lp 0.000: 0.000000, 1.000000, 0.000000, 0.000000
+scaled_lp 0.000: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.000: -nan, -nan, -nan, -nan
+64 mpf_problem 0.000: 0.000000, 0.000000, 0.347826, 0.652174
+mpf_problem 0.000: 0.000000, 0.000000, 0.347826, 0.652174
+67 mpf_problem 0.000: -nan, -nan, -nan, -nan
+70 scaled_lp 0.000: 0.000000, 1.000000, 0.000000, 0.000000
+scaled_lp 0.000: 0.000000, 1.000000, 0.000000, 0.000000
+mpf_problem 0.000: -nan, -nan, -nan, -nan
+73 mpf_problem 0.000: -nan, -nan, -nan, -nan
+76 scaled_lp 0.000: 0.000000, 1.000000, 0.000000, 0.000000
+scaled_lp 0.000: 0.000000, 1.000000, 0.000000, 0.000000
+mpf_problem 0.000: -nan, -nan, -nan, -nan
+79 mpf_problem 0.000: -nan, -nan, -nan, -nan
+82 scaled_lp 0.015: 0.000000, 1.000000, 0.000000, 0.000000
+scaled_lp 0.015: 0.000000, 1.000000, 0.000000, 0.000000
+mpf_problem 0.000: -nan, -nan, -nan, -nan
+85 mpf_problem 0.000: -nan, -nan, -nan, -nan
+88 scaled_lp 0.000: 0.000000, 1.000000, 0.000000, 0.000000
+scaled_lp 0.000: 0.000000, 1.000000, 0.000000, 0.000000
+mpf_problem 0.000: -nan, -nan, -nan, -nan
+91 mpf_problem 0.000: -nan, -nan, -nan, -nan
+94 scaled_lp 0.000: 0.000000, 1.000000, 0.000000, 0.000000
+scaled_lp 0.000: 0.000000, 1.000000, 0.000000, 0.000000
+mpf_problem 0.000: -nan, -nan, -nan, -nan
+97 mpf_problem 0.000: -nan, -nan, -nan, -nan
+/cygdrive/c/Users/mason/Downloads/nPolyBowl_8_7_8.mps
+64 scaled_lp 0.000: 0.000000, 1.000000, 0.000000, 0.000000
+scaled_lp 0.000: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.000: -nan, -nan, -nan, -nan
+64 mpf_problem 0.000: 0.000000, 0.000000, 0.347826, 0.652174
+mpf_problem 0.000: 0.000000, 0.000000, 0.347826, 0.652174
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_d2q06c.mps
+64 scaled_lp 1.594: 0.175696, 0.824304, 0.000000, 0.000000
+scaled_lp 1.594: 0.175696, 0.824304, 0.000000, 0.000000
+dbl_problem 0.250: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.250: 0.000000, 1.000000, 0.000000, 0.000000
+64 mpf_problem 0.032: -nan, -nan, -nan, -nan
+67 scaled_lp 35.500: 0.171429, 0.828571, 0.000000, 0.000000
+scaled_lp 35.500: 0.171429, 0.828571, 0.000000, 0.000000
+mpf_problem 0.016: -nan, -nan, -nan, -nan
+70 mpf_problem 1.016: 0.000000, 0.000000, 0.666667, 0.333333
+mpf_problem 1.016: 0.000000, 0.000000, 0.666667, 0.333333
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_d2q06c.mps
+64 scaled_lp 1.547: 0.175696, 0.824304, 0.000000, 0.000000
+scaled_lp 1.547: 0.175696, 0.824304, 0.000000, 0.000000
+dbl_problem 0.265: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.265: 0.000000, 1.000000, 0.000000, 0.000000
+64 mpf_problem 0.016: -nan, -nan, -nan, -nan
+67 scaled_lp 35.407: 0.171429, 0.828571, 0.000000, 0.000000
+scaled_lp 35.407: 0.171429, 0.828571, 0.000000, 0.000000
+mpf_problem 0.031: -nan, -nan, -nan, -nan
+70 mpf_problem 1.078: 0.000000, 0.000000, 0.666667, 0.333333
+mpf_problem 1.078: 0.000000, 0.000000, 0.666667, 0.333333
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_d2q06c.mps
+64 scaled_lp 1.657: 0.175696, 0.824304, 0.000000, 0.000000
+scaled_lp 1.657: 0.175696, 0.824304, 0.000000, 0.000000
+dbl_problem 0.281: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.281: 0.000000, 1.000000, 0.000000, 0.000000
+64 mpf_problem 0.000: -nan, -nan, -nan, -nan
+67 scaled_lp 35.266: 0.171429, 0.828571, 0.000000, 0.000000
+scaled_lp 35.266: 0.171429, 0.828571, 0.000000, 0.000000
+mpf_problem 0.031: -nan, -nan, -nan, -nan
+70 mpf_problem 1.157: 0.000000, 0.000000, 0.666667, 0.333333
+mpf_problem 1.157: 0.000000, 0.000000, 0.666667, 0.333333
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_d2q06c.mps
+64 scaled_lp 1.532: 0.175696, 0.824304, 0.000000, 0.000000
+scaled_lp 1.532: 0.175696, 0.824304, 0.000000, 0.000000
+dbl_problem 0.250: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.250: 0.000000, 1.000000, 0.000000, 0.000000
+64 mpf_problem 0.016: -nan, -nan, -nan, -nan
+67 scaled_lp 34.734: 0.171429, 0.828571, 0.000000, 0.000000
+scaled_lp 34.750: 0.171429, 0.828571, 0.000000, 0.000000
+mpf_problem 0.031: -nan, -nan, -nan, -nan
+70 mpf_problem 1.141: 0.000000, 0.000000, 0.666667, 0.333333
+mpf_problem 1.141: 0.000000, 0.000000, 0.666667, 0.333333
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_d2q06c.mps
+64 scaled_lp 1.609: 0.175696, 0.824304, 0.000000, 0.000000
+scaled_lp 1.609: 0.175696, 0.824304, 0.000000, 0.000000
+dbl_problem 0.250: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.250: 0.000000, 1.000000, 0.000000, 0.000000
+64 mpf_problem 0.031: -nan, -nan, -nan, -nan
+67 scaled_lp 37.172: 0.171429, 0.828571, 0.000000, 0.000000
+scaled_lp 37.172: 0.171429, 0.828571, 0.000000, 0.000000
+mpf_problem 0.015: -nan, -nan, -nan, -nan
+70 mpf_problem 1.203: 0.000000, 0.000000, 0.666667, 0.333333
+mpf_problem 1.203: 0.000000, 0.000000, 0.666667, 0.333333
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_d2q06c.mps
+64 scaled_lp 1.625: 0.175696, 0.824304, 0.000000, 0.000000
+scaled_lp 1.625: 0.175696, 0.824304, 0.000000, 0.000000
+dbl_problem 0.297: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.297: 0.000000, 1.000000, 0.000000, 0.000000
+64 mpf_problem 0.015: -nan, -nan, -nan, -nan
+67 scaled_lp 35.156: 0.171429, 0.828571, 0.000000, 0.000000
+scaled_lp 35.156: 0.171429, 0.828571, 0.000000, 0.000000
+mpf_problem 0.032: -nan, -nan, -nan, -nan
+70 mpf_problem 1.031: 0.000000, 0.000000, 0.666667, 0.333333
+mpf_problem 1.031: 0.000000, 0.000000, 0.666667, 0.333333
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_d2q06c.mps
+64 scaled_lp 1.578: 0.175696, 0.824304, 0.000000, 0.000000
+scaled_lp 1.578: 0.175696, 0.824304, 0.000000, 0.000000
+dbl_problem 0.312: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.312: 0.000000, 1.000000, 0.000000, 0.000000
+64 mpf_problem 0.031: -nan, -nan, -nan, -nan
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_d2q06c.mps
+64 scaled_lp 1.609: 0.175696, 0.824304, 0.000000, 0.000000
+scaled_lp 1.609: 0.175696, 0.824304, 0.000000, 0.000000
+dbl_problem 0.297: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.297: 0.000000, 1.000000, 0.000000, 0.000000
+64 mpf_problem 0.015: -nan, -nan, -nan, -nan
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_d2q06c.mps
+64 scaled_lp 1.516: 0.175696, 0.824304, 0.000000, 0.000000
+scaled_lp 1.516: 0.175696, 0.824304, 0.000000, 0.000000
+dbl_problem 0.282: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.282: 0.000000, 1.000000, 0.000000, 0.000000
+64 mpf_problem 0.016: -nan, -nan, -nan, -nan
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_d2q06c.mps
+64 scaled_lp 1.672: 0.175696, 0.824304, 0.000000, 0.000000
+scaled_lp 1.672: 0.175696, 0.824304, 0.000000, 0.000000
+dbl_problem 0.297: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.297: 0.000000, 1.000000, 0.000000, 0.000000
+64 mpf_problem 0.032: -nan, -nan, -nan, -nan
+67 scaled_lp 37.578: 0.171429, 0.828571, 0.000000, 0.000000
+scaled_lp 37.578: 0.171429, 0.828571, 0.000000, 0.000000
+mpf_problem 0.031: -nan, -nan, -nan, -nan
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_d2q06c.mps
+64 scaled_lp 1.563: 0.175696, 0.824304, 0.000000, 0.000000
+scaled_lp 1.563: 0.175696, 0.824304, 0.000000, 0.000000
+dbl_problem 0.250: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.250: 0.000000, 1.000000, 0.000000, 0.000000
+64 mpf_problem 0.032: -nan, -nan, -nan, -nan
+67 scaled_lp 45.532: 0.171429, 0.828571, 0.000000, 0.000000
+scaled_lp 45.532: 0.171429, 0.828571, 0.000000, 0.000000
+mpf_problem 0.031: -nan, -nan, -nan, -nan
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_d2q06c.mps
+64 scaled_lp 1.594: 0.175696, 0.824304, 0.000000, 0.000000
+scaled_lp 1.594: 0.175696, 0.824304, 0.000000, 0.000000
+dbl_problem 0.266: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.266: 0.000000, 1.000000, 0.000000, 0.000000
+64 mpf_problem 0.032: -nan, -nan, -nan, -nan
+67 scaled_lp 38.547: 0.171429, 0.828571, 0.000000, 0.000000
+scaled_lp 38.547: 0.171429, 0.828571, 0.000000, 0.000000
+mpf_problem 0.032: -nan, -nan, -nan, -nan
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_d2q06c.mps
+64 scaled_lp 1.766: 0.175696, 0.824304, 0.000000, 0.000000
+scaled_lp 1.766: 0.175696, 0.824304, 0.000000, 0.000000
+dbl_problem 0.297: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.297: 0.000000, 1.000000, 0.000000, 0.000000
+64 mpf_problem 0.031: -nan, -nan, -nan, -nan
+67 scaled_lp 36.375: 0.171429, 0.828571, 0.000000, 0.000000
+scaled_lp 36.375: 0.171429, 0.828571, 0.000000, 0.000000
+mpf_problem 0.031: -nan, -nan, -nan, -nan
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_d2q06c.mps
+64 scaled_lp 1.641: 0.175696, 0.824304, 0.000000, 0.000000
+scaled_lp 1.641: 0.175696, 0.824304, 0.000000, 0.000000
+dbl_problem 0.265: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.265: 0.000000, 1.000000, 0.000000, 0.000000
+64 mpf_problem 0.032: -nan, -nan, -nan, -nan
+67 scaled_lp 43.718: 0.171429, 0.828571, 0.000000, 0.000000
+scaled_lp 43.734: 0.171429, 0.828571, 0.000000, 0.000000
+mpf_problem 0.031: -nan, -nan, -nan, -nan
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_d2q06c.mps
+64 scaled_lp 1.515: 0.175696, 0.824304, 0.000000, 0.000000
+scaled_lp 1.515: 0.175696, 0.824304, 0.000000, 0.000000
+dbl_problem 0.282: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.282: 0.000000, 1.000000, 0.000000, 0.000000
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_d2q06c.mps
+64 scaled_lp 1.860: 0.175696, 0.824304, 0.000000, 0.000000
+scaled_lp 1.860: 0.175696, 0.824304, 0.000000, 0.000000
+dbl_problem 0.328: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.328: 0.000000, 1.000000, 0.000000, 0.000000
+64 mpf_problem 0.031: -nan, -nan, -nan, -nan
+67 scaled_lp 62.625: 0.171429, 0.828571, 0.000000, 0.000000
+scaled_lp 62.625: 0.171429, 0.828571, 0.000000, 0.000000
+mpf_problem 0.047: -nan, -nan, -nan, -nan
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_d2q06c.mps
+64 scaled_lp 1.547: 0.175696, 0.824304, 0.000000, 0.000000
+scaled_lp 1.547: 0.175696, 0.824304, 0.000000, 0.000000
+dbl_problem 0.250: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.250: 0.000000, 1.000000, 0.000000, 0.000000
+64 mpf_problem 0.031: -nan, -nan, -nan, -nan
+67 scaled_lp 41.031: 0.171429, 0.828571, 0.000000, 0.000000
+scaled_lp 41.031: 0.171429, 0.828571, 0.000000, 0.000000
+mpf_problem 0.016: -nan, -nan, -nan, -nan
+70 mpf_problem 1.390: 0.000000, 0.000000, 0.666667, 0.333333
+mpf_problem 1.390: 0.000000, 0.000000, 0.666667, 0.333333
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_d2q06c.mps
+64 scaled_lp 1.562: 0.175696, 0.824304, 0.000000, 0.000000
+scaled_lp 1.562: 0.175696, 0.824304, 0.000000, 0.000000
+dbl_problem 0.297: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.297: 0.000000, 1.000000, 0.000000, 0.000000
+64 mpf_problem 0.032: -nan, -nan, -nan, -nan
+67 scaled_lp 34.734: 0.171429, 0.828571, 0.000000, 0.000000
+scaled_lp 34.734: 0.171429, 0.828571, 0.000000, 0.000000
+mpf_problem 0.016: -nan, -nan, -nan, -nan
+70 mpf_problem 1.094: 0.000000, 0.000000, 0.666667, 0.333333
+mpf_problem 1.109: 0.000000, 0.000000, 0.666667, 0.333333
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_d2q06c.mps
+64 scaled_lp 1.578: 0.175696, 0.824304, 0.000000, 0.000000
+scaled_lp 1.578: 0.175696, 0.824304, 0.000000, 0.000000
+dbl_problem 0.265: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.265: 0.000000, 1.000000, 0.000000, 0.000000
+64 mpf_problem 0.000: -nan, -nan, -nan, -nan
+67 scaled_lp 36.094: 0.171429, 0.828571, 0.000000, 0.000000
+scaled_lp 36.094: 0.171429, 0.828571, 0.000000, 0.000000
+mpf_problem 0.032: -nan, -nan, -nan, -nan
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_d2q06c.mps
+64 scaled_lp 1.672: 0.175696, 0.824304, 0.000000, 0.000000
+scaled_lp 1.672: 0.175696, 0.824304, 0.000000, 0.000000
+dbl_problem 0.250: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.250: 0.000000, 1.000000, 0.000000, 0.000000
+64 mpf_problem 0.047: -nan, -nan, -nan, -nan
+67 scaled_lp 34.375: 0.171429, 0.828571, 0.000000, 0.000000
+scaled_lp 34.375: 0.171429, 0.828571, 0.000000, 0.000000
+mpf_problem 0.016: -nan, -nan, -nan, -nan
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_d2q06c.mps
+64 scaled_lp 1.610: 0.175696, 0.824304, 0.000000, 0.000000
+scaled_lp 1.610: 0.175696, 0.824304, 0.000000, 0.000000
+dbl_problem 0.265: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.265: 0.000000, 1.000000, 0.000000, 0.000000
+64 mpf_problem 0.032: -nan, -nan, -nan, -nan
+67 scaled_lp 50.938: 0.171429, 0.828571, 0.000000, 0.000000
+scaled_lp 50.938: 0.171429, 0.828571, 0.000000, 0.000000
+mpf_problem 0.016: -nan, -nan, -nan, -nan
+70 mpf_problem 1.406: 0.000000, 0.000000, 0.666667, 0.333333
+mpf_problem 1.406: 0.000000, 0.000000, 0.666667, 0.333333
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_d2q06c.mps
+64 scaled_lp 1.516: 0.175696, 0.824304, 0.000000, 0.000000
+scaled_lp 1.516: 0.175696, 0.824304, 0.000000, 0.000000
+dbl_problem 0.281: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.281: 0.000000, 1.000000, 0.000000, 0.000000
+64 mpf_problem 0.032: -nan, -nan, -nan, -nan
+67 scaled_lp 38.062: 0.171429, 0.828571, 0.000000, 0.000000
+scaled_lp 38.078: 0.171429, 0.828571, 0.000000, 0.000000
+mpf_problem 0.031: -nan, -nan, -nan, -nan
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_d2q06c.mps
+64 scaled_lp 1.578: 0.175696, 0.824304, 0.000000, 0.000000
+scaled_lp 1.578: 0.175696, 0.824304, 0.000000, 0.000000
+dbl_problem 0.281: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.281: 0.000000, 1.000000, 0.000000, 0.000000
+64 mpf_problem 0.000: -nan, -nan, -nan, -nan
+67 scaled_lp 35.953: 0.171429, 0.828571, 0.000000, 0.000000
+scaled_lp 35.953: 0.171429, 0.828571, 0.000000, 0.000000
+mpf_problem 0.031: -nan, -nan, -nan, -nan
+70 mpf_problem 1.375: 0.000000, 0.000000, 0.666667, 0.333333
+mpf_problem 1.375: 0.000000, 0.000000, 0.666667, 0.333333
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_d2q06c.mps
+64 scaled_lp 1.641: 0.175696, 0.824304, 0.000000, 0.000000
+scaled_lp 1.641: 0.175696, 0.824304, 0.000000, 0.000000
+dbl_problem 0.297: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.297: 0.000000, 1.000000, 0.000000, 0.000000
+64 mpf_problem 0.031: -nan, -nan, -nan, -nan
+67 scaled_lp 35.984: 0.171429, 0.828571, 0.000000, 0.000000
+scaled_lp 35.984: 0.171429, 0.828571, 0.000000, 0.000000
+mpf_problem 0.016: -nan, -nan, -nan, -nan
+70 mpf_problem 1.141: 0.000000, 0.000000, 0.666667, 0.333333
+mpf_problem 1.141: 0.000000, 0.000000, 0.666667, 0.333333
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_d2q06c.mps
+64 scaled_lp 1.563: 0.175696, 0.824304, 0.000000, 0.000000
+scaled_lp 1.563: 0.175696, 0.824304, 0.000000, 0.000000
+dbl_problem 0.297: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.297: 0.000000, 1.000000, 0.000000, 0.000000
+64 mpf_problem 0.031: -nan, -nan, -nan, -nan
+67 scaled_lp 35.718: 0.171429, 0.828571, 0.000000, 0.000000
+scaled_lp 35.734: 0.171429, 0.828571, 0.000000, 0.000000
+mpf_problem 0.031: -nan, -nan, -nan, -nan
+70 mpf_problem 1.172: 0.000000, 0.000000, 0.666667, 0.333333
+mpf_problem 1.172: 0.000000, 0.000000, 0.666667, 0.333333
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_d2q06c.mps
+64 scaled_lp 2.468: 0.175696, 0.824304, 0.000000, 0.000000
+scaled_lp 2.468: 0.175696, 0.824304, 0.000000, 0.000000
+dbl_problem 0.453: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.453: 0.000000, 1.000000, 0.000000, 0.000000
+64 mpf_problem 0.032: -nan, -nan, -nan, -nan
+67 scaled_lp 53.234: 0.171429, 0.828571, 0.000000, 0.000000
+scaled_lp 53.234: 0.171429, 0.828571, 0.000000, 0.000000
+mpf_problem 0.047: -nan, -nan, -nan, -nan
+70 mpf_problem 1.546: 0.000000, 0.000000, 0.666667, 0.333333
+mpf_problem 1.546: 0.000000, 0.000000, 0.666667, 0.333333
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_d2q06c.mps
+64 scaled_lp 2.766: 0.175696, 0.824304, 0.000000, 0.000000
+scaled_lp 2.766: 0.175696, 0.824304, 0.000000, 0.000000
+dbl_problem 0.516: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.516: 0.000000, 1.000000, 0.000000, 0.000000
+64 mpf_problem 0.047: -nan, -nan, -nan, -nan
+67 scaled_lp 57.219: 0.171429, 0.828571, 0.000000, 0.000000
+scaled_lp 57.219: 0.171429, 0.828571, 0.000000, 0.000000
+mpf_problem 0.046: -nan, -nan, -nan, -nan
+70 mpf_problem 1.765: 0.000000, 0.000000, 0.666667, 0.333333
+mpf_problem 1.765: 0.000000, 0.000000, 0.666667, 0.333333
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_d2q06c.mps
+64 scaled_lp 2.578: 0.175696, 0.824304, 0.000000, 0.000000
+scaled_lp 2.578: 0.175696, 0.824304, 0.000000, 0.000000
+dbl_problem 0.422: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.422: 0.000000, 1.000000, 0.000000, 0.000000
+64 mpf_problem 0.047: -nan, -nan, -nan, -nan
+67 scaled_lp 53.703: 0.171429, 0.828571, 0.000000, 0.000000
+scaled_lp 53.703: 0.171429, 0.828571, 0.000000, 0.000000
+mpf_problem 0.063: -nan, -nan, -nan, -nan
+70 mpf_problem 1.625: 0.000000, 0.000000, 0.666667, 0.333333
+mpf_problem 1.625: 0.000000, 0.000000, 0.666667, 0.333333
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_d2q06c.mps
+64 scaled_lp 1.625: 0.175696, 0.824304, 0.000000, 0.000000
+scaled_lp 1.625: 0.175696, 0.824304, 0.000000, 0.000000
+dbl_problem 0.297: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.297: 0.000000, 1.000000, 0.000000, 0.000000
+64 mpf_problem 0.000: -nan, -nan, -nan, -nan
+67 scaled_lp 35.328: 0.171429, 0.828571, 0.000000, 0.000000
+scaled_lp 35.328: 0.171429, 0.828571, 0.000000, 0.000000
+mpf_problem 0.031: -nan, -nan, -nan, -nan
+70 mpf_problem 1.109: 0.000000, 0.000000, 0.666667, 0.333333
+mpf_problem 1.109: 0.000000, 0.000000, 0.666667, 0.333333
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_d2q06c.mps
+64 scaled_lp 1.547: 0.175696, 0.824304, 0.000000, 0.000000
+scaled_lp 1.547: 0.175696, 0.824304, 0.000000, 0.000000
+dbl_problem 0.250: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.250: 0.000000, 1.000000, 0.000000, 0.000000
+64 mpf_problem 0.016: -nan, -nan, -nan, -nan
+67 scaled_lp 35.938: 0.171429, 0.828571, 0.000000, 0.000000
+scaled_lp 35.953: 0.171429, 0.828571, 0.000000, 0.000000
+mpf_problem 0.032: -nan, -nan, -nan, -nan
+70 mpf_problem 1.187: 0.000000, 0.000000, 0.666667, 0.333333
+mpf_problem 1.187: 0.000000, 0.000000, 0.666667, 0.333333
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_d2q06c.mps
+64 scaled_lp 1.547: 0.175696, 0.824304, 0.000000, 0.000000
+scaled_lp 1.547: 0.175696, 0.824304, 0.000000, 0.000000
+dbl_problem 0.282: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.282: 0.000000, 1.000000, 0.000000, 0.000000
+64 mpf_problem 0.031: -nan, -nan, -nan, -nan
+67 scaled_lp 35.203: 0.171429, 0.828571, 0.000000, 0.000000
+scaled_lp 35.203: 0.171429, 0.828571, 0.000000, 0.000000
+mpf_problem 0.016: -nan, -nan, -nan, -nan
+70 mpf_problem 1.094: 0.000000, 0.000000, 0.666667, 0.333333
+mpf_problem 1.094: 0.000000, 0.000000, 0.666667, 0.333333
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_pilot4.mps
+64 scaled_lp 0.046: 0.437059, 0.562941, 0.000000, 0.000000
+scaled_lp 0.046: 0.437059, 0.562941, 0.000000, 0.000000
+dbl_problem 0.000: -nan, -nan, -nan, -nan
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_pilot.
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/decom_pilot.mps
+64 scaled_lp 1.672: 0.669604, 0.330396, 0.000000, 0.000000
+scaled_lp 1.672: 0.669604, 0.330396, 0.000000, 0.000000
+dbl_problem 0.140: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.140: 0.000000, 1.000000, 0.000000, 0.000000
+64 mpf_problem 2.172: 0.000000, 0.000000, 0.166667, 0.833333
+mpf_problem 2.172: 0.000000, 0.000000, 0.166667, 0.833333
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_scsd6.mps
+64 scaled_lp 0.000: 0.417391, 0.582609, 0.000000, 0.000000
+scaled_lp 0.000: 0.417391, 0.582609, 0.000000, 0.000000
+dbl_problem 0.000: -nan, -nan, -nan, -nan
+64 mpf_problem 0.812: 0.000000, 0.000000, 0.822718, 0.177282
+mpf_problem 0.812: 0.000000, 0.000000, 0.822718, 0.177282
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_pilot4.mps
+64 scaled_lp 0.078: 0.437059, 0.562941, 0.000000, 0.000000
+scaled_lp 0.078: 0.437059, 0.562941, 0.000000, 0.000000
+dbl_problem 0.000: -nan, -nan, -nan, -nan
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_nesm.mps
+64 scaled_lp 0.109: 0.355428, 0.644572, 0.000000, 0.000000
+scaled_lp 0.109: 0.355428, 0.644572, 0.000000, 0.000000
+dbl_problem 0.000: -nan, -nan, -nan, -nan
+64 mpf_problem 0.047: 0.000000, 0.000000, 0.000000, 1.000000
+mpf_problem 0.047: 0.000000, 0.000000, 0.000000, 1.000000
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_etamacro.mps
+64 scaled_lp 0.015: 0.673469, 0.326531, 0.000000, 0.000000
+scaled_lp 0.015: 0.673469, 0.326531, 0.000000, 0.000000
+dbl_problem 0.000: -nan, -nan, -nan, -nan
+64 mpf_problem 0.109: 0.612179, 0.370192, 0.017628, 0.000000
+mpf_problem 0.109: 0.612179, 0.370192, 0.017628, 0.000000
+67 mpf_problem 0.016: 0.000000, 0.000000, 0.750000, 0.250000
+mpf_problem 0.016: 0.000000, 0.000000, 0.750000, 0.250000
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_dfl001.mps
+64 scaled_lp 42.000: 0.294014, 0.705986, 0.000000, 0.000000
+scaled_lp 42.000: 0.294014, 0.705986, 0.000000, 0.000000
+dbl_problem 0.016: -nan, -nan, -nan, -nan
+64 mpf_problem 0.172: -nan, -nan, -nan, -nan
+67 /cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_d2q06c.mps
+64 scaled_lp 2.047: 0.175696, 0.824304, 0.000000, 0.000000
+scaled_lp 2.063: 0.175696, 0.824304, 0.000000, 0.000000
+dbl_problem 0.297: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.297: 0.000000, 1.000000, 0.000000, 0.000000
+64 mpf_problem 0.032: -nan, -nan, -nan, -nan
+67 scaled_lp 42.875: 0.171429, 0.828571, 0.000000, 0.000000
+scaled_lp 42.875: 0.171429, 0.828571, 0.000000, 0.000000
+mpf_problem 0.032: -nan, -nan, -nan, -nan
+70 mpf_problem 1.391: 0.000000, 0.000000, 0.666667, 0.333333
+mpf_problem 1.391: 0.000000, 0.000000, 0.666667, 0.333333
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_d2q06c.mps
+64 scaled_lp 2.375: 0.175696, 0.824304, 0.000000, 0.000000
+scaled_lp 2.375: 0.175696, 0.824304, 0.000000, 0.000000
+dbl_problem 0.422: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.422: 0.000000, 1.000000, 0.000000, 0.000000
+64 mpf_problem 0.046: -nan, -nan, -nan, -nan
+67 scaled_lp 62.093: 0.171429, 0.828571, 0.000000, 0.000000
+scaled_lp 62.093: 0.171429, 0.828571, 0.000000, 0.000000
+mpf_problem 0.062: -nan, -nan, -nan, -nan
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_d2q06c.mps
+64 scaled_lp 1.641: 0.175696, 0.824304, 0.000000, 0.000000
+scaled_lp 1.657: 0.175696, 0.824304, 0.000000, 0.000000
+dbl_problem 0.281: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.281: 0.000000, 1.000000, 0.000000, 0.000000
+64 mpf_problem 0.031: -nan, -nan, -nan, -nan
+67 scaled_lp 33.734: 0.171429, 0.828571, 0.000000, 0.000000
+scaled_lp 33.734: 0.171429, 0.828571, 0.000000, 0.000000
+mpf_problem 0.016: -nan, -nan, -nan, -nan
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_d2q06c.mps
+64 scaled_lp 1.703: 0.175696, 0.824304, 0.000000, 0.000000
+scaled_lp 1.703: 0.175696, 0.824304, 0.000000, 0.000000
+dbl_problem 0.312: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.312: 0.000000, 1.000000, 0.000000, 0.000000
+64 mpf_problem 0.031: -nan, -nan, -nan, -nan
+67 scaled_lp 39.766: 0.171429, 0.828571, 0.000000, 0.000000
+scaled_lp 39.766: 0.171429, 0.828571, 0.000000, 0.000000
+mpf_problem 0.047: -nan, -nan, -nan, -nan
+70 mpf_problem 1.625: 0.000000, 0.000000, 0.666667, 0.333333
+mpf_problem 1.625: 0.000000, 0.000000, 0.666667, 0.333333
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_d2q06c.mps
+64 scaled_lp 1.641: 0.175696, 0.824304, 0.000000, 0.000000
+scaled_lp 1.641: 0.175696, 0.824304, 0.000000, 0.000000
+dbl_problem 0.266: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.281: 0.000000, 1.000000, 0.000000, 0.000000
+64 mpf_problem 0.016: -nan, -nan, -nan, -nan
+67 scaled_lp 37.719: 0.171429, 0.828571, 0.000000, 0.000000
+scaled_lp 37.719: 0.171429, 0.828571, 0.000000, 0.000000
+mpf_problem 0.031: -nan, -nan, -nan, -nan
+70 mpf_problem 1.657: 0.000000, 0.000000, 0.666667, 0.333333
+mpf_problem 1.657: 0.000000, 0.000000, 0.666667, 0.333333
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_d2q06c.mps
+64 scaled_lp 1.609: 0.175696, 0.824304, 0.000000, 0.000000
+scaled_lp 1.609: 0.175696, 0.824304, 0.000000, 0.000000
+dbl_problem 0.297: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.297: 0.000000, 1.000000, 0.000000, 0.000000
+64 mpf_problem 0.032: -nan, -nan, -nan, -nan
+67 scaled_lp 34.063: 0.171429, 0.828571, 0.000000, 0.000000
+scaled_lp 34.063: 0.171429, 0.828571, 0.000000, 0.000000
+mpf_problem 0.031: -nan, -nan, -nan, -nan
+70 mpf_problem 1.094: 0.000000, 0.000000, 0.666667, 0.333333
+mpf_problem 1.094: 0.000000, 0.000000, 0.666667, 0.333333
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_d2q06c.mps
+64 scaled_lp 1.547: 0.175696, 0.824304, 0.000000, 0.000000
+scaled_lp 1.547: 0.175696, 0.824304, 0.000000, 0.000000
+dbl_problem 0.282: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.297: 0.000000, 1.000000, 0.000000, 0.000000
+64 mpf_problem 0.047: -nan, -nan, -nan, -nan
+67 scaled_lp 48.562: 0.171429, 0.828571, 0.000000, 0.000000
+scaled_lp 48.562: 0.171429, 0.828571, 0.000000, 0.000000
+mpf_problem 0.031: -nan, -nan, -nan, -nan
+70 mpf_problem 1.641: 0.000000, 0.000000, 0.666667, 0.333333
+mpf_problem 1.641: 0.000000, 0.000000, 0.666667, 0.333333
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_d2q06c.mps
+64 scaled_lp 1.609: 0.175696, 0.824304, 0.000000, 0.000000
+scaled_lp 1.609: 0.175696, 0.824304, 0.000000, 0.000000
+dbl_problem 0.297: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.297: 0.000000, 1.000000, 0.000000, 0.000000
+64 mpf_problem 0.031: -nan, -nan, -nan, -nan
+67 scaled_lp 33.609: 0.171429, 0.828571, 0.000000, 0.000000
+scaled_lp 33.609: 0.171429, 0.828571, 0.000000, 0.000000
+mpf_problem 0.016: -nan, -nan, -nan, -nan
+70 mpf_problem 1.047: 0.000000, 0.000000, 0.666667, 0.333333
+mpf_problem 1.047: 0.000000, 0.000000, 0.666667, 0.333333
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_nesm.mps
+64 scaled_lp 0.062: 0.355428, 0.644572, 0.000000, 0.000000
+scaled_lp 0.062: 0.355428, 0.644572, 0.000000, 0.000000
+dbl_problem 0.000: -nan, -nan, -nan, -nan
+64 mpf_problem 0.031: 0.000000, 0.000000, 0.000000, 1.000000
+mpf_problem 0.031: 0.000000, 0.000000, 0.000000, 1.000000
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_etamacro.mps
+64 scaled_lp 0.000: 0.673469, 0.326531, 0.000000, 0.000000
+scaled_lp 0.000: 0.673469, 0.326531, 0.000000, 0.000000
+dbl_problem 0.000: -nan, -nan, -nan, -nan
+64 mpf_problem 0.047: 0.612179, 0.370192, 0.017628, 0.000000
+mpf_problem 0.047: 0.612179, 0.370192, 0.017628, 0.000000
+67 mpf_problem 0.000: 0.000000, 0.000000, 0.750000, 0.250000
+mpf_problem 0.000: 0.000000, 0.000000, 0.750000, 0.250000
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_etamacro.mps
+64 scaled_lp 0.000: 0.673469, 0.326531, 0.000000, 0.000000
+scaled_lp 0.000: 0.673469, 0.326531, 0.000000, 0.000000
+dbl_problem 0.000: -nan, -nan, -nan, -nan
+64 mpf_problem 0.078: 0.612179, 0.370192, 0.017628, 0.000000
+mpf_problem 0.078: 0.612179, 0.370192, 0.017628, 0.000000
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_etamacro.mps
+64 scaled_lp 0.000: 0.673469, 0.326531, 0.000000, 0.000000
+scaled_lp 0.000: 0.673469, 0.326531, 0.000000, 0.000000
+dbl_problem 0.000: -nan, -nan, -nan, -nan
+64 mpf_problem 0.047: 0.612179, 0.370192, 0.017628, 0.000000
+mpf_problem 0.047: 0.612179, 0.370192, 0.017628, 0.000000
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_etamacro.mps
+64 scaled_lp 0.000: 0.673469, 0.326531, 0.000000, 0.000000
+scaled_lp 0.000: 0.673469, 0.326531, 0.000000, 0.000000
+dbl_problem 0.000: -nan, -nan, -nan, -nan
+64 mpf_problem 0.031: 0.612179, 0.370192, 0.017628, 0.000000
+mpf_problem 0.031: 0.612179, 0.370192, 0.017628, 0.000000
+67 mpf_problem 0.016: 0.000000, 0.000000, 0.750000, 0.250000
+mpf_problem 0.016: 0.000000, 0.000000, 0.750000, 0.250000
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_d2q06c.mps
+64 scaled_lp 1.765: 0.175696, 0.824304, 0.000000, 0.000000
+scaled_lp 1.765: 0.175696, 0.824304, 0.000000, 0.000000
+dbl_problem 0.344: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.344: 0.000000, 1.000000, 0.000000, 0.000000
+64 mpf_problem 0.047: -nan, -nan, -nan, -nan
+67 scaled_lp 41.875: 0.171429, 0.828571, 0.000000, 0.000000
+scaled_lp 41.891: 0.171429, 0.828571, 0.000000, 0.000000
+mpf_problem 0.031: -nan, -nan, -nan, -nan
+70 mpf_problem 1.281: 0.000000, 0.000000, 0.666667, 0.333333
+mpf_problem 1.281: 0.000000, 0.000000, 0.666667, 0.333333
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_d2q06c.mps
+64 /cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_etamacro.mps
+64 scaled_lp 0.000: 0.673469, 0.326531, 0.000000, 0.000000
+scaled_lp 0.000: 0.673469, 0.326531, 0.000000, 0.000000
+dbl_problem 0.000: -nan, -nan, -nan, -nan
+64 mpf_problem 0.110: 0.612179, 0.370192, 0.017628, 0.000000
+mpf_problem 0.110: 0.612179, 0.370192, 0.017628, 0.000000
+67 mpf_problem 0.000: 0.000000, 0.000000, 0.750000, 0.250000
+mpf_problem 0.000: 0.000000, 0.000000, 0.750000, 0.250000
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_d2q06c.mps
+64 scaled_lp 1.578: 0.175696, 0.824304, 0.000000, 0.000000
+scaled_lp 1.578: 0.175696, 0.824304, 0.000000, 0.000000
+dbl_problem 0.234: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.234: 0.000000, 1.000000, 0.000000, 0.000000
+64 mpf_problem 0.032: -nan, -nan, -nan, -nan
+67 scaled_lp 39.031: 0.171429, 0.828571, 0.000000, 0.000000
+scaled_lp 39.031: 0.171429, 0.828571, 0.000000, 0.000000
+mpf_problem 0.031: -nan, -nan, -nan, -nan
+70 mpf_problem 1.234: 0.000000, 0.000000, 0.666667, 0.333333
+mpf_problem 1.234: 0.000000, 0.000000, 0.666667, 0.333333
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_d2q06c.mps
+64 scaled_lp 1.579: 0.175696, 0.824304, 0.000000, 0.000000
+scaled_lp 1.579: 0.175696, 0.824304, 0.000000, 0.000000
+dbl_problem 0.296: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.296: 0.000000, 1.000000, 0.000000, 0.000000
+128 mpf_problem 1.063: 0.000000, 0.000000, 0.666667, 0.333333
+mpf_problem 1.063: 0.000000, 0.000000, 0.666667, 0.333333
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_dfl001.mps
+64 scaled_lp 27.969: 0.294014, 0.705986, 0.000000, 0.000000
+scaled_lp 27.969: 0.294014, 0.705986, 0.000000, 0.000000
+dbl_problem 0.000: -nan, -nan, -nan, -nan
+128 mpf_problem 11.641: 0.000000, 0.000000, 0.000000, 1.000000
+mpf_problem 11.641: 0.000000, 0.000000, 0.000000, 1.000000
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/decom_pilot.mps
+64 scaled_lp 1.625: 0.669604, 0.330396, 0.000000, 0.000000
+scaled_lp 1.625: 0.669604, 0.330396, 0.000000, 0.000000
+dbl_problem 0.156: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.156: 0.000000, 1.000000, 0.000000, 0.000000
+128 mpf_problem 2.141: 0.000000, 0.000000, 0.166667, 0.833333
+mpf_problem 2.141: 0.000000, 0.000000, 0.166667, 0.833333
+/cygdrive/c/Users/mason/Downloads/converted_lp/neos-4647030-tutaki_LP.mps
+/cygdrive/c/Users/mason/Downloads/converted_lp/neos-4722843-widden_LP.mps
+/cygdrive/c/Users/mason/Downloads/converted_lp/ex10_LP.mps
+/cygdrive/c/Users/mason/Downloads/converted_lp/ger50_17_trans_LP.mps
+/cygdrive/c/Users/mason/Downloads/converted_lp/ger50_17_trans_LP.mps
+/cygdrive/c/Users/mason/Downloads/converted_lp/fast0507_LP.mps
+/cygdrive/c/Users/mason/Downloads/converted_lp/tr12-30_LP.mps
+/cygdrive/c/Users/mason/Downloads/benchmark/
+/cygdrive/c/Users/mason/Downloads/benchmark/lotsize.mps
+64 scaled_lp 0.000: 0.169188, 0.000000, 0.000000, 0.830812
+scaled_lp 0.000: 0.169188, 0.000000, 0.000000, 0.830812
+dbl_problem 0.000: -nan, -nan, -nan, -nan
+/cygdrive/c/Users/mason/Downloads/benchmark/germany50-UUM.mps
+64 scaled_lp 0.016: 0.685197, 0.314803, 0.000000, 0.000000
+scaled_lp 0.016: 0.685197, 0.314803, 0.000000, 0.000000
+dbl_problem 0.015: -nan, -nan, -nan, -nan
+/cygdrive/c/Users/mason/Downloads/benchmark/ger50_17_trans.mps
+64 scaled_lp 0.015: 0.768240, 0.231760, 0.000000, 0.000000
+scaled_lp 0.015: 0.768240, 0.231760, 0.000000, 0.000000
+dbl_problem 0.000: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.000: 0.000000, 1.000000, 0.000000, 0.000000
+128 mpf_problem 0.016: 0.000000, 0.000000, 0.666667, 0.333333
+mpf_problem 0.016: 0.000000, 0.000000, 0.666667, 0.333333
+/cygdrive/c/Users/mason/Downloads/benchmark/neos-5044663-wairoa.mps
+/cygdrive/c/Users/mason/Downloads/benchmark/neos-4321076-ruwer.mps
+64 /cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_d2q06c.mps
+64 scaled_lp 1.531: 0.175696, 0.824304, 0.000000, 0.000000
+scaled_lp 1.531: 0.175696, 0.824304, 0.000000, 0.000000
+dbl_problem 0.250: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.250: 0.000000, 1.000000, 0.000000, 0.000000
+64 mpf_problem 0.016: -nan, -nan, -nan, -nan
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_d2q06c.mps
+64 scaled_lp 1.547: 0.175696, 0.824304, 0.000000, 0.000000
+scaled_lp 1.547: 0.175696, 0.824304, 0.000000, 0.000000
+dbl_problem 0.265: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.265: 0.000000, 1.000000, 0.000000, 0.000000
+64 mpf_problem 0.031: -nan, -nan, -nan, -nan
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_d2q06c.mps
+64 scaled_lp 1.593: 0.175696, 0.824304, 0.000000, 0.000000
+scaled_lp 1.593: 0.175696, 0.824304, 0.000000, 0.000000
+dbl_problem 0.266: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.266: 0.000000, 1.000000, 0.000000, 0.000000
+64 mpf_problem 0.031: -nan, -nan, -nan, -nan
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_d2q06c.mps
+64 scaled_lp 1.640: 0.175696, 0.824304, 0.000000, 0.000000
+scaled_lp 1.640: 0.175696, 0.824304, 0.000000, 0.000000
+dbl_problem 0.282: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.282: 0.000000, 1.000000, 0.000000, 0.000000
+64 mpf_problem 0.031: -nan, -nan, -nan, -nan
+67 /cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_d2q06c.mps
+64 scaled_lp 1.640: 0.175696, 0.824304, 0.000000, 0.000000
+scaled_lp 1.640: 0.175696, 0.824304, 0.000000, 0.000000
+dbl_problem 0.266: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.266: 0.000000, 1.000000, 0.000000, 0.000000
+64 mpf_problem 0.031: -nan, -nan, -nan, -nan
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_d2q06c.mps
+64 scaled_lp 1.500: 0.175696, 0.824304, 0.000000, 0.000000
+scaled_lp 1.500: 0.175696, 0.824304, 0.000000, 0.000000
+dbl_problem 0.250: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.250: 0.000000, 1.000000, 0.000000, 0.000000
+64 mpf_problem 0.031: -nan, -nan, -nan, -nan
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_d2q06c.mps
+64 scaled_lp 1.672: 0.175696, 0.824304, 0.000000, 0.000000
+scaled_lp 1.672: 0.175696, 0.824304, 0.000000, 0.000000
+dbl_problem 0.266: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.266: 0.000000, 1.000000, 0.000000, 0.000000
+64 mpf_problem 0.031: -nan, -nan, -nan, -nan
+67 scaled_lp 54.235: 0.171429, 0.828571, 0.000000, 0.000000
+scaled_lp 54.235: 0.171429, 0.828571, 0.000000, 0.000000
+mpf_problem 0.031: -nan, -nan, -nan, -nan
+70 mpf_problem 2.406: 0.000000, 0.000000, 0.666667, 0.333333
+mpf_problem 2.406: 0.000000, 0.000000, 0.666667, 0.333333
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_d2q06c.mps
+64 scaled_lp 1.563: 0.175696, 0.824304, 0.000000, 0.000000
+scaled_lp 1.563: 0.175696, 0.824304, 0.000000, 0.000000
+dbl_problem 0.297: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.297: 0.000000, 1.000000, 0.000000, 0.000000
+64 mpf_problem 0.031: -nan, -nan, -nan, -nan
+67 /cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_d2q06c.mps
+64 scaled_lp 1.641: 0.175696, 0.824304, 0.000000, 0.000000
+scaled_lp 1.641: 0.175696, 0.824304, 0.000000, 0.000000
+dbl_problem 0.250: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.250: 0.000000, 1.000000, 0.000000, 0.000000
+64 mpf_problem 0.016: -nan, -nan, -nan, -nan
+67 scaled_lp 41.343: 0.171429, 0.828571, 0.000000, 0.000000
+scaled_lp 41.343: 0.171429, 0.828571, 0.000000, 0.000000
+mpf_problem 0.031: -nan, -nan, -nan, -nan
+70 mpf_problem 1.328: 0.000000, 0.000000, 0.666667, 0.333333
+mpf_problem 1.328: 0.000000, 0.000000, 0.666667, 0.333333
+/cygdrive/c/Users/mason/Downloads/benchmark/square41.mps
+/cygdrive/c/Users/mason/Downloads/benchmark/bab
+/cygdrive/c/Users/mason/Downloads/benchmark/bab2.mps
+64 scaled_lp 54.954: 0.553450, 0.446550, 0.000000, 0.000000
+scaled_lp 54.954: 0.553450, 0.446550, 0.000000, 0.000000
+dbl_problem 0.047: -nan, -nan, -nan, -nan
+/cygdrive/c/Users/mason/Downloads/benchmark/co-100.mps
+64 scaled_lp 0.844: 0.386541, 0.613459, 0.000000, 0.000000
+scaled_lp 0.844: 0.386541, 0.613459, 0.000000, 0.000000
+dbl_problem 0.000: -nan, -nan, -nan, -nan
+/cygdrive/c/Users/mason/Downloads/benchmark/supportcase7.mps
+64 scaled_lp 19.282: 0.001356, 0.998644, 0.000000, 0.000000
+scaled_lp 19.297: 0.001356, 0.998644, 0.000000, 0.000000
+dbl_problem 0.015: -nan, -nan, -nan, -nan
+/cygdrive/c/Users/mason/Downloads/benchmark/gfd-schedulen180f7d50m30k18.mps
+64 scaled_lp 459.110: 0.478863, 0.000000, 0.000000, 0.521137
+scaled_lp 459.110: 0.478863, 0.000000, 0.000000, 0.521137
+dbl_problem 0.125: -nan, -nan, -nan, -nan
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/decom_cyc
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/decom_cycle.mps
+64 scaled_lp 0.000: 0.000000, 1.000000, 0.000000, 0.000000
+scaled_lp 0.000: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.000: -nan, -nan, -nan, -nan
+64 mpf_problem 0.031: 0.000000, 0.000000, 0.666667, 0.333333
+mpf_problem 0.031: 0.000000, 0.000000, 0.666667, 0.333333
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/decom_gen2.mps
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_pilot4.mps
+64 scaled_lp 0.000: 0.437059, 0.562941, 0.000000, 0.000000
+scaled_lp 0.000: 0.437059, 0.562941, 0.000000, 0.000000
+dbl_problem 0.000: -nan, -nan, -nan, -nan
+/cygdrive/c/Users/mason/OneDrive/Desktop/ADT/TestLibrary/perfectsin.mps
+64 scaled_lp 10.406: 0.999801, 0.000199, 0.000000, 0.000000
+scaled_lp 10.406: 0.999801, 0.000199, 0.000000, 0.000000
+dbl_problem 0.047: -nan, -nan, -nan, -nan
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/decom_pilot87.mps
+64 scaled_lp 4.109: 0.541962, 0.458038, 0.000000, 0.000000
+scaled_lp 4.109: 0.541962, 0.458038, 0.000000, 0.000000
+dbl_problem 0.344: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.344: 0.000000, 1.000000, 0.000000, 0.000000
+64 mpf_problem 104.359: 0.546423, 0.444818, 0.008759, 0.000000
+mpf_problem 104.359: 0.546423, 0.444818, 0.008759, 0.000000
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/decom_pilot87.mps
+64 scaled_lp 4.078: 0.541962, 0.458038, 0.000000, 0.000000
+scaled_lp 4.078: 0.541962, 0.458038, 0.000000, 0.000000
+dbl_problem 0.359: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.359: 0.000000, 1.000000, 0.000000, 0.000000
+64 mpf_problem 104.078: 0.546423, 0.444818, 0.008759, 0.000000
+mpf_problem 104.078: 0.546423, 0.444818, 0.008759, 0.000000
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/decom_pilot87.mps
+64 scaled_lp 3.890: 0.541962, 0.458038, 0.000000, 0.000000
+scaled_lp 3.890: 0.541962, 0.458038, 0.000000, 0.000000
+dbl_problem 0.360: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.360: 0.000000, 1.000000, 0.000000, 0.000000
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/decom_pilot87.mps
+64 scaled_lp 4.016: 0.541962, 0.458038, 0.000000, 0.000000
+scaled_lp 4.016: 0.541962, 0.458038, 0.000000, 0.000000
+dbl_problem 0.313: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.313: 0.000000, 1.000000, 0.000000, 0.000000
+64 mpf_problem 130.407: 0.546423, 0.444818, 0.008759, 0.000000
+mpf_problem 130.407: 0.546423, 0.444818, 0.008759, 0.000000
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/decom_pilot.mps
+64 scaled_lp 2.984: 0.669604, 0.330396, 0.000000, 0.000000
+scaled_lp 2.984: 0.669604, 0.330396, 0.000000, 0.000000
+dbl_problem 0.250: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.250: 0.000000, 1.000000, 0.000000, 0.000000
+64 mpf_problem 2.719: 0.000000, 0.000000, 0.166667, 0.833333
+mpf_problem 2.719: 0.000000, 0.000000, 0.166667, 0.833333
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_d2q06c.mps
+64 scaled_lp 1.531: 0.175696, 0.824304, 0.000000, 0.000000
+scaled_lp 1.531: 0.175696, 0.824304, 0.000000, 0.000000
+dbl_problem 0.297: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.297: 0.000000, 1.000000, 0.000000, 0.000000
+64 mpf_problem 0.016: -nan, -nan, -nan, -nan
+67 scaled_lp 32.250: 0.171429, 0.828571, 0.000000, 0.000000
+scaled_lp 32.250: 0.171429, 0.828571, 0.000000, 0.000000
+mpf_problem 0.031: -nan, -nan, -nan, -nan
+70 mpf_problem 1.016: 0.000000, 0.000000, 0.666667, 0.333333
+mpf_problem 1.016: 0.000000, 0.000000, 0.666667, 0.333333
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_d2q06c.mps
+64 scaled_lp 1.640: 0.175696, 0.824304, 0.000000, 0.000000
+scaled_lp 1.640: 0.175696, 0.824304, 0.000000, 0.000000
+dbl_problem 0.250: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.250: 0.000000, 1.000000, 0.000000, 0.000000
+64 mpf_problem 0.031: -nan, -nan, -nan, -nan
+67 scaled_lp 32.438: 0.171429, 0.828571, 0.000000, 0.000000
+scaled_lp 32.438: 0.171429, 0.828571, 0.000000, 0.000000
+mpf_problem 0.015: -nan, -nan, -nan, -nan
+70 mpf_problem 1.594: 0.000000, 0.000000, 0.666667, 0.333333
+mpf_problem 1.594: 0.000000, 0.000000, 0.666667, 0.333333
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_d2q06c.mps
+64 scaled_lp 1.578: 0.175696, 0.824304, 0.000000, 0.000000
+scaled_lp 1.578: 0.175696, 0.824304, 0.000000, 0.000000
+dbl_problem 0.266: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.266: 0.000000, 1.000000, 0.000000, 0.000000
+64 mpf_problem 0.031: -nan, -nan, -nan, -nan
+67 scaled_lp 32.156: 0.171429, 0.828571, 0.000000, 0.000000
+scaled_lp 32.156: 0.171429, 0.828571, 0.000000, 0.000000
+mpf_problem 0.031: -nan, -nan, -nan, -nan
+70 mpf_problem 1.046: 0.000000, 0.000000, 0.666667, 0.333333
+mpf_problem 1.046: 0.000000, 0.000000, 0.666667, 0.333333
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_d2q06c.mps
+64 scaled_lp 1.516: 0.175696, 0.824304, 0.000000, 0.000000
+scaled_lp 1.516: 0.175696, 0.824304, 0.000000, 0.000000
+dbl_problem 0.281: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.281: 0.000000, 1.000000, 0.000000, 0.000000
+128 mpf_problem 1.047: 0.000000, 0.000000, 0.666667, 0.333333
+mpf_problem 1.047: 0.000000, 0.000000, 0.666667, 0.333333
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_d2q06c.mps
+64 scaled_lp 1.469: 0.175696, 0.824304, 0.000000, 0.000000
+scaled_lp 1.469: 0.175696, 0.824304, 0.000000, 0.000000
+dbl_problem 0.250: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.250: 0.000000, 1.000000, 0.000000, 0.000000
+64 mpf_problem 0.016: -nan, -nan, -nan, -nan
+67 scaled_lp 32.344: 0.171429, 0.828571, 0.000000, 0.000000
+scaled_lp 32.344: 0.171429, 0.828571, 0.000000, 0.000000
+mpf_problem 0.031: -nan, -nan, -nan, -nan
+70 mpf_problem 1.031: 0.000000, 0.000000, 0.666667, 0.333333
+mpf_problem 1.031: 0.000000, 0.000000, 0.666667, 0.333333
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/decom_pilot87.mps
+64 scaled_lp 3.859: 0.541962, 0.458038, 0.000000, 0.000000
+scaled_lp 3.859: 0.541962, 0.458038, 0.000000, 0.000000
+dbl_problem 0.329: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.329: 0.000000, 1.000000, 0.000000, 0.000000
+128 mpf_problem 210.641: 0.492386, 0.463814, 0.043800, 0.000000
+mpf_problem 210.641: 0.492386, 0.463814, 0.043800, 0.000000
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_d2q06c.mps
+64 scaled_lp 1.594: 0.175696, 0.824304, 0.000000, 0.000000
+scaled_lp 1.594: 0.175696, 0.824304, 0.000000, 0.000000
+dbl_problem 0.250: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.250: 0.000000, 1.000000, 0.000000, 0.000000
+128 mpf_problem 0.984: 0.000000, 0.000000, 0.666667, 0.333333
+mpf_problem 0.984: 0.000000, 0.000000, 0.666667, 0.333333
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_d2q06c.mps
+64 scaled_lp 1.578: 0.175696, 0.824304, 0.000000, 0.000000
+scaled_lp 1.578: 0.175696, 0.824304, 0.000000, 0.000000
+dbl_problem 0.282: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.282: 0.000000, 1.000000, 0.000000, 0.000000
+128 mpf_problem 1.031: 0.000000, 0.000000, 0.666667, 0.333333
+mpf_problem 1.031: 0.000000, 0.000000, 0.666667, 0.333333
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_d2q06c.mps
+64 scaled_lp 1.531: 0.175696, 0.824304, 0.000000, 0.000000
+scaled_lp 1.531: 0.175696, 0.824304, 0.000000, 0.000000
+dbl_problem 0.297: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.297: 0.000000, 1.000000, 0.000000, 0.000000
+128 mpf_problem 1.062: 0.000000, 0.000000, 0.666667, 0.333333
+mpf_problem 1.062: 0.000000, 0.000000, 0.666667, 0.333333
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_d2q06c.mps
+64 scaled_lp 1.579: 0.175696, 0.824304, 0.000000, 0.000000
+scaled_lp 1.579: 0.175696, 0.824304, 0.000000, 0.000000
+dbl_problem 0.266: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.266: 0.000000, 1.000000, 0.000000, 0.000000
+128 mpf_problem 1.078: 0.000000, 0.000000, 0.666667, 0.333333
+mpf_problem 1.078: 0.000000, 0.000000, 0.666667, 0.333333
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_d2q06c.mps
+64 scaled_lp 1.609: 0.175696, 0.824304, 0.000000, 0.000000
+scaled_lp 1.609: 0.175696, 0.824304, 0.000000, 0.000000
+dbl_problem 0.266: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.266: 0.000000, 1.000000, 0.000000, 0.000000
+128 mpf_problem 1.032: 0.000000, 0.000000, 0.666667, 0.333333
+mpf_problem 1.032: 0.000000, 0.000000, 0.666667, 0.333333
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/decom_pilot87.mps
+64 scaled_lp 4.172: 0.541962, 0.458038, 0.000000, 0.000000
+scaled_lp 4.188: 0.541962, 0.458038, 0.000000, 0.000000
+dbl_problem 0.328: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.328: 0.000000, 1.000000, 0.000000, 0.000000
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/decom_pilot.mps
+64 scaled_lp 1.563: 0.669604, 0.330396, 0.000000, 0.000000
+scaled_lp 1.563: 0.669604, 0.330396, 0.000000, 0.000000
+dbl_problem 0.141: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.141: 0.000000, 1.000000, 0.000000, 0.000000
+128 mpf_problem 1.782: 0.000000, 0.000000, 0.166667, 0.833333
+mpf_problem 1.782: 0.000000, 0.000000, 0.166667, 0.833333
+/cygdrive/c/Users/mason/OneDrive/Desktop/ADT/TestLibrary/perfectsin.mps
+64 scaled_lp 10.156: 0.999801, 0.000199, 0.000000, 0.000000
+scaled_lp 10.156: 0.999801, 0.000199, 0.000000, 0.000000
+dbl_problem 0.046: -nan, -nan, -nan, -nan
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/decom_pilot87.mps
+64 scaled_lp 4.406: 0.541962, 0.458038, 0.000000, 0.000000
+scaled_lp 4.422: 0.541962, 0.458038, 0.000000, 0.000000
+dbl_problem 0.344: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.359: 0.000000, 1.000000, 0.000000, 0.000000
+128 mpf_problem 208.891: 0.492386, 0.463814, 0.043800, 0.000000
+mpf_problem 208.891: 0.492386, 0.463814, 0.043800, 0.000000
+/cygdrive/c/Users/mason/Downloads/nPolyBowl_8_7_8.mps
+64 scaled_lp 0.000: 0.000000, 1.000000, 0.000000, 0.000000
+scaled_lp 0.000: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.000: -nan, -nan, -nan, -nan
+128 mpf_problem 0.000: 0.000000, 0.000000, 0.347826, 0.652174
+mpf_problem 0.000: 0.000000, 0.000000, 0.347826, 0.652174
+/cygdrive/c/Users/mason/Downloads/nPolyBowl_128_7_32.mps
+64 scaled_lp 0.188: 0.000000, 1.000000, 0.000000, 0.000000
+scaled_lp 0.188: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.047: -nan, -nan, -nan, -nan
+128 mpf_problem 19.500: 0.000000, 0.000000, 0.211454, 0.788546
+mpf_problem 19.500: 0.000000, 0.000000, 0.211454, 0.788546
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/decom_pilot.mps
+64 scaled_lp 1.656: 0.669604, 0.330396, 0.000000, 0.000000
+scaled_lp 1.656: 0.669604, 0.330396, 0.000000, 0.000000
+dbl_problem 0.141: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.141: 0.000000, 1.000000, 0.000000, 0.000000
+128 mpf_problem 1.875: 0.000000, 0.000000, 0.166667, 0.833333
+mpf_problem 1.875: 0.000000, 0.000000, 0.166667, 0.833333
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_d2q06c.mps
+64 scaled_lp 1.531: 0.175696, 0.824304, 0.000000, 0.000000
+scaled_lp 1.531: 0.175696, 0.824304, 0.000000, 0.000000
+dbl_problem 0.250: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.250: 0.000000, 1.000000, 0.000000, 0.000000
+128 mpf_problem 1.016: 0.000000, 0.000000, 0.666667, 0.333333
+mpf_problem 1.016: 0.000000, 0.000000, 0.666667, 0.333333
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_d2q06c.mps
+64 scaled_lp 1.546: 0.175696, 0.824304, 0.000000, 0.000000
+scaled_lp 1.546: 0.175696, 0.824304, 0.000000, 0.000000
+dbl_problem 0.204: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.204: 0.000000, 1.000000, 0.000000, 0.000000
+64 mpf_problem 0.015: -nan, -nan, -nan, -nan
+67 scaled_lp 33.375: 0.171429, 0.828571, 0.000000, 0.000000
+scaled_lp 33.375: 0.171429, 0.828571, 0.000000, 0.000000
+mpf_problem 0.031: -nan, -nan, -nan, -nan
+70 mpf_problem 1.110: 0.000000, 0.000000, 0.666667, 0.333333
+mpf_problem 1.110: 0.000000, 0.000000, 0.666667, 0.333333
+/cygdrive/c/Users/mason/Downloads/nPolyBowl_128_7_32.mps
+64 scaled_lp 0.172: 0.000000, 1.000000, 0.000000, 0.000000
+scaled_lp 0.172: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.063: -nan, -nan, -nan, -nan
+64 mpf_problem 16.921: 0.000000, 0.000000, 0.211454, 0.788546
+mpf_problem 16.921: 0.000000, 0.000000, 0.211454, 0.788546
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/hard_problems/decom_d2q06c.mps
+64 scaled_lp 1.656: 0.175696, 0.824304, 0.000000, 0.000000
+scaled_lp 1.656: 0.175696, 0.824304, 0.000000, 0.000000
+dbl_problem 0.281: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.281: 0.000000, 1.000000, 0.000000, 0.000000
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/decom_pilot.mps
+64 scaled_lp 1.500: 0.669604, 0.330396, 0.000000, 0.000000
+scaled_lp 1.500: 0.669604, 0.330396, 0.000000, 0.000000
+dbl_problem 0.141: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.141: 0.000000, 1.000000, 0.000000, 0.000000
+128 mpf_problem 1.766: 0.000000, 0.000000, 0.166667, 0.833333
+mpf_problem 1.766: 0.000000, 0.000000, 0.166667, 0.833333
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/decom_pilot.mps
+64 scaled_lp 1.562: 0.669604, 0.330396, 0.000000, 0.000000
+scaled_lp 1.562: 0.669604, 0.330396, 0.000000, 0.000000
+dbl_problem 0.141: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.141: 0.000000, 1.000000, 0.000000, 0.000000
+128 mpf_problem 1.875: 0.000000, 0.000000, 0.166667, 0.833333
+mpf_problem 1.875: 0.000000, 0.000000, 0.166667, 0.833333
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/decom_pilot.mps
+64 scaled_lp 1.657: 0.669604, 0.330396, 0.000000, 0.000000
+scaled_lp 1.657: 0.669604, 0.330396, 0.000000, 0.000000
+dbl_problem 0.140: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.140: 0.000000, 1.000000, 0.000000, 0.000000
+128 mpf_problem 1.859: 0.000000, 0.000000, 0.166667, 0.833333
+mpf_problem 1.859: 0.000000, 0.000000, 0.166667, 0.833333
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/decom_pilot.mps
+64 scaled_lp 1.672: 0.669604, 0.330396, 0.000000, 0.000000
+scaled_lp 1.672: 0.669604, 0.330396, 0.000000, 0.000000
+dbl_problem 0.140: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.140: 0.000000, 1.000000, 0.000000, 0.000000
+128 mpf_problem 1.828: 0.000000, 0.000000, 0.166667, 0.833333
+mpf_problem 1.843: 0.000000, 0.000000, 0.166667, 0.833333
+/cygdrive/c/Users/mason/Downloads/MIPLIB_problems/MIPLIB_problems/decom_pilot.mps
+64 scaled_lp 1.641: 0.669604, 0.330396, 0.000000, 0.000000
+scaled_lp 1.641: 0.669604, 0.330396, 0.000000, 0.000000
+dbl_problem 0.125: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.125: 0.000000, 1.000000, 0.000000, 0.000000
+128 mpf_problem 1.781: 0.000000, 0.000000, 0.166667, 0.833333
+mpf_problem 1.781: 0.000000, 0.000000, 0.166667, 0.833333
+/cygdrive/c/Users/mason/OneDrive/Desktop/ADT/TestLibrary/de063155.mps
+64 scaled_lp 0.000: 1.000000, 0.000000, 0.000000, 0.000000
+scaled_lp 0.000: 1.000000, 0.000000, 0.000000, 0.000000
+dbl_problem 0.000: 1.000000, 0.000000, 0.000000, 0.000000
+dbl_problem 0.000: 1.000000, 0.000000, 0.000000, 0.000000
+128 scaled_lp 0.234: 1.000000, 0.000000, 0.000000, 0.000000
+192 scaled_lp 0.375: 0.728405, 0.271595, 0.000000, 0.000000
+scaled_lp 0.375: 0.728405, 0.271595, 0.000000, 0.000000
+mpf_problem 0.000: -nan, -nan, -nan, -nan
+/cygdrive/c/Users/mason/OneDrive/Desktop/ADT/TestLibrary/de063157.mps
+64 scaled_lp 0.000: 1.000000, 0.000000, 0.000000, 0.000000
+scaled_lp 0.000: 1.000000, 0.000000, 0.000000, 0.000000
+dbl_problem 0.015: 0.888446, 0.000000, 0.000000, 0.111554
+dbl_problem 0.015: 0.888446, 0.000000, 0.000000, 0.111554
+128 scaled_lp 0.360: 0.509403, 0.000000, 0.000000, 0.490597
+scaled_lp 0.360: 0.509403, 0.000000, 0.000000, 0.490597
+mpf_problem 0.000: -nan, -nan, -nan, -nan
+/cygdrive/c/Users/mason/OneDrive/Desktop/ADT/TestLibrary/delfland.mps
+64 scaled_lp 0.016: 1.000000, 0.000000, 0.000000, 0.000000
+scaled_lp 0.016: 1.000000, 0.000000, 0.000000, 0.000000
+dbl_problem 0.000: 1.000000, 0.000000, 0.000000, 0.000000
+dbl_problem 0.000: 1.000000, 0.000000, 0.000000, 0.000000
+128 scaled_lp 0.235: 1.000000, 0.000000, 0.000000, 0.000000
+192 scaled_lp 0.344: 0.728405, 0.271595, 0.000000, 0.000000
+scaled_lp 0.344: 0.728405, 0.271595, 0.000000, 0.000000
+mpf_problem 0.000: -nan, -nan, -nan, -nan
+/cygdrive/c/Users/mason/OneDrive/Desktop/ADT/TestLibrary/small002.mps
+64 scaled_lp 0.000: 0.646724, 0.353276, 0.000000, 0.000000
+scaled_lp 0.000: 0.646724, 0.353276, 0.000000, 0.000000
+dbl_problem 0.000: -nan, -nan, -nan, -nan
+128 mpf_problem 0.015: 0.000000, 0.000000, 0.250000, 0.750000
+mpf_problem 0.015: 0.000000, 0.000000, 0.250000, 0.750000
+/cygdrive/c/Users/mason/OneDrive/Desktop/ADT/TestLibrary/arki001.mps
+64 scaled_lp 0.031: 0.692623, 0.307377, 0.000000, 0.000000
+scaled_lp 0.031: 0.692623, 0.307377, 0.000000, 0.000000
+dbl_problem 0.000: 0.000000, 1.000000, 0.000000, 0.000000
+dbl_problem 0.000: 0.000000, 1.000000, 0.000000, 0.000000
+128 mpf_problem 0.016: 0.000000, 0.000000, 1.000000, 0.000000
+mpf_problem 0.016: 0.000000, 0.000000, 1.000000, 0.000000
+192 scaled_lp 0.359: 0.637188, 0.362812, 0.000000, 0.000000
+scaled_lp 0.359: 0.637188, 0.362812, 0.000000, 0.000000
+mpf_problem 0.000: -nan, -nan, -nan, -nan
+/cygdrive/c/Users/mason/OneDrive/Desktop/ADT/TestLibrary/ge.mps
+64 scaled_lp 2.250: 0.603289, 0.396711, 0.000000, 0.000000
+scaled_lp 2.250: 0.603289, 0.396711, 0.000000, 0.000000
+dbl_problem 0.000: -nan, -nan, -nan, -nan
+128 mpf_problem 0.593: 0.000000, 0.000000, 0.000000, 1.000000
+mpf_problem 0.593: 0.000000, 0.000000, 0.000000, 1.000000
+/cygdrive/c/Users/mason/OneDrive/Desktop/ADT/TestLibrary/momentum3.mps
+64 /cygdrive/c/Users/mason/OneDrive/Desktop/ADT/TestLibrary/textbook.mps
+/cygdrive/c/Users/mason/OneDrive/Desktop/ADT/TestLibrary/GlcA
+/cygdrive/c/Users/mason/OneDrive/Desktop/ADT/TestLibrary/GlcAlift.mps
+64 /cygdrive/c/Users/mason/OneDrive/Desktop/ADT/converted_lp/enlight_hard_LP.mps
+64 scaled_lp 0.000: 0.967742, 0.032258, 0.000000, 0.000000
+scaled_lp 0.000: 0.967742, 0.032258, 0.000000, 0.000000
+dbl_problem 0.000: -nan, -nan, -nan, -nan
+/cygdrive/c/Users/mason/OneDrive/Desktop/ADT/converted_lp/rocI-4-11_LP.mps
+64 scaled_lp 0.312: 0.977346, 0.022654, 0.000000, 0.000000
+scaled_lp 0.312: 0.977346, 0.022654, 0.000000, 0.000000
+dbl_problem 0.000: -nan, -nan, -nan, -nan
+/cygdrive/c/Users/mason/OneDrive/Desktop/ADT/converted_lp/nursesched-medium-hint03_LP.mps
+64 scaled_lp 11.438: 0.231240, 0.768760, 0.000000, 0.000000
+scaled_lp 11.438: 0.231240, 0.768760, 0.000000, 0.000000
+dbl_problem 0.000: -nan, -nan, -nan, -nan
+/cygdrive/c/Users/mason/OneDrive/Desktop/ADT/converted_lp/k1mushroom_LP.mps
+64 scaled_lp 89.328: 0.001749, 0.998251, 0.000000, 0.000000
+scaled_lp 89.328: 0.001749, 0.998251, 0.000000, 0.000000
+dbl_problem 2.687: -nan, -nan, -nan, -nan
+/cygdrive/c/Users/mason/OneDrive/Desktop/ADT/converted_lp/babs2_LP.mps
+/cygdrive/c/Users/mason/OneDrive/Desktop/ADT/converted_lp/babs2_LP.mps
+/cygdrive/c/Users/mason/OneDrive/Desktop/ADT/converted_lp/bab2_LP.mps
+64 scaled_lp 98.188: 0.553450, 0.446550, 0.000000, 0.000000
+scaled_lp 98.188: 0.553450, 0.446550, 0.000000, 0.000000
+dbl_problem 0.016: -nan, -nan, -nan, -nan
+/cygdrive/c/Users/mason/OneDrive/Desktop/ADT/TestLibrary/nesm.mps
+64 scaled_lp 0.063: 0.355428, 0.644572, 0.000000, 0.000000
+scaled_lp 0.063: 0.355428, 0.644572, 0.000000, 0.000000
+dbl_problem 0.000: -nan, -nan, -nan, -nan
+128 mpf_problem 0.000: 0.000000, 0.000000, 0.000000, 1.000000
+mpf_problem 0.000: 0.000000, 0.000000, 0.000000, 1.000000

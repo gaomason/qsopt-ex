@@ -883,7 +883,7 @@ int EGLPNUM_TYPENAME_ILLsimplex (EGLPNUM_TYPENAME_lpinfo * lp, int algorithm, EG
 
 	if (B != 0)
 	{
-		rval = EGLPNUM_TYPENAME_ILLbasis_load (lp, B);
+		rval = EGLPNUM_TYPENAME_ILLbasis_load (lp, B, 0);
 		CHECKRVALG (rval, CLEANUP);
 		if (it.algorithm == DUAL_SIMPLEX)
 		{

@@ -31,6 +31,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
 #include "logging-private.h"
 

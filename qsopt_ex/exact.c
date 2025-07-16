@@ -1085,7 +1085,7 @@ static int QSexact_basis_status (mpq_QSdata * p_mpq,
 		mpq_EGlpNumInitVar (p_mpq->cached_lu->partial_cur);
 		rval = mpq_ILLfactor_deep_copy(p_mpq->cached_lu, p_mpq->lp->f);
 		if (rval) {
-			printf("Failed to deep copy factor work");
+			QSlog("Failed to deep copy factor work");
 			goto CLEANUP;
 		}
 		//cache the basis deep copy
@@ -1106,6 +1106,7 @@ static int QSexact_basis_status (mpq_QSdata * p_mpq,
 			}
 		}
 		if (mismatch_count / p_mpq->lp->O->nrows > 0.1 ) {
+			QSlog("Using refactorization");
 			refactor = 1;
 			free(mismatch_indices);
 		}
@@ -1279,7 +1280,7 @@ static int QSexact_basis_status (mpq_QSdata * p_mpq,
 		mpq_EGlpNumInitVar (temp_lu->partial_cur);
 		rval = mpq_ILLfactor_deep_copy(temp_lu, p_mpq->cached_lu);
 		if (rval) {
-			printf("Failed to deep copy factor work after refactorization");
+			QSlog("Failed to deep copy factor work after refactorization");
 			goto CLEANUP;
 		}
 		p_mpq->lp->f = temp_lu;
@@ -2075,6 +2076,20 @@ int QSexact_solver (mpq_QSdata * p_mpq, mpq_t * const x, mpq_t * const y, QSbasi
 	}
 	/* ending */
 CLEANUP:
+	if (p_mpq->cached_lu) {
+		mpq_ILLfactor_free_factor_work(p_mpq->cached_lu);
+		mpq_EGlpNumClearVar(p_mpq->cached_lu->fzero_tol);
+		mpq_EGlpNumClearVar(p_mpq->cached_lu->szero_tol);
+		mpq_EGlpNumClearVar(p_mpq->cached_lu->partial_tol);
+		mpq_EGlpNumClearVar(p_mpq->cached_lu->maxelem_orig);
+		mpq_EGlpNumClearVar(p_mpq->cached_lu->maxelem_factor);
+		mpq_EGlpNumClearVar(p_mpq->cached_lu->maxelem_cur);
+		mpq_EGlpNumClearVar(p_mpq->cached_lu->partial_cur);
+		ILL_IFFREE(p_mpq->cached_lu);
+	}
+	if (p_mpq->cached_baz) {
+		ILL_IFFREE(p_mpq->cached_baz);
+	}
 	dbl_EGlpNumFreeArray (x_dbl);
 	dbl_EGlpNumFreeArray (y_dbl);
 	mpq_EGlpNumFreeArray (x_mpq);

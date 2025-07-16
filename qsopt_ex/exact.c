@@ -1283,6 +1283,10 @@ static int QSexact_basis_status (mpq_QSdata * p_mpq,
 			QSlog("Failed to deep copy factor work after refactorization");
 			goto CLEANUP;
 		}
+		if (p_mpq->lp->f) {
+			mpq_ILLfactor_free_factor_work(p_mpq->lp->f);
+			ILL_IFFREE(p_mpq->lp->f);
+		}
 		p_mpq->lp->f = temp_lu;
 		QSlog("Updated cached lu");
 		free(mismatch_indices);

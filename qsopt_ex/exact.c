@@ -1105,7 +1105,7 @@ static int QSexact_basis_status (mpq_QSdata * p_mpq,
 				mismatch_indices[mismatch_count++] = i;
 			}
 		}
-		if (mismatch_count / p_mpq->lp->O->nrows > 0.1 ) {
+		if ((double)mismatch_count / p_mpq->lp->O->nrows > 0.05 ) {
 			QSlog("Using refactorization");
 			refactor = 1;
 			free(mismatch_indices);
@@ -1171,13 +1171,11 @@ static int QSexact_basis_status (mpq_QSdata * p_mpq,
 				}
 				
 				mpf_ILLfactor_ftran_update(mpf_cached_lu, &mpf_a_s, &mpf_spike, &mpf_direction);
-				
 				direction.nzcnt = mpf_direction.nzcnt;
 				memcpy(direction.indx, mpf_direction.indx, mpf_direction.nzcnt * sizeof(int));
 				for (int j = 0; j < mpf_direction.nzcnt; j++) {
 					mpq_set_f(direction.coef[j], mpf_direction.coef[j]);
 				}
-				
 				mpq_compute_spike(p_mpq->cached_lu, &a_s, &spike);
 				
 				// Clean up mpf precision structures
@@ -1208,7 +1206,7 @@ static int QSexact_basis_status (mpq_QSdata * p_mpq,
 						double abs_val = fabs(mpq_get_d(direction.coef[k]));
 						if (abs_val > max_abs_val) {
 							max_abs_val = abs_val;
-							swap_pos = pos;
+								swap_pos = pos;
 						}
 					}
 				}
@@ -1219,13 +1217,13 @@ static int QSexact_basis_status (mpq_QSdata * p_mpq,
 					p_mpq->lp->baz[update_pos] = p_mpq->lp->baz[swap_pos];
 					p_mpq->lp->baz[swap_pos] = temp_col;
 					update_pos = swap_pos;
+
 				}
 				if (swap_pos == -1) {
 					QSlog("No swap found, increase copy precision");
 					refactor = 1;
 					break;
 				}
-
 				rval = mpq_ILLfactor_update(p_mpq->cached_lu, &spike, update_pos, &refactor);
 
 				if (refactor || rval) {
@@ -1255,7 +1253,31 @@ static int QSexact_basis_status (mpq_QSdata * p_mpq,
 				if (mismatch_count == 0) {
 					break;
 				}
+				
+			}		
+		}
+		if (!refactor) {
+			mpq_factor_work *temp_lu;
+			ILL_SAFE_MALLOC (temp_lu, 1, mpq_factor_work);	
+			mpq_EGlpNumInitVar (temp_lu->fzero_tol);
+			mpq_EGlpNumInitVar (temp_lu->szero_tol); 
+			mpq_EGlpNumInitVar (temp_lu->partial_tol);
+			mpq_EGlpNumInitVar (temp_lu->maxelem_orig);
+			mpq_EGlpNumInitVar (temp_lu->maxelem_factor);
+			mpq_EGlpNumInitVar (temp_lu->maxelem_cur);
+			mpq_EGlpNumInitVar (temp_lu->partial_cur);
+			rval = mpq_ILLfactor_deep_copy(temp_lu, p_mpq->cached_lu);
+			if (rval) {
+				QSlog("Failed to deep copy factor work after refactorization");
+				goto CLEANUP;
 			}
+			if (p_mpq->lp->f) {
+				mpq_ILLfactor_free_factor_work(p_mpq->lp->f);
+				ILL_IFFREE(p_mpq->lp->f);
+			}
+			p_mpq->lp->f = temp_lu;
+			QSlog("Updated cached lu");
+			free(mismatch_indices);	
 		}
 		if (refactor) {
 		    int singular;
@@ -1269,27 +1291,6 @@ static int QSexact_basis_status (mpq_QSdata * p_mpq,
     		}
 
 		}
-		mpq_factor_work *temp_lu;
-		ILL_SAFE_MALLOC (temp_lu, 1, mpq_factor_work);	
-		mpq_EGlpNumInitVar (temp_lu->fzero_tol);
-		mpq_EGlpNumInitVar (temp_lu->szero_tol); 
-		mpq_EGlpNumInitVar (temp_lu->partial_tol);
-		mpq_EGlpNumInitVar (temp_lu->maxelem_orig);
-		mpq_EGlpNumInitVar (temp_lu->maxelem_factor);
-		mpq_EGlpNumInitVar (temp_lu->maxelem_cur);
-		mpq_EGlpNumInitVar (temp_lu->partial_cur);
-		rval = mpq_ILLfactor_deep_copy(temp_lu, p_mpq->cached_lu);
-		if (rval) {
-			QSlog("Failed to deep copy factor work after refactorization");
-			goto CLEANUP;
-		}
-		if (p_mpq->lp->f) {
-			mpq_ILLfactor_free_factor_work(p_mpq->lp->f);
-			ILL_IFFREE(p_mpq->lp->f);
-		}
-		p_mpq->lp->f = temp_lu;
-		QSlog("Updated cached lu");
-		free(mismatch_indices);
 	}
 	memset (&(p_mpq->lp->basisstat), 0, sizeof (mpq_lp_status_info));
 	// feasibility check
@@ -2080,20 +2081,6 @@ int QSexact_solver (mpq_QSdata * p_mpq, mpq_t * const x, mpq_t * const y, QSbasi
 	}
 	/* ending */
 CLEANUP:
-	if (p_mpq->cached_lu) {
-		mpq_ILLfactor_free_factor_work(p_mpq->cached_lu);
-		mpq_EGlpNumClearVar(p_mpq->cached_lu->fzero_tol);
-		mpq_EGlpNumClearVar(p_mpq->cached_lu->szero_tol);
-		mpq_EGlpNumClearVar(p_mpq->cached_lu->partial_tol);
-		mpq_EGlpNumClearVar(p_mpq->cached_lu->maxelem_orig);
-		mpq_EGlpNumClearVar(p_mpq->cached_lu->maxelem_factor);
-		mpq_EGlpNumClearVar(p_mpq->cached_lu->maxelem_cur);
-		mpq_EGlpNumClearVar(p_mpq->cached_lu->partial_cur);
-		ILL_IFFREE(p_mpq->cached_lu);
-	}
-	if (p_mpq->cached_baz) {
-		ILL_IFFREE(p_mpq->cached_baz);
-	}
 	dbl_EGlpNumFreeArray (x_dbl);
 	dbl_EGlpNumFreeArray (y_dbl);
 	mpq_EGlpNumFreeArray (x_mpq);

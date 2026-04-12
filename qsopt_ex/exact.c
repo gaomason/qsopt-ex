@@ -1026,6 +1026,73 @@ static void optimal_output (mpq_QSdata * p_mpq,
 	}
 }
 
+/* Total stored nonzeros in the cached LU factorization: U (row-wise), L
+ * (column-wise), eta matrices, and (when present) the dense working matrix
+ * dmat. When dmat is allocated during the dense kernel, the same block is
+ * mirrored in ur/lc until dense_replace finishes; we subtract that overlap
+ * then add dmat nonzeros so the total is not double-counted. */
+static int
+mpq_factor_work_lu_nzcnt (const mpq_factor_work *f)
+{
+	int i, k, n;
+	int dim;
+	int db, dr, dc;
+	int r, col;
+
+	if (f == NULL || f->ur_inf == NULL || f->lc_inf == NULL || f->er_inf == NULL)
+		return 0;
+	dim = f->dim;
+	n = 0;
+	for (i = 0; i < dim; i++)
+		n += f->ur_inf[i].nzcnt;
+	for (i = 0; i < dim; i++)
+		n += f->lc_inf[i].nzcnt;
+	for (i = 0; i < f->etacnt; i++)
+		n += f->er_inf[i].nzcnt;
+
+	if (f->dmat != NULL && f->drows > 0 && f->dcols > 0 && f->rperm != NULL)
+	{
+		db = f->dense_base;
+		dr = f->drows;
+		dc = f->dcols;
+		/* Same rows/cols as dense_replace_row / dense_create_col in factor.c */
+		for (i = 0; i < dr; i++)
+		{
+			if (db + i >= dim)
+				break;
+			r = f->rperm[db + i];
+			if (r >= 0 && r < dim)
+				n -= f->ur_inf[r].nzcnt;
+			col = db + i;
+			n -= f->lc_inf[col].nzcnt;
+		}
+		for (k = 0; k < dr * dc; k++)
+		{
+			if (mpq_EGlpNumIsNeqZero (f->dmat[k], f->fzero_tol))
+				n++;
+		}
+	}
+	return n;
+}
+
+/* Stored nonzeros in basis matrix B (columns baz[0..n-1] of A in CSC form). */
+static long long
+mpq_basis_matrix_nzcnt (const mpq_lpinfo *lp)
+{
+	int i, n;
+	long long nnz;
+
+	if (lp == NULL || lp->baz == NULL || lp->matcnt == NULL)
+		return 0;
+	n = lp->nrows;
+	if (n <= 0)
+		return 0;
+	nnz = 0;
+	for (i = 0; i < n; i++)
+		nnz += (long long) lp->matcnt[lp->baz[i]];
+	return nnz;
+}
+
 /* ========================================================================= */
 /** @brief get the status for a given basis in rational arithmetic, it should
  * also leave everything set to get primal/dual solutions when needed.
@@ -1072,6 +1139,12 @@ static int QSexact_basis_status (mpq_QSdata * p_mpq,
 	mpq_ILLfct_set_variable_type (p_mpq->lp);
 	// factoring of basis
 	EGcallD(mpq_ILLbasis_load (p_mpq->lp, p_mpq->basis, p_mpq->cached_baz));
+	{
+		int n = p_mpq->lp->nrows;
+		long long dense_sz = (long long) n * (long long) n;
+		log_message("Basis matrix: %dx%d (%lld dense entries), nonzeros: %lld",
+								n, n, dense_sz, mpq_basis_matrix_nzcnt (p_mpq->lp));
+	}
 	if (p_mpq->cached_lu == 0) 
 	{
 		EGcallD(mpq_ILLbasis_factor (p_mpq->lp, &singular));
@@ -1105,17 +1178,18 @@ static int QSexact_basis_status (mpq_QSdata * p_mpq,
 				mismatch_indices[mismatch_count++] = i;
 			}
 		}
-		if ((double)mismatch_count / p_mpq->lp->O->nrows > 0.05 ) {
+		if (mismatch_count > 100) {
 			QSlog("Using refactorization");
 			refactor = 1;
 			free(mismatch_indices);
 		}
 		log_message("Mismatch's: %d/%d", mismatch_count, p_mpq->lp->O->nrows);
+		int update_count = 0;
 		while (!refactor) {
 			int changed = 0;
 			int update_pos = -1;
 			int leaving_col = -1;
-
+			update_count++;
 			// Find the next column that has changed
 			for (int i = 0; i < mismatch_count; ++i) {
 				if (p_mpq->cached_baz[mismatch_indices[i]] != p_mpq->lp->baz[mismatch_indices[i]]) {
@@ -1130,6 +1204,9 @@ static int QSexact_basis_status (mpq_QSdata * p_mpq,
 				break; // Bases are now in sync
 			}
 			else {
+				int sparsity_filler = mpq_factor_work_lu_nzcnt (p_mpq->cached_lu);
+				log_message("Update count: %d, LU stored nonzeros (fill): %d",
+							update_count, sparsity_filler);
 				int entering_col = p_mpq->lp->baz[update_pos];
 
 				// Create a_s for the entering column
@@ -1727,10 +1804,102 @@ int QSexact_solver (mpq_QSdata * p_mpq, mpq_t * const x, mpq_t * const y, QSbasi
 	{
 		EGcallD(mpq_QSwrite_prob(p_mpq, "qsxprob.lp","LP"));
 	}
-	/* try first with doubles */
+	#if  0
+	/* try first with mpf at 32 bits */
+	{
+		unsigned const mpf32_precision = 32;
+		QSexact_set_precision (mpf32_precision);
+		if (p_mpq->simplex_display || DEBUG >= __QS_SB_VERB)
+		{
+			QSlog("Trying mpf with %u bits", mpf32_precision);
+		}
+		EGioFile_t *out = EGioOpen ("time_precision_data", "a");
+		if (out) { EGioPrintf (out, "%u ", mpf32_precision); EGioClose (out); }
+		p_mpf = QScopy_prob_mpq_mpf (p_mpq, "mpf32_problem");
+		if(__QS_SB_VERB <= DEBUG) p_mpf->simplex_display = 1;
+		if (ebasis && ebasis->nstruct)
+		{
+			mpf_QSload_basis (p_mpf, ebasis);
+			simplexalgo = DUAL_SIMPLEX;
+		}
+		else
+		{
+			simplexalgo = PRIMAL_SIMPLEX;
+		}
+		if (!mpf_ILLeditor_solve (p_mpf, simplexalgo))
+		{
+			EGcallD(mpf_QSget_status (p_mpf, status));
+			if ((*status == QS_LP_INFEASIBLE) &&
+				(p_mpf->lp->final_phase != PRIMAL_PHASEI) &&
+				(p_mpf->lp->final_phase != DUAL_PHASEII))
+				mpf_QSopt_primal (p_mpf, status);
+			EGcallD(mpf_QSget_status (p_mpf, status));
+			last_status = *status;
+			EGcallD(mpf_QSget_itcnt(p_mpf, 0, 0, 0, 0, &last_iter));
+			switch (*status)
+			{
+			case QS_LP_OPTIMAL:
+				basis = mpf_QSget_basis (p_mpf);
+				x_mpf = mpf_EGlpNumAllocArray (p_mpf->qslp->ncols);
+				y_mpf = mpf_EGlpNumAllocArray (p_mpf->qslp->nrows);
+				EGcallD(mpf_QSget_x_array (p_mpf, x_mpf));
+				EGcallD(mpf_QSget_pi_array (p_mpf, y_mpf));
+				x_mpq = QScopy_array_mpf_mpq (x_mpf);
+				y_mpq = QScopy_array_mpf_mpq (y_mpf);
+				mpf_EGlpNumFreeArray (x_mpf);
+				mpf_EGlpNumFreeArray (y_mpf);
+				if (QSexact_optimal_test (p_mpq, x_mpq, y_mpq, basis))
+				{
+					optimal_output (p_mpq, x, y, x_mpq, y_mpq);
+					goto CLEANUP;
+				}
+				EGcallD(QSexact_basis_status (p_mpq, status, basis, msg_lvl, &simplexalgo));
+				if (*status == QS_LP_OPTIMAL)
+				{
+					EGcallD(mpq_QSget_x_array (p_mpq, x_mpq));
+					EGcallD(mpq_QSget_pi_array (p_mpq, y_mpq));
+					if (QSexact_optimal_test (p_mpq, x_mpq, y_mpq, basis))
+					{
+						optimal_output (p_mpq, x, y, x_mpq, y_mpq);
+						goto CLEANUP;
+					}
+				}
+				last_status = *status = QS_LP_UNSOLVED;
+				mpq_EGlpNumFreeArray (x_mpq);
+				mpq_EGlpNumFreeArray (y_mpq);
+				break;
+			case QS_LP_INFEASIBLE:
+				y_mpf = mpf_EGlpNumAllocArray (p_mpf->qslp->nrows);
+				EGcallD(mpf_QSget_infeas_array (p_mpf, y_mpf));
+				y_mpq = QScopy_array_mpf_mpq (y_mpf);
+				mpf_EGlpNumFreeArray (y_mpf);
+				if (QSexact_infeasible_test (p_mpq, y_mpq))
+				{
+					infeasible_output (p_mpq, y, y_mpq);
+					goto CLEANUP;
+				}
+				mpq_EGlpNumFreeArray (y_mpq);
+				break;
+			case QS_LP_OBJ_LIMIT:
+				rval = 1;
+				goto CLEANUP;
+			default:
+				break;
+			}
+		}
+		/* mpf 32 failed or did not pass exact test - save basis and try double */
+		if (basis) mpq_QSfree_basis (basis);
+		basis = mpf_QSget_basis (p_mpf);
+		mpf_QSfree_prob (p_mpf);
+		p_mpf = 0;
+	}
+	#endif
+	DOUBLE_PHASE:
+	/* First try with double precision */
 	if (p_mpq->simplex_display || DEBUG >= __QS_SB_VERB)
 	{
 		QSlog("Trying double precision");
+		//QSlog("Re-using previous basis: %d", basis ? 1 : 0);
 
 		// AP: save double precision to file
 		EGioFile_t *out = 0;
@@ -1740,13 +1909,24 @@ int QSexact_solver (mpq_QSdata * p_mpq, mpq_t * const x, mpq_t * const y, QSbasi
 	}
 	p_dbl = QScopy_prob_mpq_dbl (p_mpq, "dbl_problem");
 	if(__QS_SB_VERB <= DEBUG) p_dbl->simplex_display = 1;
-	if (ebasis && ebasis->nstruct)
-		dbl_QSload_basis (p_dbl, ebasis); // AP: EGLPNUM_TYPENAME_QSload_basis in qsopt.c
+	if (basis && basis->nstruct)
+	{
+		dbl_QSload_basis (p_dbl, basis);
+		simplexalgo = DUAL_SIMPLEX;
+	}
+	else if (ebasis && ebasis->nstruct)
+		dbl_QSload_basis (p_dbl, ebasis);
 	if (dbl_ILLeditor_solve (p_dbl, simplexalgo))
 	{
+		rval = 1; /* Ensure rval is set on failure */
 		MESSAGE(p_mpq->simplex_display ? 0: __QS_SB_VERB, 
 						"double approximation failed, code %d, "
 						"continuing in extended precision", rval);
+		
+		/* Hot-start: Try to retrieve basis from failed run */
+		if(basis) mpq_QSfree_basis(basis);
+		basis = dbl_QSget_basis(p_dbl);
+		
 		goto MPF_PRECISION;
 	}
 
@@ -1904,7 +2084,7 @@ int QSexact_solver (mpq_QSdata * p_mpq, mpq_t * const x, mpq_t * const y, QSbasi
 
 		//AP : tester code
 		QSlog("HUZAHHHHHHHHHH %d %d", last_iter, last_status);
-		if(last_status == QS_LP_OPTIMAL || last_status == QS_LP_INFEASIBLE)
+		if(last_status == QS_LP_OPTIMAL || last_status == QS_LP_INFEASIBLE || basis)
 		{
 			if (p_mpq->simplex_display || DEBUG >= __QS_SB_VERB)
 			{
@@ -1940,6 +2120,7 @@ int QSexact_solver (mpq_QSdata * p_mpq, mpq_t * const x, mpq_t * const y, QSbasi
 
 		if (mpf_ILLeditor_solve (p_mpf, simplexalgo))
 		{
+			rval = 1; /* Ensure rval is set on failure */
 			if (p_mpq->simplex_display || DEBUG >= __QS_SB_VERB)
 			{
 				QSlog("mpf_%u precision falied, error code %d, continuing with "
@@ -1951,6 +2132,8 @@ int QSexact_solver (mpq_QSdata * p_mpq, mpq_t * const x, mpq_t * const y, QSbasi
             		char label[128];
             		snprintf(label, sizeof(label), "MPF solve at %u bits took ", precision);
             		log_timing(label, elapsed_mpf);
+			if(basis) mpq_QSfree_basis(basis);
+			basis = mpf_QSget_basis(p_mpf);
 			goto NEXT_PRECISION;
 		}
 		EGcallD(mpf_QSget_status (p_mpf, status));
@@ -2067,6 +2250,10 @@ int QSexact_solver (mpq_QSdata * p_mpq, mpq_t * const x, mpq_t * const y, QSbasi
 		case QS_LP_UNBOUNDED:
 		default:
 			MESSAGE(__QS_SB_VERB,"Re-trying inextended precision");
+            /* Try to grab basis for hot-start even if we didn't finish */
+            if (!basis) {
+                basis = mpf_QSget_basis (p_mpf);
+            }
 			break;
 		}
 	NEXT_PRECISION:

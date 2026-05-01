@@ -1026,29 +1026,44 @@ static void optimal_output (mpq_QSdata * p_mpq,
 	}
 }
 
-/* Total stored nonzeros in the cached LU factorization: U (row-wise), L
- * (column-wise), eta matrices, and (when present) the dense working matrix
- * dmat. When dmat is allocated during the dense kernel, the same block is
- * mirrored in ur/lc until dense_replace finishes; we subtract that overlap
- * then add dmat nonzeros so the total is not double-counted. */
-static int
-mpq_factor_work_lu_nzcnt (const mpq_factor_work *f)
+/* Breakdown of stored nonzeros in the cached LU: U (row-wise ur_inf), L
+ * (column-wise lc_inf), eta vectors, and (when present) dense dmat. The dense
+ * block replaces overlapping ur/lc data; we subtract those sparse counts then
+ * count dmat nonzeros once, attributed to U so U+L+eta_nz matches total storage. */
+typedef struct
 {
-	int i, k, n;
+	int u_nz;
+	int l_nz;
+	int eta_vecs;
+	int eta_nz;
+} mpq_factor_work_lu_nz_breakdown;
+
+static void
+mpq_factor_work_lu_nz_breakdown_fill (const mpq_factor_work *f,
+																			mpq_factor_work_lu_nz_breakdown *b)
+{
+	int i, k;
 	int dim;
 	int db, dr, dc;
 	int r, col;
+	int dmat_nz;
 
+	if (b == NULL)
+		return;
+	b->u_nz = 0;
+	b->l_nz = 0;
+	b->eta_vecs = 0;
+	b->eta_nz = 0;
 	if (f == NULL || f->ur_inf == NULL || f->lc_inf == NULL || f->er_inf == NULL)
-		return 0;
+		return;
 	dim = f->dim;
-	n = 0;
 	for (i = 0; i < dim; i++)
-		n += f->ur_inf[i].nzcnt;
+		b->u_nz += f->ur_inf[i].nzcnt;
 	for (i = 0; i < dim; i++)
-		n += f->lc_inf[i].nzcnt;
+		b->l_nz += f->lc_inf[i].nzcnt;
+	b->eta_vecs = f->etacnt;
 	for (i = 0; i < f->etacnt; i++)
-		n += f->er_inf[i].nzcnt;
+		b->eta_nz += f->er_inf[i].nzcnt;
 
 	if (f->dmat != NULL && f->drows > 0 && f->dcols > 0 && f->rperm != NULL)
 	{
@@ -1062,17 +1077,18 @@ mpq_factor_work_lu_nzcnt (const mpq_factor_work *f)
 				break;
 			r = f->rperm[db + i];
 			if (r >= 0 && r < dim)
-				n -= f->ur_inf[r].nzcnt;
+				b->u_nz -= f->ur_inf[r].nzcnt;
 			col = db + i;
-			n -= f->lc_inf[col].nzcnt;
+			b->l_nz -= f->lc_inf[col].nzcnt;
 		}
+		dmat_nz = 0;
 		for (k = 0; k < dr * dc; k++)
 		{
 			if (mpq_EGlpNumIsNeqZero (f->dmat[k], f->fzero_tol))
-				n++;
+				dmat_nz++;
 		}
+		b->u_nz += dmat_nz;
 	}
-	return n;
 }
 
 /* Stored nonzeros in basis matrix B (columns baz[0..n-1] of A in CSC form). */
@@ -1204,9 +1220,12 @@ static int QSexact_basis_status (mpq_QSdata * p_mpq,
 				break; // Bases are now in sync
 			}
 			else {
-				int sparsity_filler = mpq_factor_work_lu_nzcnt (p_mpq->cached_lu);
-				log_message("Update count: %d, LU stored nonzeros (fill): %d",
-							update_count, sparsity_filler);
+				mpq_factor_work_lu_nz_breakdown lu_nz;
+				mpq_factor_work_lu_nz_breakdown_fill (p_mpq->cached_lu, &lu_nz);
+				log_message(
+						"Update count: %d, U nz: %d, L nz: %d, eta: %d vectors, %d nz",
+						update_count, lu_nz.u_nz, lu_nz.l_nz, lu_nz.eta_vecs,
+						lu_nz.eta_nz);
 				int entering_col = p_mpq->lp->baz[update_pos];
 
 				// Create a_s for the entering column

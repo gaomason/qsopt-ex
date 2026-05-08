@@ -1189,7 +1189,8 @@ static int QSexact_basis_status (mpq_QSdata * p_mpq,
 		int* mismatch_indices = NULL;
 		ILL_SAFE_MALLOC(mismatch_indices, p_mpq->lp->O->nrows, int);
 		int mismatch_count = 0;
-		for (int i = 0; i < p_mpq->lp->O->nrows; ++i) {
+		// Collect all mismatch indices from right to left
+		for (int i =  p_mpq->lp->O->nrows-1; i >= 0; --i) {
 			if (p_mpq->cached_baz[i] != p_mpq->lp->baz[i]) {
 				mismatch_indices[mismatch_count++] = i;
 			}
@@ -1202,15 +1203,14 @@ static int QSexact_basis_status (mpq_QSdata * p_mpq,
 		log_message("Mismatch's: %d/%d", mismatch_count, p_mpq->lp->O->nrows);
 		int update_count = 0;
 		while (!refactor) {
+			clock_t start_update = clock();
 			int changed = 0;
 			int update_pos = -1;
-			int leaving_col = -1;
 			update_count++;
 			// Find the next column that has changed
 			for (int i = 0; i < mismatch_count; ++i) {
 				if (p_mpq->cached_baz[mismatch_indices[i]] != p_mpq->lp->baz[mismatch_indices[i]]) {
 					update_pos = mismatch_indices[i];
-					leaving_col = p_mpq->cached_baz[update_pos];
 					changed = 1;
 					break;
 				}
@@ -1239,12 +1239,15 @@ static int QSexact_basis_status (mpq_QSdata * p_mpq,
 				mpq_ILLsvector_alloc(&spike, p_mpq->lp->nrows);
 				mpq_ILLsvector_alloc(&direction, p_mpq->lp->nrows);
 				
+				
 				// Use cached MPF 128-bit LU for faster and more accurate direction computation
 				unsigned original_precision = EGLPNUM_PRECISION;
 				QSexact_set_precision(128);  
 				
 				mpf_factor_work *mpf_cached_lu = NULL;
 				mpf_svector mpf_a_s, mpf_spike, mpf_direction;
+				mpf_t mpf_fzero_tol;
+				mpf_init_set_d(mpf_fzero_tol, 1e-16);
 				
 				ILL_SAFE_MALLOC(mpf_cached_lu, 1, mpf_factor_work);
 				rval = mpq_factor_work_to_mpf_factor_work(mpf_cached_lu, p_mpq->cached_lu);
@@ -1266,44 +1269,37 @@ static int QSexact_basis_status (mpq_QSdata * p_mpq,
 					mpf_set_q(mpf_a_s.coef[j], a_s.coef[j]);
 				}
 				
+				/* Compute the direction vector */
 				mpf_ILLfactor_ftran_update(mpf_cached_lu, &mpf_a_s, &mpf_spike, &mpf_direction);
-				direction.nzcnt = mpf_direction.nzcnt;
-				memcpy(direction.indx, mpf_direction.indx, mpf_direction.nzcnt * sizeof(int));
-				for (int j = 0; j < mpf_direction.nzcnt; j++) {
-					mpq_set_f(direction.coef[j], mpf_direction.coef[j]);
-				}
 				mpq_compute_spike(p_mpq->cached_lu, &a_s, &spike);
 				
 				// Clean up mpf precision structures
 				mpf_ILLsvector_free(&mpf_a_s);
 				mpf_ILLsvector_free(&mpf_spike);
-				mpf_ILLsvector_free(&mpf_direction);
 				mpf_ILLfactor_free_factor_work(mpf_cached_lu);
 				ILL_IFFREE(mpf_cached_lu);
 				
 				// Restore original precision
 				QSexact_set_precision(original_precision);
 
-				// Look through mismatches for direction vector entry != 0
+				// Finds the first valid mismatch from right to left
 				int swap_pos = -1;
-				char* is_mismatch = calloc(p_mpq->lp->O->nrows, sizeof(char));
 				for (int j = 0; j < mismatch_count; ++j) {
 					int pos = mismatch_indices[j];
-					if (p_mpq->cached_baz[pos] != p_mpq->lp->baz[pos]) {
-						is_mismatch[pos] = 1;
+					if (p_mpq->cached_baz[pos] == p_mpq->lp->baz[pos]) {
+						continue;
 					}
-				}
-				
-				// Find the mismatch position with maximum absolute value in direction vector
-				double max_abs_val = 0.0;
-				for (int k = 0; k < direction.nzcnt; ++k) {
-					int pos = direction.indx[k];
-					if (is_mismatch[pos]) {
-						double abs_val = fabs(mpq_get_d(direction.coef[k]));
-						if (abs_val > max_abs_val) {
-							max_abs_val = abs_val;
-								swap_pos = pos;
+
+					for (int k = 0; k < mpf_direction.nzcnt; ++k) {
+						if (mpf_direction.indx[k] == pos &&
+							mpf_EGlpNumIsNeqZero(mpf_direction.coef[k], mpf_fzero_tol)) {
+							swap_pos = pos;
+							break;
 						}
+					}
+
+					if (swap_pos != -1) {
+						break;
 					}
 				}
 				// If we found a position with direction > 0 within cached basis, we need to update that position in the current basis
@@ -1320,12 +1316,16 @@ static int QSexact_basis_status (mpq_QSdata * p_mpq,
 					refactor = 1;
 					break;
 				}
+				
+				log_message("Leaving column: %d", swap_pos);
 				rval = mpq_ILLfactor_update(p_mpq->cached_lu, &spike, update_pos, &refactor);
 
 				if (refactor || rval) {
 					QSlog("LU update at position %d triggered refactorization (refactor=%d, rval=%d)\n", update_pos, refactor, rval);
-				refactor = 1; 
-				break; 
+					mpq_ILLsvector_free(&spike);
+					mpq_ILLsvector_free(&direction);
+					refactor = 1; 
+					break; 
 				}
 				
 				// Update was successful, update the cached basis for this position
@@ -1333,7 +1333,6 @@ static int QSexact_basis_status (mpq_QSdata * p_mpq,
 
 				mpq_ILLsvector_free(&spike);
 				mpq_ILLsvector_free(&direction);
-				free(is_mismatch);
 				
 				// Remove the mismatch from the list
 				for (int idx = 0; idx < mismatch_count; ++idx) {
@@ -1349,7 +1348,9 @@ static int QSexact_basis_status (mpq_QSdata * p_mpq,
 				if (mismatch_count == 0) {
 					break;
 				}
-				
+				clock_t end_update = clock();
+				double duration_update = (double)(end_update - start_update) / CLOCKS_PER_SEC;
+				log_timing("Update took ", duration_update);
 			}		
 		}
 		if (!refactor) {

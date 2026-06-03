@@ -1189,8 +1189,7 @@ static int QSexact_basis_status (mpq_QSdata * p_mpq,
 		int* mismatch_indices = NULL;
 		ILL_SAFE_MALLOC(mismatch_indices, p_mpq->lp->O->nrows, int);
 		int mismatch_count = 0;
-		// Collect all mismatch indices from right to left
-		for (int i =  p_mpq->lp->O->nrows-1; i >= 0; --i) {
+		for (int i = 0; i < p_mpq->lp->O->nrows; ++i) {
 			if (p_mpq->cached_baz[i] != p_mpq->lp->baz[i]) {
 				mismatch_indices[mismatch_count++] = i;
 			}
@@ -1199,20 +1198,20 @@ static int QSexact_basis_status (mpq_QSdata * p_mpq,
 			QSlog("Using refactorization");
 			refactor = 1;
 			free(mismatch_indices);
+			mismatch_indices = NULL;
 		}
 		log_message("Mismatch's: %d/%d", mismatch_count, p_mpq->lp->O->nrows);
 		int update_count = 0;
 		while (!refactor) {
-			clock_t start_update = clock();
 			int changed = 0;
 			int update_pos = -1;
 			update_count++;
-			// Find the next column that has changed
+			/* Step 1: fix leaving position as right-most mismatched basis position. */
 			for (int i = 0; i < mismatch_count; ++i) {
-				if (p_mpq->cached_baz[mismatch_indices[i]] != p_mpq->lp->baz[mismatch_indices[i]]) {
-					update_pos = mismatch_indices[i];
+				int pos = mismatch_indices[i];
+				if (p_mpq->cached_baz[pos] != p_mpq->lp->baz[pos]) {
 					changed = 1;
-					break;
+					update_pos = pos; /* mismatch_indices are in ascending position order */
 				}
 			}
 
@@ -1226,113 +1225,150 @@ static int QSexact_basis_status (mpq_QSdata * p_mpq,
 						"Update count: %d, U nz: %d, L nz: %d, eta: %d vectors, %d nz",
 						update_count, lu_nz.u_nz, lu_nz.l_nz, lu_nz.eta_vecs,
 						lu_nz.eta_nz);
-				int entering_col = p_mpq->lp->baz[update_pos];
+				int entering_pos = -1;
+				int entering_col = -1;
+				unsigned original_precision = EGLPNUM_PRECISION;
+				mpf_t pivot_dot;
+				mpf_t pivot_eps;
+				mpf_t coef_mpf;
 
-				// Create a_s for the entering column
-				mpq_svector a_s;
+				/* Step 2: 128-bit MPF BTRAN validity filter. */
+				mpf_factor_work *mpf_cached_lu = NULL;
+				mpf_svector rhs;
+				mpf_svector v;
+				mpf_t *v_dense = NULL;
+
+				mpf_EGlpNumInitVar (pivot_dot);
+				mpf_EGlpNumInitVar (pivot_eps);
+				mpf_EGlpNumInitVar (coef_mpf);
+				mpf_EGlpNumSet (pivot_eps, 1e-12);
+				QSexact_set_precision (128);
+
+				ILL_SAFE_MALLOC (mpf_cached_lu, 1, mpf_factor_work);
+				rval = mpq_factor_work_to_mpf_factor_work (mpf_cached_lu, p_mpq->cached_lu);
+				if (rval) {
+					QSlog ("Failed to convert mpq_factor_work to mpf_factor_work");
+					mpf_EGlpNumClearVar (coef_mpf);
+					mpf_EGlpNumClearVar (pivot_eps);
+					mpf_EGlpNumClearVar (pivot_dot);
+					ILL_IFFREE (mpf_cached_lu);
+					QSexact_set_precision (original_precision);
+					refactor = 1;
+					break;
+				}
+
+				rval = mpf_ILLsvector_alloc (&rhs, p_mpq->lp->nrows);
+				if (rval) {
+					mpf_ILLfactor_free_factor_work (mpf_cached_lu);
+					ILL_IFFREE (mpf_cached_lu);
+					mpf_EGlpNumClearVar (coef_mpf);
+					mpf_EGlpNumClearVar (pivot_eps);
+					mpf_EGlpNumClearVar (pivot_dot);
+					QSexact_set_precision (original_precision);
+					refactor = 1;
+					break;
+				}
+				rval = mpf_ILLsvector_alloc (&v, p_mpq->lp->nrows);
+				if (rval) {
+					mpf_ILLsvector_free (&rhs);
+					mpf_ILLfactor_free_factor_work (mpf_cached_lu);
+					ILL_IFFREE (mpf_cached_lu);
+					mpf_EGlpNumClearVar (coef_mpf);
+					mpf_EGlpNumClearVar (pivot_eps);
+					mpf_EGlpNumClearVar (pivot_dot);
+					QSexact_set_precision (original_precision);
+					refactor = 1;
+					break;
+				}
+
+				rhs.nzcnt = 1;
+				rhs.indx[0] = update_pos;
+				mpf_EGlpNumSet (rhs.coef[0], 1.0);
+				mpf_ILLfactor_btran (mpf_cached_lu, &rhs, &v);
+
+				v_dense = mpf_EGlpNumAllocArray (p_mpq->lp->nrows);
+				for (int i = 0; i < p_mpq->lp->nrows; ++i) {
+					mpf_EGlpNumZero (v_dense[i]);
+				}
+				for (int i = 0; i < v.nzcnt; ++i) {
+					mpf_EGlpNumCopy (v_dense[v.indx[i]], v.coef[i]);
+				}
+
+				for (int m = 0; m < mismatch_count; ++m) {
+					int cand_pos = mismatch_indices[m];
+					int cand_col;
+					int mbeg;
+					int mcnt;
+
+					if (p_mpq->cached_baz[cand_pos] == p_mpq->lp->baz[cand_pos]) {
+						continue;
+					}
+					cand_col = p_mpq->lp->baz[cand_pos];
+					mbeg = p_mpq->lp->matbeg[cand_col];
+					mcnt = p_mpq->lp->matcnt[cand_col];
+					mpf_EGlpNumZero (pivot_dot);
+					for (int j = 0; j < mcnt; ++j) {
+						int row = p_mpq->lp->matind[mbeg + j];
+						mpf_set_q (coef_mpf, p_mpq->lp->matval[mbeg + j]);
+						mpf_EGlpNumAddInnProdTo (pivot_dot, v_dense[row], coef_mpf);
+					}
+
+					if (mpf_EGlpNumIsNeqZero (pivot_dot, pivot_eps)) {
+						entering_pos = cand_pos;
+						entering_col = cand_col;
+						break; /* arbitrary valid pivot for now */
+					}
+				}
+
+				mpf_EGlpNumFreeArray (v_dense);
+				mpf_ILLsvector_free (&rhs);
+				mpf_ILLsvector_free (&v);
+				mpf_ILLfactor_free_factor_work (mpf_cached_lu);
+				ILL_IFFREE (mpf_cached_lu);
+				mpf_EGlpNumClearVar (coef_mpf);
+				mpf_EGlpNumClearVar (pivot_eps);
+				mpf_EGlpNumClearVar (pivot_dot);
+				QSexact_set_precision (original_precision);
+
+				if (entering_pos == -1) {
+					QSlog("No valid BTRAN pivot for leaving pos %d", update_pos);
+					refactor = 1;
+					break;
+				}
+
+				/* Keep leaving position fixed. Move chosen entering col to update_pos. */
+				if (entering_pos != update_pos) {
+					int temp_col = p_mpq->lp->baz[update_pos];
+					p_mpq->lp->baz[update_pos] = p_mpq->lp->baz[entering_pos];
+					p_mpq->lp->baz[entering_pos] = temp_col;
+					entering_col = p_mpq->lp->baz[update_pos];
+				}
+
+				/* Do exact update with selected valid pivot column. */
+				mpq_svector a_s, spike;
+				rval = mpq_ILLsvector_alloc(&spike, p_mpq->lp->nrows);
+				if (rval) {
+					refactor = 1;
+					break;
+				}
 				a_s.nzcnt = p_mpq->lp->matcnt[entering_col];
 				a_s.indx = &(p_mpq->lp->matind[p_mpq->lp->matbeg[entering_col]]);
 				a_s.coef = &(p_mpq->lp->matval[p_mpq->lp->matbeg[entering_col]]);
-		
-				// Allocate and compute the spike vector
-				mpq_svector spike, direction;
-				mpq_ILLsvector_alloc(&spike, p_mpq->lp->nrows);
-				mpq_ILLsvector_alloc(&direction, p_mpq->lp->nrows);
-				
-				
-				// Use cached MPF 128-bit LU for faster and more accurate direction computation
-				unsigned original_precision = EGLPNUM_PRECISION;
-				QSexact_set_precision(128);  
-				
-				mpf_factor_work *mpf_cached_lu = NULL;
-				mpf_svector mpf_a_s, mpf_spike, mpf_direction;
-				mpf_t mpf_fzero_tol;
-				mpf_init_set_d(mpf_fzero_tol, 1e-16);
-				
-				ILL_SAFE_MALLOC(mpf_cached_lu, 1, mpf_factor_work);
-				rval = mpq_factor_work_to_mpf_factor_work(mpf_cached_lu, p_mpq->cached_lu);
-				if (rval) {
-					QSlog("Failed to convert mpq_factor_work to mpf_factor_work");
-					QSexact_set_precision(original_precision);
-					refactor = 1;
-					break;
-				}	
-				
-				// Convert a_s to mpf precision
-				mpf_ILLsvector_alloc(&mpf_a_s, p_mpq->lp->nrows);
-				mpf_ILLsvector_alloc(&mpf_spike, p_mpq->lp->nrows);
-				mpf_ILLsvector_alloc(&mpf_direction, p_mpq->lp->nrows);
-				
-				mpf_a_s.nzcnt = a_s.nzcnt;
-				memcpy(mpf_a_s.indx, a_s.indx, a_s.nzcnt * sizeof(int));
-				for (int j = 0; j < a_s.nzcnt; j++) {
-					mpf_set_q(mpf_a_s.coef[j], a_s.coef[j]);
-				}
-				
-				/* Compute the direction vector */
-				mpf_ILLfactor_ftran_update(mpf_cached_lu, &mpf_a_s, &mpf_spike, &mpf_direction);
 				mpq_compute_spike(p_mpq->cached_lu, &a_s, &spike);
-				
-				// Clean up mpf precision structures
-				mpf_ILLsvector_free(&mpf_a_s);
-				mpf_ILLsvector_free(&mpf_spike);
-				mpf_ILLfactor_free_factor_work(mpf_cached_lu);
-				ILL_IFFREE(mpf_cached_lu);
-				
-				// Restore original precision
-				QSexact_set_precision(original_precision);
 
-				// Finds the first valid mismatch from right to left
-				int swap_pos = -1;
-				for (int j = 0; j < mismatch_count; ++j) {
-					int pos = mismatch_indices[j];
-					if (p_mpq->cached_baz[pos] == p_mpq->lp->baz[pos]) {
-						continue;
-					}
-
-					for (int k = 0; k < mpf_direction.nzcnt; ++k) {
-						if (mpf_direction.indx[k] == pos &&
-							mpf_EGlpNumIsNeqZero(mpf_direction.coef[k], mpf_fzero_tol)) {
-							swap_pos = pos;
-							break;
-						}
-					}
-
-					if (swap_pos != -1) {
-						break;
-					}
-				}
-				// If we found a position with direction > 0 within cached basis, we need to update that position in the current basis
-				if (swap_pos != -1 && swap_pos != update_pos) {
-				
-					int temp_col = p_mpq->lp->baz[update_pos];
-					p_mpq->lp->baz[update_pos] = p_mpq->lp->baz[swap_pos];
-					p_mpq->lp->baz[swap_pos] = temp_col;
-					update_pos = swap_pos;
-
-				}
-				if (swap_pos == -1) {
-					QSlog("No swap found, increase copy precision");
-					refactor = 1;
-					break;
-				}
-				
-				log_message("Leaving column: %d", swap_pos);
 				rval = mpq_ILLfactor_update(p_mpq->cached_lu, &spike, update_pos, &refactor);
 
 				if (refactor || rval) {
 					QSlog("LU update at position %d triggered refactorization (refactor=%d, rval=%d)\n", update_pos, refactor, rval);
-					mpq_ILLsvector_free(&spike);
-					mpq_ILLsvector_free(&direction);
-					refactor = 1; 
-					break; 
+				mpq_ILLsvector_free(&spike);
+				refactor = 1; 
+				break; 
 				}
 				
 				// Update was successful, update the cached basis for this position
 				p_mpq->cached_baz[update_pos] = entering_col;
 
 				mpq_ILLsvector_free(&spike);
-				mpq_ILLsvector_free(&direction);
 				
 				// Remove the mismatch from the list
 				for (int idx = 0; idx < mismatch_count; ++idx) {
@@ -1348,9 +1384,7 @@ static int QSexact_basis_status (mpq_QSdata * p_mpq,
 				if (mismatch_count == 0) {
 					break;
 				}
-				clock_t end_update = clock();
-				double duration_update = (double)(end_update - start_update) / CLOCKS_PER_SEC;
-				log_timing("Update took ", duration_update);
+				
 			}		
 		}
 		if (!refactor) {
@@ -1374,7 +1408,6 @@ static int QSexact_basis_status (mpq_QSdata * p_mpq,
 			}
 			p_mpq->lp->f = temp_lu;
 			QSlog("Updated cached lu");
-			free(mismatch_indices);	
 		}
 		if (refactor) {
 		    int singular;
@@ -1388,6 +1421,7 @@ static int QSexact_basis_status (mpq_QSdata * p_mpq,
     		}
 
 		}
+		ILL_IFFREE(mismatch_indices);
 	}
 	memset (&(p_mpq->lp->basisstat), 0, sizeof (mpq_lp_status_info));
 	// feasibility check

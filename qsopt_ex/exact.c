@@ -1091,6 +1091,240 @@ mpq_factor_work_lu_nz_breakdown_fill (const mpq_factor_work *f,
 	}
 }
 
+/* Structural spike metrics from symbolic FTRAN (L_0 reachability + eta sweep). */
+typedef struct
+{
+	int spike_sparsity;
+	int spike_length_penalty;
+} symbolic_spike_metrics;
+
+/* Propagate fill through base L using the same graph as ILLfactor_ftranl3. */
+/* @param f the factor work
+ * @param is_nonzero the workspace of length f->dim; cleared and filled on output.
+ * @param stack the stack of columns to process
+ */
+static void
+symbolic_l0_reachability (const mpq_factor_work *f, char *is_nonzero, int *stack)
+{
+	int dim = f->dim;
+	int top = 0; 
+	int i, j, row, rank, beg, nzcnt, t;
+
+	for (i = 0; i < dim; i++) 
+	{
+		if (is_nonzero[i]) /* already processed */
+			stack[top++] = i;
+	}
+
+	while (top > 0) /* process remaining columns */
+	{
+		row = stack[--top];
+		rank = f->lc_inf[row].crank; /* rank of the current column */
+		beg = f->lc_inf[rank].cbeg;
+		nzcnt = f->lc_inf[rank].nzcnt;
+		for (j = 0; j < nzcnt; j++) /* process nonzeros of the current column */
+		{
+			t = f->lcindx[beg + j];
+			if (!is_nonzero[t]) /* if the current nonzero is not already processed */
+			{
+				is_nonzero[t] = 1;
+				stack[top++] = t; /* add to the stack */
+			}
+		}
+	}
+}
+
+/* Propagate fill through eta factors E_1..E_p (forward order, as in ILLfactor_ftrane). */
+static void
+symbolic_eta_reachability (const mpq_factor_work *f, char *is_nonzero)
+{
+	int i, j, p, beg, nzcnt;
+
+	for (i = 0; i < f->etacnt; i++)
+	{
+		p = f->er_inf[i].r;
+		if (!is_nonzero[p])
+			continue;
+		beg = f->er_inf[i].rbeg;
+		nzcnt = f->er_inf[i].nzcnt;
+		for (j = 0; j < nzcnt; j++)
+			is_nonzero[f->erindx[beg + j]] = 1;
+	}
+}
+
+/**
+ * Predict the structural support of w = L^{-1} a_j (base L_0 + historical etas).
+ *
+ * @param f             Cached LU factor (mpq_factor_work).
+ * @param col_indx      Row indices of nonzeros in candidate column a_j.
+ * @param col_nzcnt     Length of col_indx.
+ * @param leaving_pos_r Fixed leaving basis position r (spike length penalty is k - r).
+ * @param is_nonzero    Workspace of length f->dim; cleared and filled on output.
+ * @param out           Spike sparsity and length penalty.
+ */
+static void
+compute_symbolic_spike_metrics (const mpq_factor_work *f,
+																const int *col_indx,
+																int col_nzcnt,
+																int leaving_pos_r,
+																char *is_nonzero,
+																symbolic_spike_metrics *out)
+{
+	int dim;
+	int i, k, max_k;
+	int *stack = NULL;
+
+	if (out == NULL)
+		return;
+	out->spike_sparsity = 0;
+	out->spike_length_penalty = 0;
+
+	if (f == NULL || is_nonzero == NULL || col_indx == NULL)
+		return;
+	if (f->lc_inf == NULL || f->lcindx == NULL || f->er_inf == NULL)
+		return;
+
+	dim = f->dim;
+	if (dim <= 0)
+		return;
+
+	memset (is_nonzero, 0, (size_t) dim);
+	for (i = 0; i < col_nzcnt; i++)
+	{
+		k = col_indx[i];
+		if (k >= 0 && k < dim)
+			is_nonzero[k] = 1;
+	}
+
+	ILL_SAFE_MALLOC_no_rval (stack, dim, int);
+	if (stack == NULL)
+		return;
+
+	symbolic_l0_reachability (f, is_nonzero, stack);
+	symbolic_eta_reachability (f, is_nonzero);
+
+	for (k = 0; k < dim; k++)
+	{
+		if (is_nonzero[k])
+			out->spike_sparsity++;
+	}
+
+	max_k = -1;
+	for (k = dim - 1; k >= 0; k--)
+	{
+		if (is_nonzero[k])
+		{
+			max_k = k;
+			break;
+		}
+	}
+	if (max_k >= 0 && leaving_pos_r >= 0 && leaving_pos_r <= max_k)
+		out->spike_length_penalty = max_k - leaving_pos_r;
+
+	ILL_IFFREE (stack);
+}
+
+
+#define SYMBOLIC_SPIKE_TOP_N 10 
+
+/* Entering candidate structure */
+/* pos: position of the entering variable in the basis matrix
+ * col: column index of the entering variable in the constraint matrix
+ * nnz: number of non-zeros in the entering column
+ * spike_sparsity: number of non-zeros in the spike support
+ * spike_length_penalty: penalty for the spike length
+ */
+typedef struct entering_cand_t {
+	int pos;
+	int col;
+	int nnz; 
+	int spike_sparsity;
+	int spike_length_penalty;
+} entering_cand_t;
+
+// compare the entering candidates by number of non-zeros
+static int
+entering_cand_compare_nnz (const void *a, const void *b)
+{
+	const entering_cand_t *ca = (const entering_cand_t *) a;
+	const entering_cand_t *cb = (const entering_cand_t *) b;
+
+	if (ca->nnz != cb->nnz)
+		return (ca->nnz > cb->nnz) - (ca->nnz < cb->nnz);
+	if (ca->pos != cb->pos)
+		return (ca->pos > cb->pos) - (ca->pos < cb->pos);
+	return (ca->col > cb->col) - (ca->col < cb->col);
+}
+
+// compare the entering candidates by spike sparsity and length penalty
+static int
+entering_cand_is_better (const entering_cand_t *cand, const entering_cand_t *best)
+{
+	if (cand->spike_sparsity != best->spike_sparsity)
+		return cand->spike_sparsity < best->spike_sparsity;
+	if (cand->spike_length_penalty != best->spike_length_penalty)
+		return cand->spike_length_penalty < best->spike_length_penalty;
+	if (cand->nnz != best->nnz)
+		return cand->nnz < best->nnz;
+	return cand->pos < best->pos;
+}
+
+// select the entering candidate by symbolic spike metrics
+// valid: array of entering candidates is assumed to be sorted by number of non-zeros
+// n_valid: number of entering candidates
+// leaving_pos: position of the leaving variable in the basis matrix
+// reach_workspace: workspace for the reachability analysis
+// best: best entering candidate
+static void
+select_entering_by_symbolic_spike (const mpq_factor_work *f,
+																	 const mpq_lpinfo *lp,
+																	 entering_cand_t *valid,
+																	 int n_valid,
+																	 int leaving_pos,
+																	 char *reach_workspace,
+																	 entering_cand_t *best)
+{
+	int screen_n; // number of entering candidates to screen
+	int i; 
+	symbolic_spike_metrics metrics; // spike metrics for the entering candidate
+
+	if (best == NULL || n_valid <= 0)
+		return;
+
+	screen_n = n_valid; // number of entering candidates to screen
+	if (screen_n > SYMBOLIC_SPIKE_TOP_N)
+		screen_n = SYMBOLIC_SPIKE_TOP_N; // limit the number of entering candidates to screen
+
+	*best = valid[0]; // initialize the best entering candidate
+	// compute the spike metrics for the best entering candidate
+	compute_symbolic_spike_metrics (f,
+																	&(lp->matind[lp->matbeg[best->col]]),
+																	lp->matcnt[best->col],
+																	leaving_pos,
+																	reach_workspace,
+																	&metrics);
+	best->spike_sparsity = metrics.spike_sparsity; // store the spike sparsity for the best entering candidate
+	best->spike_length_penalty = metrics.spike_length_penalty; // store the spike length penalty for the best entering candidate
+	
+	// loop through the entering candidates and select the best one
+	for (i = 1; i < screen_n; i++)
+	{
+		entering_cand_t cand = valid[i]; 
+
+		compute_symbolic_spike_metrics (f,
+																		&(lp->matind[lp->matbeg[cand.col]]),
+																		lp->matcnt[cand.col],
+																		leaving_pos,
+																		reach_workspace,
+																		&metrics);
+		cand.spike_sparsity = metrics.spike_sparsity;
+		cand.spike_length_penalty = metrics.spike_length_penalty;
+
+		if (entering_cand_is_better (&cand, best)) // if the current entering candidate is better than the best entering candidate
+			*best = cand; // update the best entering candidate
+	}
+}
+
 /* Stored nonzeros in basis matrix B (columns baz[0..n-1] of A in CSC form). */
 static long long
 mpq_basis_matrix_nzcnt (const mpq_lpinfo *lp)
@@ -1227,10 +1461,14 @@ static int QSexact_basis_status (mpq_QSdata * p_mpq,
 						lu_nz.eta_nz);
 				int entering_pos = -1;
 				int entering_col = -1;
+				int n_valid = 0;
 				unsigned original_precision = EGLPNUM_PRECISION;
 				mpf_t pivot_dot;
 				mpf_t pivot_eps;
 				mpf_t coef_mpf;
+				entering_cand_t *valid = NULL;
+				entering_cand_t best_cand;
+				char *reach_workspace = NULL;
 
 				/* Step 2: 128-bit MPF BTRAN validity filter. */
 				mpf_factor_work *mpf_cached_lu = NULL;
@@ -1280,7 +1518,7 @@ static int QSexact_basis_status (mpq_QSdata * p_mpq,
 					refactor = 1;
 					break;
 				}
-
+				//initialize e_r
 				rhs.nzcnt = 1;
 				rhs.indx[0] = update_pos;
 				mpf_EGlpNumSet (rhs.coef[0], 1.0);
@@ -1292,6 +1530,21 @@ static int QSexact_basis_status (mpq_QSdata * p_mpq,
 				}
 				for (int i = 0; i < v.nzcnt; ++i) {
 					mpf_EGlpNumCopy (v_dense[v.indx[i]], v.coef[i]);
+				}
+
+				ILL_SAFE_MALLOC (valid, mismatch_count, entering_cand_t);
+				if (valid == NULL) {
+					mpf_EGlpNumFreeArray (v_dense);
+					mpf_ILLsvector_free (&rhs);
+					mpf_ILLsvector_free (&v);
+					mpf_ILLfactor_free_factor_work (mpf_cached_lu);
+					ILL_IFFREE (mpf_cached_lu);
+					mpf_EGlpNumClearVar (coef_mpf);
+					mpf_EGlpNumClearVar (pivot_eps);
+					mpf_EGlpNumClearVar (pivot_dot);
+					QSexact_set_precision (original_precision);
+					refactor = 1;
+					break;
 				}
 
 				for (int m = 0; m < mismatch_count; ++m) {
@@ -1314,9 +1567,12 @@ static int QSexact_basis_status (mpq_QSdata * p_mpq,
 					}
 
 					if (mpf_EGlpNumIsNeqZero (pivot_dot, pivot_eps)) {
-						entering_pos = cand_pos;
-						entering_col = cand_col;
-						break; /* arbitrary valid pivot for now */
+						valid[n_valid].pos = cand_pos;
+						valid[n_valid].col = cand_col;
+						valid[n_valid].nnz = mcnt;
+						valid[n_valid].spike_sparsity = 0;
+						valid[n_valid].spike_length_penalty = 0;
+						n_valid++;
 					}
 				}
 
@@ -1330,13 +1586,42 @@ static int QSexact_basis_status (mpq_QSdata * p_mpq,
 				mpf_EGlpNumClearVar (pivot_dot);
 				QSexact_set_precision (original_precision);
 
-				if (entering_pos == -1) {
-					QSlog("No valid BTRAN pivot for leaving pos %d", update_pos);
+				if (n_valid == 0) {
+					ILL_IFFREE (valid);
+					QSlog ("No valid BTRAN pivot for leaving pos %d", update_pos);
 					refactor = 1;
 					break;
 				}
 
-				/* Keep leaving position fixed. Move chosen entering col to update_pos. */
+				// first sort the entering candidates by number of non-zeros
+				qsort (valid, (size_t) n_valid, sizeof (entering_cand_t),
+							 entering_cand_compare_nnz);
+
+				ILL_SAFE_MALLOC_no_rval (reach_workspace, p_mpq->lp->nrows, char);
+				if (reach_workspace == NULL) {
+					ILL_IFFREE (valid);
+					refactor = 1;
+					break;
+				}
+
+				select_entering_by_symbolic_spike (p_mpq->cached_lu, p_mpq->lp, valid,
+																					 n_valid, update_pos, reach_workspace,
+																					 &best_cand);
+				entering_pos = best_cand.pos;
+				entering_col = best_cand.col;
+
+				log_message (
+						"Entering pick: pos %d col %d nnz %d spike_nz %d spike_len %d "
+						"(from %d valid, screened %d)",
+						entering_pos, entering_col, best_cand.nnz,
+						best_cand.spike_sparsity, best_cand.spike_length_penalty,
+						n_valid,
+						(n_valid < SYMBOLIC_SPIKE_TOP_N ? n_valid : SYMBOLIC_SPIKE_TOP_N));
+
+				ILL_IFFREE (reach_workspace);
+				ILL_IFFREE (valid);
+
+				/* Keep leaving position fixed. Update chosen entering col to update_pos. */
 				if (entering_pos != update_pos) {
 					int temp_col = p_mpq->lp->baz[update_pos];
 					p_mpq->lp->baz[update_pos] = p_mpq->lp->baz[entering_pos];

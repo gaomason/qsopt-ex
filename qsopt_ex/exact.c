@@ -1196,7 +1196,7 @@ compute_symbolic_spike_metrics (const mpq_factor_work *f,
 			is_nonzero[k] = 1;
 	}
 
-	ILL_SAFE_MALLOC_no_rval (stack, dim, int);
+	stack = (int *) ILL_UTIL_SAFE_MALLOC (dim, int, stack);
 	if (stack == NULL)
 		return;
 
@@ -1597,7 +1597,8 @@ static int QSexact_basis_status (mpq_QSdata * p_mpq,
 				qsort (valid, (size_t) n_valid, sizeof (entering_cand_t),
 							 entering_cand_compare_nnz);
 
-				ILL_SAFE_MALLOC_no_rval (reach_workspace, p_mpq->lp->nrows, char);
+				reach_workspace = (char *) ILL_UTIL_SAFE_MALLOC (p_mpq->lp->nrows, char,
+																											 reach_workspace);
 				if (reach_workspace == NULL) {
 					ILL_IFFREE (valid);
 					refactor = 1;

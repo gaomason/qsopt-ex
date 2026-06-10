@@ -1180,13 +1180,26 @@ compute_symbolic_spike_metrics (const mpq_factor_work *f,
 	out->spike_length_penalty = 0;
 
 	if (f == NULL || is_nonzero == NULL || col_indx == NULL)
+	{
+		log_message ("symbolic spike: bad args (f=%p ws=%p col=%p)",
+								 (const void *) f, (void *) is_nonzero,
+								 (const void *) col_indx);
 		return;
+	}
 	if (f->lc_inf == NULL || f->lcindx == NULL || f->er_inf == NULL)
+	{
+		log_message ("symbolic spike: missing arrays (lc_inf=%p lcindx=%p er_inf=%p)",
+								 (void *) f->lc_inf, (void *) f->lcindx,
+								 (void *) f->er_inf);
 		return;
+	}
 
 	dim = f->dim;
 	if (dim <= 0)
+	{
+		log_message ("symbolic spike: bad dim %d", dim);
 		return;
+	}
 
 	memset (is_nonzero, 0, (size_t) dim);
 	for (i = 0; i < col_nzcnt; i++)
@@ -1305,7 +1318,10 @@ select_entering_by_symbolic_spike (const mpq_factor_work *f,
 																	&metrics);
 	best->spike_sparsity = metrics.spike_sparsity; // store the spike sparsity for the best entering candidate
 	best->spike_length_penalty = metrics.spike_length_penalty; // store the spike length penalty for the best entering candidate
-	
+	log_message ("  screen cand 0: pos %d col %d nnz %d -> spike_nz %d spike_len %d",
+							 best->pos, best->col, best->nnz,
+							 best->spike_sparsity, best->spike_length_penalty);
+
 	// loop through the entering candidates and select the best one
 	for (i = 1; i < screen_n; i++)
 	{
@@ -1319,6 +1335,9 @@ select_entering_by_symbolic_spike (const mpq_factor_work *f,
 																		&metrics);
 		cand.spike_sparsity = metrics.spike_sparsity;
 		cand.spike_length_penalty = metrics.spike_length_penalty;
+		log_message ("  screen cand %d: pos %d col %d nnz %d -> spike_nz %d spike_len %d",
+								 i, cand.pos, cand.col, cand.nnz,
+								 cand.spike_sparsity, cand.spike_length_penalty);
 
 		if (entering_cand_is_better (&cand, best)) // if the current entering candidate is better than the best entering candidate
 			*best = cand; // update the best entering candidate

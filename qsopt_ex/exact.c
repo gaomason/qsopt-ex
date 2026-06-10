@@ -1158,7 +1158,8 @@ symbolic_eta_reachability (const mpq_factor_work *f, char *is_nonzero)
  * @param f             Cached LU factor (mpq_factor_work).
  * @param col_indx      Row indices of nonzeros in candidate column a_j.
  * @param col_nzcnt     Length of col_indx.
- * @param leaving_pos_r Fixed leaving basis position r (spike length penalty is k - r).
+ * @param leaving_pos_r Fixed leaving basis position r; the length penalty is
+ *                      max(rrank[spike rows]) - crank[r] when positive.
  * @param is_nonzero    Workspace of length f->dim; cleared and filled on output.
  * @param out           Spike sparsity and length penalty.
  */
@@ -1171,7 +1172,7 @@ compute_symbolic_spike_metrics (const mpq_factor_work *f,
 																symbolic_spike_metrics *out)
 {
 	int dim;
-	int i, k, max_k;
+	int i, k, max_rank, leaving_rank;
 	int *stack = NULL;
 
 	if (out == NULL)
@@ -1222,17 +1223,19 @@ compute_symbolic_spike_metrics (const mpq_factor_work *f,
 			out->spike_sparsity++;
 	}
 
-	max_k = -1;
-	for (k = dim - 1; k >= 0; k--)
+	/* Spike length is measured in the LU's permuted rank space (the ordering U
+	 * is triangular in), the update cost is driven by spike rows with rrank > crank[leaving_pos]. */
+	max_rank = -1;
+	for (k = 0; k < dim; k++)
 	{
-		if (is_nonzero[k])
-		{
-			max_k = k;
-			break;
-		}
+		if (is_nonzero[k] && f->rrank != NULL && f->rrank[k] > max_rank)
+			max_rank = f->rrank[k];
 	}
-	if (max_k >= 0 && leaving_pos_r >= 0 && leaving_pos_r <= max_k)
-		out->spike_length_penalty = max_k - leaving_pos_r;
+	leaving_rank = -1;
+	if (f->crank != NULL && leaving_pos_r >= 0 && leaving_pos_r < dim)
+		leaving_rank = f->crank[leaving_pos_r];
+	if (max_rank >= 0 && leaving_rank >= 0 && leaving_rank <= max_rank)
+		out->spike_length_penalty = max_rank - leaving_rank;
 
 	ILL_IFFREE (stack);
 }

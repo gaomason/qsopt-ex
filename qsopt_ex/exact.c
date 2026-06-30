@@ -1462,12 +1462,13 @@ static int QSexact_basis_status (mpq_QSdata * p_mpq,
 			int changed = 0;
 			int update_pos = -1;
 			update_count++;
-			/* Step 1: fix leaving position as right-most mismatched basis position. */
+			/* Step 1: fix leaving position as left-most mismatched basis position. */
 			for (int i = 0; i < mismatch_count; ++i) {
 				int pos = mismatch_indices[i];
 				if (p_mpq->cached_baz[pos] != p_mpq->lp->baz[pos]) {
 					changed = 1;
-					update_pos = pos; /* mismatch_indices are in ascending position order */
+					update_pos = pos;
+					break;
 				}
 			}
 

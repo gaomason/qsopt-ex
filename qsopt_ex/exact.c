@@ -1241,7 +1241,7 @@ compute_symbolic_spike_metrics (const mpq_factor_work *f,
 }
 
 
-#define SYMBOLIC_SPIKE_TOP_N 10 
+#define SYMBOLIC_SPIKE_TOP_N 50
 #define BTRAN_WINDOW_SIZE 5
 
 /* Entering candidate structure */

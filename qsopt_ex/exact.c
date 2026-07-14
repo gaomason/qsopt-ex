@@ -1242,6 +1242,7 @@ compute_symbolic_spike_metrics (const mpq_factor_work *f,
 
 
 #define SYMBOLIC_SPIKE_TOP_N 10 
+#define BTRAN_WINDOW_SIZE 5
 
 /* Entering candidate structure */
 /* pos: position of the entering variable in the basis matrix
@@ -1256,6 +1257,7 @@ typedef struct entering_cand_t {
 	int nnz; 
 	int spike_sparsity;
 	int spike_length_penalty;
+	int leaving_pos;
 } entering_cand_t;
 
 // compare the entering candidates by number of non-zeros
@@ -1272,6 +1274,14 @@ entering_cand_compare_nnz (const void *a, const void *b)
 	return (ca->col > cb->col) - (ca->col < cb->col);
 }
 
+// compare integers ascending (for qsort on mismatch_indices)
+static int
+compare_int_asc (const void *a, const void *b)
+{
+	return (*(const int *) a > *(const int *) b) -
+				 (*(const int *) a < *(const int *) b);
+}
+
 // compare the entering candidates by spike sparsity and length penalty
 static int
 entering_cand_is_better (const entering_cand_t *cand, const entering_cand_t *best)
@@ -1286,9 +1296,9 @@ entering_cand_is_better (const entering_cand_t *cand, const entering_cand_t *bes
 }
 
 // select the entering candidate by symbolic spike metrics
+// Each candidate carries its own leaving_pos field for spike evaluation.
 // valid: array of entering candidates is assumed to be sorted by number of non-zeros
 // n_valid: number of entering candidates
-// leaving_pos: position of the leaving variable in the basis matrix
 // reach_workspace: workspace for the reachability analysis
 // best: best entering candidate
 static void
@@ -1296,7 +1306,6 @@ select_entering_by_symbolic_spike (const mpq_factor_work *f,
 																	 const mpq_lpinfo *lp,
 																	 entering_cand_t *valid,
 																	 int n_valid,
-																	 int leaving_pos,
 																	 char *reach_workspace,
 																	 entering_cand_t *best)
 {
@@ -1316,13 +1325,13 @@ select_entering_by_symbolic_spike (const mpq_factor_work *f,
 	compute_symbolic_spike_metrics (f,
 																	&(lp->matind[lp->matbeg[best->col]]),
 																	lp->matcnt[best->col],
-																	leaving_pos,
+																	best->leaving_pos,
 																	reach_workspace,
 																	&metrics);
-	best->spike_sparsity = metrics.spike_sparsity; // store the spike sparsity for the best entering candidate
-	best->spike_length_penalty = metrics.spike_length_penalty; // store the spike length penalty for the best entering candidate
-	log_message ("  screen cand 0: pos %d col %d nnz %d -> spike_nz %d spike_len %d",
-							 best->pos, best->col, best->nnz,
+	best->spike_sparsity = metrics.spike_sparsity;
+	best->spike_length_penalty = metrics.spike_length_penalty;
+	log_message ("  screen cand 0: pos %d col %d nnz %d leaving %d -> spike_nz %d spike_len %d",
+							 best->pos, best->col, best->nnz, best->leaving_pos,
 							 best->spike_sparsity, best->spike_length_penalty);
 
 	// loop through the entering candidates and select the best one
@@ -1333,17 +1342,17 @@ select_entering_by_symbolic_spike (const mpq_factor_work *f,
 		compute_symbolic_spike_metrics (f,
 																		&(lp->matind[lp->matbeg[cand.col]]),
 																		lp->matcnt[cand.col],
-																		leaving_pos,
+																		cand.leaving_pos,
 																		reach_workspace,
 																		&metrics);
 		cand.spike_sparsity = metrics.spike_sparsity;
 		cand.spike_length_penalty = metrics.spike_length_penalty;
-		log_message ("  screen cand %d: pos %d col %d nnz %d -> spike_nz %d spike_len %d",
-								 i, cand.pos, cand.col, cand.nnz,
+		log_message ("  screen cand %d: pos %d col %d nnz %d leaving %d -> spike_nz %d spike_len %d",
+								 i, cand.pos, cand.col, cand.nnz, cand.leaving_pos,
 								 cand.spike_sparsity, cand.spike_length_penalty);
 
-		if (entering_cand_is_better (&cand, best)) // if the current entering candidate is better than the best entering candidate
-			*best = cand; // update the best entering candidate
+		if (entering_cand_is_better (&cand, best))
+			*best = cand;
 	}
 }
 
@@ -1459,116 +1468,138 @@ static int QSexact_basis_status (mpq_QSdata * p_mpq,
 		log_message("Mismatch's: %d/%d", mismatch_count, p_mpq->lp->O->nrows);
 		int update_count = 0;
 		while (!refactor) {
-			int changed = 0;
-			int update_pos = -1;
 			update_count++;
-			/* Step 1: fix leaving position as right-most mismatched basis position. */
-			for (int i = 0; i < mismatch_count; ++i) {
-				int pos = mismatch_indices[i];
-				if (p_mpq->cached_baz[pos] != p_mpq->lp->baz[pos]) {
-					changed = 1;
-					update_pos = pos; /* mismatch_indices are in ascending position order */
-				}
-			}
 
-			if (!changed) {
+			/* Try again just for safety */
+			{
+				int write = 0;
+				for (int i = 0; i < mismatch_count; ++i) {
+					if (p_mpq->cached_baz[mismatch_indices[i]] !=
+						p_mpq->lp->baz[mismatch_indices[i]]) {
+						mismatch_indices[write++] = mismatch_indices[i];
+					}
+				}
+				mismatch_count = write;
+			}
+			if (mismatch_count == 0) {
 				break; // Bases are now in sync
 			}
-			else {
-				mpq_factor_work_lu_nz_breakdown lu_nz;
-				mpq_factor_work_lu_nz_breakdown_fill (p_mpq->cached_lu, &lu_nz);
-				log_message(
-						"Update count: %d, U nz: %d, L nz: %d, eta: %d vectors, %d nz",
-						update_count, lu_nz.u_nz, lu_nz.l_nz, lu_nz.eta_vecs,
-						lu_nz.eta_nz);
-				int entering_pos = -1;
-				int entering_col = -1;
-				int n_valid = 0;
-				unsigned original_precision = EGLPNUM_PRECISION;
-				mpf_t pivot_dot;
-				mpf_t pivot_eps;
-				mpf_t coef_mpf;
-				entering_cand_t *valid = NULL;
-				entering_cand_t best_cand;
-				char *reach_workspace = NULL;
 
-				/* Step 2: 128-bit MPF BTRAN validity filter. */
-				mpf_factor_work *mpf_cached_lu = NULL;
-				mpf_svector rhs;
-				mpf_svector v;
-				mpf_t *v_dense = NULL;
+			/* Sort mismatch_indices ascending so rightmost positions are at the end. */
+			qsort (mismatch_indices, (size_t) mismatch_count, sizeof (int),
+						 compare_int_asc);
 
-				mpf_EGlpNumInitVar (pivot_dot);
-				mpf_EGlpNumInitVar (pivot_eps);
-				mpf_EGlpNumInitVar (coef_mpf);
-				mpf_EGlpNumSet (pivot_eps, 1e-12);
-				QSexact_set_precision (128);
+			/* Step 1: Select window of W rightmost mismatched leaving positions. */
+			int window_size = mismatch_count < BTRAN_WINDOW_SIZE
+												? mismatch_count : BTRAN_WINDOW_SIZE;
+			int *window_pos = &mismatch_indices[mismatch_count - window_size];
 
-				ILL_SAFE_MALLOC (mpf_cached_lu, 1, mpf_factor_work);
-				rval = mpq_factor_work_to_mpf_factor_work (mpf_cached_lu, p_mpq->cached_lu);
-				if (rval) {
-					QSlog ("Failed to convert mpq_factor_work to mpf_factor_work");
-					mpf_EGlpNumClearVar (coef_mpf);
-					mpf_EGlpNumClearVar (pivot_eps);
-					mpf_EGlpNumClearVar (pivot_dot);
-					ILL_IFFREE (mpf_cached_lu);
-					QSexact_set_precision (original_precision);
-					refactor = 1;
-					break;
-				}
+			mpq_factor_work_lu_nz_breakdown lu_nz;
+			mpq_factor_work_lu_nz_breakdown_fill (p_mpq->cached_lu, &lu_nz);
+			log_message(
+					"Update count: %d, U nz: %d, L nz: %d, eta: %d vectors, %d nz, "
+					"window: %d/%d mismatches",
+					update_count, lu_nz.u_nz, lu_nz.l_nz, lu_nz.eta_vecs,
+					lu_nz.eta_nz, window_size, mismatch_count);
 
-				rval = mpf_ILLsvector_alloc (&rhs, p_mpq->lp->nrows);
-				if (rval) {
-					mpf_ILLfactor_free_factor_work (mpf_cached_lu);
-					ILL_IFFREE (mpf_cached_lu);
-					mpf_EGlpNumClearVar (coef_mpf);
-					mpf_EGlpNumClearVar (pivot_eps);
-					mpf_EGlpNumClearVar (pivot_dot);
-					QSexact_set_precision (original_precision);
-					refactor = 1;
-					break;
-				}
-				rval = mpf_ILLsvector_alloc (&v, p_mpq->lp->nrows);
-				if (rval) {
-					mpf_ILLsvector_free (&rhs);
-					mpf_ILLfactor_free_factor_work (mpf_cached_lu);
-					ILL_IFFREE (mpf_cached_lu);
-					mpf_EGlpNumClearVar (coef_mpf);
-					mpf_EGlpNumClearVar (pivot_eps);
-					mpf_EGlpNumClearVar (pivot_dot);
-					QSexact_set_precision (original_precision);
-					refactor = 1;
-					break;
-				}
-				//initialize e_r
-				rhs.nzcnt = 1;
-				rhs.indx[0] = update_pos;
-				mpf_EGlpNumSet (rhs.coef[0], 1.0);
-				mpf_ILLfactor_btran (mpf_cached_lu, &rhs, &v);
+			int n_valid = 0;
+			int entering_pos = -1;
+			int entering_col = -1;
+			unsigned original_precision = EGLPNUM_PRECISION;
+			mpf_t pivot_dot;
+			mpf_t pivot_eps;
+			mpf_t coef_mpf;
+			entering_cand_t *valid = NULL;
+			entering_cand_t best_cand;
+			char *reach_workspace = NULL;
 
-				v_dense = mpf_EGlpNumAllocArray (p_mpq->lp->nrows);
+			/* Step 2: Convert cached LU to 128-bit MPF for the entire window. */
+			mpf_factor_work *mpf_cached_lu = NULL;
+			mpf_svector rhs;
+			mpf_svector v;
+			mpf_t *v_dense = NULL;
+
+			mpf_EGlpNumInitVar (pivot_dot);
+			mpf_EGlpNumInitVar (pivot_eps);
+			mpf_EGlpNumInitVar (coef_mpf);
+			mpf_EGlpNumSet (pivot_eps, 1e-12);
+			QSexact_set_precision (128);
+
+			ILL_SAFE_MALLOC (mpf_cached_lu, 1, mpf_factor_work);
+			rval = mpq_factor_work_to_mpf_factor_work (mpf_cached_lu, p_mpq->cached_lu);
+			if (rval) {
+				QSlog ("Failed to convert mpq_factor_work to mpf_factor_work");
+				mpf_EGlpNumClearVar (coef_mpf);
+				mpf_EGlpNumClearVar (pivot_eps);
+				mpf_EGlpNumClearVar (pivot_dot);
+				ILL_IFFREE (mpf_cached_lu);
+				QSexact_set_precision (original_precision);
+				refactor = 1;
+				break;
+			}
+
+			rval = mpf_ILLsvector_alloc (&rhs, p_mpq->lp->nrows);
+			if (rval) {
+				mpf_ILLfactor_free_factor_work (mpf_cached_lu);
+				ILL_IFFREE (mpf_cached_lu);
+				mpf_EGlpNumClearVar (coef_mpf);
+				mpf_EGlpNumClearVar (pivot_eps);
+				mpf_EGlpNumClearVar (pivot_dot);
+				QSexact_set_precision (original_precision);
+				refactor = 1;
+				break;
+			}
+			rval = mpf_ILLsvector_alloc (&v, p_mpq->lp->nrows);
+			if (rval) {
+				mpf_ILLsvector_free (&rhs);
+				mpf_ILLfactor_free_factor_work (mpf_cached_lu);
+				ILL_IFFREE (mpf_cached_lu);
+				mpf_EGlpNumClearVar (coef_mpf);
+				mpf_EGlpNumClearVar (pivot_eps);
+				mpf_EGlpNumClearVar (pivot_dot);
+				QSexact_set_precision (original_precision);
+				refactor = 1;
+				break;
+			}
+
+			v_dense = mpf_EGlpNumAllocArray (p_mpq->lp->nrows);
+
+			/* Allocate valid array: each leaving pos can yield up to mismatch_count candidates. */
+			ILL_SAFE_MALLOC (valid, window_size * mismatch_count, entering_cand_t);
+			if (valid == NULL) {
+				mpf_EGlpNumFreeArray (v_dense);
+				mpf_ILLsvector_free (&rhs);
+				mpf_ILLsvector_free (&v);
+				mpf_ILLfactor_free_factor_work (mpf_cached_lu);
+				ILL_IFFREE (mpf_cached_lu);
+				mpf_EGlpNumClearVar (coef_mpf);
+				mpf_EGlpNumClearVar (pivot_eps);
+				mpf_EGlpNumClearVar (pivot_dot);
+				QSexact_set_precision (original_precision);
+				refactor = 1;
+				break;
+			}
+
+			/* Step 3: For each leaving position in the window, run BTRAN and filter. */
+			for (int w = 0; w < window_size; ++w) {
+				int lv_pos = window_pos[w];
+
+				/* Zero v_dense for this BTRAN. */
 				for (int i = 0; i < p_mpq->lp->nrows; ++i) {
 					mpf_EGlpNumZero (v_dense[i]);
 				}
+
+				/* Set rhs = e_{lv_pos} and run BTRAN. */
+				rhs.nzcnt = 1;
+				rhs.indx[0] = lv_pos;
+				mpf_EGlpNumSet (rhs.coef[0], 1.0);
+				mpf_ILLfactor_btran (mpf_cached_lu, &rhs, &v);
+
 				for (int i = 0; i < v.nzcnt; ++i) {
 					mpf_EGlpNumCopy (v_dense[v.indx[i]], v.coef[i]);
 				}
 
-				ILL_SAFE_MALLOC (valid, mismatch_count, entering_cand_t);
-				if (valid == NULL) {
-					mpf_EGlpNumFreeArray (v_dense);
-					mpf_ILLsvector_free (&rhs);
-					mpf_ILLsvector_free (&v);
-					mpf_ILLfactor_free_factor_work (mpf_cached_lu);
-					ILL_IFFREE (mpf_cached_lu);
-					mpf_EGlpNumClearVar (coef_mpf);
-					mpf_EGlpNumClearVar (pivot_eps);
-					mpf_EGlpNumClearVar (pivot_dot);
-					QSexact_set_precision (original_precision);
-					refactor = 1;
-					break;
-				}
-
+				/* Filter entering candidates against this leaving position. */
 				for (int m = 0; m < mismatch_count; ++m) {
 					int cand_pos = mismatch_indices[m];
 					int cand_col;
@@ -1594,106 +1625,110 @@ static int QSexact_basis_status (mpq_QSdata * p_mpq,
 						valid[n_valid].nnz = mcnt;
 						valid[n_valid].spike_sparsity = 0;
 						valid[n_valid].spike_length_penalty = 0;
+						valid[n_valid].leaving_pos = lv_pos;
 						n_valid++;
 					}
 				}
+			}
 
-				mpf_EGlpNumFreeArray (v_dense);
-				mpf_ILLsvector_free (&rhs);
-				mpf_ILLsvector_free (&v);
-				mpf_ILLfactor_free_factor_work (mpf_cached_lu);
-				ILL_IFFREE (mpf_cached_lu);
-				mpf_EGlpNumClearVar (coef_mpf);
-				mpf_EGlpNumClearVar (pivot_eps);
-				mpf_EGlpNumClearVar (pivot_dot);
-				QSexact_set_precision (original_precision);
+			/* Clean up MPF resources. */
+			mpf_EGlpNumFreeArray (v_dense);
+			mpf_ILLsvector_free (&rhs);
+			mpf_ILLsvector_free (&v);
+			mpf_ILLfactor_free_factor_work (mpf_cached_lu);
+			ILL_IFFREE (mpf_cached_lu);
+			mpf_EGlpNumClearVar (coef_mpf);
+			mpf_EGlpNumClearVar (pivot_eps);
+			mpf_EGlpNumClearVar (pivot_dot);
+			QSexact_set_precision (original_precision);
 
-				if (n_valid == 0) {
-					ILL_IFFREE (valid);
-					QSlog ("No valid BTRAN pivot for leaving pos %d", update_pos);
-					refactor = 1;
-					break;
-				}
-
-				// first sort the entering candidates by number of non-zeros
-				qsort (valid, (size_t) n_valid, sizeof (entering_cand_t),
-							 entering_cand_compare_nnz);
-
-				reach_workspace = (char *) ILL_UTIL_SAFE_MALLOC (p_mpq->lp->nrows, char,
-																											 reach_workspace);
-				if (reach_workspace == NULL) {
-					ILL_IFFREE (valid);
-					refactor = 1;
-					break;
-				}
-
-				select_entering_by_symbolic_spike (p_mpq->cached_lu, p_mpq->lp, valid,
-																					 n_valid, update_pos, reach_workspace,
-																					 &best_cand);
-				entering_pos = best_cand.pos;
-				entering_col = best_cand.col;
-
-				log_message (
-						"Entering pick: pos %d col %d nnz %d spike_nz %d spike_len %d "
-						"(from %d valid, screened %d)",
-						entering_pos, entering_col, best_cand.nnz,
-						best_cand.spike_sparsity, best_cand.spike_length_penalty,
-						n_valid,
-						(n_valid < SYMBOLIC_SPIKE_TOP_N ? n_valid : SYMBOLIC_SPIKE_TOP_N));
-
-				ILL_IFFREE (reach_workspace);
+			if (n_valid == 0) {
 				ILL_IFFREE (valid);
+				QSlog ("No valid BTRAN pivot across window of %d leaving positions",
+							 window_size);
+				refactor = 1;
+				break;
+			}
 
-				/* Keep leaving position fixed. Update chosen entering col to update_pos. */
-				if (entering_pos != update_pos) {
-					int temp_col = p_mpq->lp->baz[update_pos];
-					p_mpq->lp->baz[update_pos] = p_mpq->lp->baz[entering_pos];
-					p_mpq->lp->baz[entering_pos] = temp_col;
-					entering_col = p_mpq->lp->baz[update_pos];
-				}
+			/* Step 4: Sort all candidates by nnz, then select best by spike metrics. */
+			qsort (valid, (size_t) n_valid, sizeof (entering_cand_t),
+						 entering_cand_compare_nnz);
 
-				/* Do exact update with selected valid pivot column. */
-				mpq_svector a_s, spike;
-				rval = mpq_ILLsvector_alloc(&spike, p_mpq->lp->nrows);
-				if (rval) {
-					refactor = 1;
-					break;
-				}
-				a_s.nzcnt = p_mpq->lp->matcnt[entering_col];
-				a_s.indx = &(p_mpq->lp->matind[p_mpq->lp->matbeg[entering_col]]);
-				a_s.coef = &(p_mpq->lp->matval[p_mpq->lp->matbeg[entering_col]]);
-				mpq_compute_spike(p_mpq->cached_lu, &a_s, &spike);
+			reach_workspace = (char *) ILL_UTIL_SAFE_MALLOC (p_mpq->lp->nrows, char,
+																											 reach_workspace);
+			if (reach_workspace == NULL) {
+				ILL_IFFREE (valid);
+				refactor = 1;
+				break;
+			}
 
-				rval = mpq_ILLfactor_update(p_mpq->cached_lu, &spike, update_pos, &refactor);
+			select_entering_by_symbolic_spike (p_mpq->cached_lu, p_mpq->lp, valid,
+																				 n_valid, reach_workspace,
+																				 &best_cand);
 
-				if (refactor || rval) {
-					QSlog("LU update at position %d triggered refactorization (refactor=%d, rval=%d)\n", update_pos, refactor, rval);
+			int update_pos = best_cand.leaving_pos;
+			entering_pos = best_cand.pos;
+			entering_col = best_cand.col;
+
+			log_message (
+					"Entering pick: leaving %d entering pos %d col %d nnz %d "
+					"spike_nz %d spike_len %d (from %d valid, screened %d)",
+					update_pos, entering_pos, entering_col, best_cand.nnz,
+					best_cand.spike_sparsity, best_cand.spike_length_penalty,
+					n_valid,
+					(n_valid < SYMBOLIC_SPIKE_TOP_N ? n_valid : SYMBOLIC_SPIKE_TOP_N));
+
+			ILL_IFFREE (reach_workspace);
+			ILL_IFFREE (valid);
+
+			/* Step 5: Swap entering col into the leaving position and update. */
+			if (entering_pos != update_pos) {
+				int temp_col = p_mpq->lp->baz[update_pos];
+				p_mpq->lp->baz[update_pos] = p_mpq->lp->baz[entering_pos];
+				p_mpq->lp->baz[entering_pos] = temp_col;
+				entering_col = p_mpq->lp->baz[update_pos];
+			}
+
+			/* Do exact update with selected valid pivot column. */
+			mpq_svector a_s, spike;
+			rval = mpq_ILLsvector_alloc(&spike, p_mpq->lp->nrows);
+			if (rval) {
+				refactor = 1;
+				break;
+			}
+			a_s.nzcnt = p_mpq->lp->matcnt[entering_col];
+			a_s.indx = &(p_mpq->lp->matind[p_mpq->lp->matbeg[entering_col]]);
+			a_s.coef = &(p_mpq->lp->matval[p_mpq->lp->matbeg[entering_col]]);
+			mpq_compute_spike(p_mpq->cached_lu, &a_s, &spike);
+
+			rval = mpq_ILLfactor_update(p_mpq->cached_lu, &spike, update_pos, &refactor);
+
+			if (refactor || rval) {
+				QSlog("LU update at position %d triggered refactorization (refactor=%d, rval=%d)\n", update_pos, refactor, rval);
 				mpq_ILLsvector_free(&spike);
 				refactor = 1; 
 				break; 
-				}
-				
-				// Update was successful, update the cached basis for this position
-				p_mpq->cached_baz[update_pos] = entering_col;
+			}
+			
+			// Update was successful, update the cached basis for this position
+			p_mpq->cached_baz[update_pos] = entering_col;
 
-				mpq_ILLsvector_free(&spike);
-				
-				// Remove the mismatch from the list
-				for (int idx = 0; idx < mismatch_count; ++idx) {
-					if (mismatch_indices[idx] == update_pos) {
-						/* swap current entry with the last one and shrink */
-						mismatch_indices[idx] = mismatch_indices[mismatch_count - 1];
-						mismatch_count--;
-						break;
-					}
-				}
-
-				// If no mismatches are left, we can stop looping
-				if (mismatch_count == 0) {
+			mpq_ILLsvector_free(&spike);
+			
+			// Remove the resolved mismatch from the list
+			for (int idx = 0; idx < mismatch_count; ++idx) {
+				if (mismatch_indices[idx] == update_pos) {
+					/* swap current entry with the last one and shrink */
+					mismatch_indices[idx] = mismatch_indices[mismatch_count - 1];
+					mismatch_count--;
 					break;
 				}
-				
-			}		
+			}
+
+			// If no mismatches are left, we can stop looping
+			if (mismatch_count == 0) {
+				break;
+			}
 		}
 		if (!refactor) {
 			mpq_factor_work *temp_lu;

@@ -1634,12 +1634,11 @@ static int QSexact_basis_status (mpq_QSdata * p_mpq,
 				entering_col = best_cand.col;
 
 				log_message (
-						"Entering pick: pos %d col %d nnz %d spike_nz %d spike_len %d "
-						"(from %d valid, screened %d)",
-						entering_pos, entering_col, best_cand.nnz,
+						"Entering pick: leaving %d entering pos %d col %d nnz %d "
+						"spike_nz %d spike_len %d (from %d valid, screened %d)",
+						update_pos, entering_pos, entering_col, best_cand.nnz,
 						best_cand.spike_sparsity, best_cand.spike_length_penalty,
-						n_valid,
-						(n_valid < SYMBOLIC_SPIKE_TOP_N ? n_valid : SYMBOLIC_SPIKE_TOP_N));
+						n_valid, n_valid);
 
 				ILL_IFFREE (reach_workspace);
 				ILL_IFFREE (valid);

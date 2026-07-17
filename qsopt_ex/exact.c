@@ -1690,6 +1690,9 @@ static int QSexact_basis_status (mpq_QSdata * p_mpq,
 
 				// If no mismatches are left, we can stop looping
 				if (mismatch_count == 0) {
+					mpq_factor_work_lu_nz_breakdown lu_nz;
+					mpq_factor_work_lu_nz_breakdown_fill(p_mpq->cached_lu, &lu_nz);
+					log_message("MCLU Update Complete, final U sparsity: %f, final L sparsity: %f, final eta vecs: %d", lu_nz.u_nz, lu_nz.l_nz, lu_nz.eta_vecs);
 					break;
 				}
 				

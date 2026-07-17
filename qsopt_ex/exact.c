@@ -1241,8 +1241,7 @@ compute_symbolic_spike_metrics (const mpq_factor_work *f,
 }
 
 
-#define SYMBOLIC_SPIKE_TOP_N 50
-#define BTRAN_WINDOW_SIZE 5
+
 
 /* Entering candidate structure */
 /* pos: position of the entering variable in the basis matrix
@@ -1317,8 +1316,6 @@ select_entering_by_symbolic_spike (const mpq_factor_work *f,
 		return;
 
 	screen_n = n_valid; // number of entering candidates to screen
-	if (screen_n > SYMBOLIC_SPIKE_TOP_N)
-		screen_n = SYMBOLIC_SPIKE_TOP_N; // limit the number of entering candidates to screen
 
 	*best = valid[0]; // initialize the best entering candidate
 	// compute the spike metrics for the best entering candidate
@@ -1489,10 +1486,9 @@ static int QSexact_basis_status (mpq_QSdata * p_mpq,
 			qsort (mismatch_indices, (size_t) mismatch_count, sizeof (int),
 						 compare_int_asc);
 
-			/* Step 1: Select window of W rightmost mismatched leaving positions. */
-			int window_size = mismatch_count < BTRAN_WINDOW_SIZE
-												? mismatch_count : BTRAN_WINDOW_SIZE;
-			int *window_pos = &mismatch_indices[mismatch_count - window_size];
+			/* Step 1: Select window of all mismatched leaving positions. */
+			int window_size = mismatch_count;
+			int *window_pos = mismatch_indices;
 
 			mpq_factor_work_lu_nz_breakdown lu_nz;
 			mpq_factor_work_lu_nz_breakdown_fill (p_mpq->cached_lu, &lu_nz);
@@ -1675,8 +1671,7 @@ static int QSexact_basis_status (mpq_QSdata * p_mpq,
 					"spike_nz %d spike_len %d (from %d valid, screened %d)",
 					update_pos, entering_pos, entering_col, best_cand.nnz,
 					best_cand.spike_sparsity, best_cand.spike_length_penalty,
-					n_valid,
-					(n_valid < SYMBOLIC_SPIKE_TOP_N ? n_valid : SYMBOLIC_SPIKE_TOP_N));
+					n_valid, n_valid);
 
 			ILL_IFFREE (reach_workspace);
 			ILL_IFFREE (valid);

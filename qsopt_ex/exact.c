@@ -1681,8 +1681,10 @@ static int QSexact_basis_status (mpq_QSdata * p_mpq,
 				// Remove the mismatch from the list
 				for (int idx = 0; idx < mismatch_count; ++idx) {
 					if (mismatch_indices[idx] == update_pos) {
-						/* swap current entry with the last one and shrink */
-						mismatch_indices[idx] = mismatch_indices[mismatch_count - 1];
+						/* shift elements left to maintain sorted order */
+						for (int j = idx; j < mismatch_count - 1; ++j) {
+							mismatch_indices[j] = mismatch_indices[j + 1];
+						}
 						mismatch_count--;
 						break;
 					}

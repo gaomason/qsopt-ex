@@ -1281,7 +1281,7 @@ entering_cand_is_better (const entering_cand_t *cand, const entering_cand_t *bes
 	if (cand->spike_length_penalty != best->spike_length_penalty)
 		return cand->spike_length_penalty > best->spike_length_penalty;
 	if (cand->nnz != best->nnz)
-		return cand->nnz < best->nnz;
+		return cand->nnz > best->nnz;
 	return cand->pos < best->pos;
 }
 

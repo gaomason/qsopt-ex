@@ -1559,7 +1559,7 @@ static int QSexact_basis_status (mpq_QSdata * p_mpq,
 			int min_spike_sparsity = p_mpq->lp->nrows + 1;
 			int max_nnz = -1;
 			
-			char *reach_workspace = (char *) ILL_UTIL_SAFE_MALLOC (p_mpq->lp->nrows, char, reach_workspace);
+			reach_workspace = (char *) ILL_UTIL_SAFE_MALLOC (p_mpq->lp->nrows, char, reach_workspace);
 			if (reach_workspace == NULL) {
 				mpf_ILLsvector_free (&rhs);
 				mpf_ILLsvector_free (&v);

@@ -1288,7 +1288,7 @@ entering_cand_is_better (const entering_cand_t *cand, const entering_cand_t *bes
 	if (cand->spike_sparsity != best->spike_sparsity)
 		return cand->spike_sparsity < best->spike_sparsity;
 	if (cand->spike_length_penalty != best->spike_length_penalty)
-		return cand->spike_length_penalty < best->spike_length_penalty;
+		return cand->spike_length_penalty > best->spike_length_penalty;
 	if (cand->nnz != best->nnz)
 		return cand->nnz < best->nnz;
 	return cand->pos < best->pos;
@@ -1498,15 +1498,10 @@ static int QSexact_basis_status (mpq_QSdata * p_mpq,
 					update_count, lu_nz.u_nz, lu_nz.l_nz, lu_nz.eta_vecs,
 					lu_nz.eta_nz, window_size, mismatch_count);
 
-			int n_valid = 0;
-			int entering_pos = -1;
-			int entering_col = -1;
 			unsigned original_precision = EGLPNUM_PRECISION;
 			mpf_t pivot_dot;
 			mpf_t pivot_eps;
 			mpf_t coef_mpf;
-			entering_cand_t *valid = NULL;
-			entering_cand_t best_cand;
 			char *reach_workspace = NULL;
 
 			/* Step 2: Convert cached LU to 128-bit MPF for the entire window. */
@@ -1558,12 +1553,14 @@ static int QSexact_basis_status (mpq_QSdata * p_mpq,
 				break;
 			}
 
-			v_dense = mpf_EGlpNumAllocArray (p_mpq->lp->nrows);
-
-			/* Allocate valid array: each leaving pos can yield up to mismatch_count candidates. */
-			ILL_SAFE_MALLOC (valid, window_size * mismatch_count, entering_cand_t);
-			if (valid == NULL) {
-				mpf_EGlpNumFreeArray (v_dense);
+			/* Step 3: Find the entering candidate that gives the sparsest spike. */
+			int best_entering_pos = -1;
+			int best_entering_col = -1;
+			int min_spike_sparsity = p_mpq->lp->nrows + 1;
+			int max_nnz = -1;
+			
+			char *reach_workspace = (char *) ILL_UTIL_SAFE_MALLOC (p_mpq->lp->nrows, char, reach_workspace);
+			if (reach_workspace == NULL) {
 				mpf_ILLsvector_free (&rhs);
 				mpf_ILLsvector_free (&v);
 				mpf_ILLfactor_free_factor_work (mpf_cached_lu);
@@ -1576,59 +1573,96 @@ static int QSexact_basis_status (mpq_QSdata * p_mpq,
 				break;
 			}
 
-			/* Step 3: For each leaving position in the window, run BTRAN and filter. */
-			for (int w = 0; w < window_size; ++w) {
-				int lv_pos = window_pos[w];
-
-				/* Zero v_dense for this BTRAN. */
-				for (int i = 0; i < p_mpq->lp->nrows; ++i) {
-					mpf_EGlpNumZero (v_dense[i]);
+			for (int m = 0; m < mismatch_count; ++m) {
+				int cand_pos = mismatch_indices[m];
+				int cand_col;
+				
+				if (p_mpq->cached_baz[cand_pos] == p_mpq->lp->baz[cand_pos]) {
+					continue;
 				}
-
-				/* Set rhs = e_{lv_pos} and run BTRAN. */
-				rhs.nzcnt = 1;
-				rhs.indx[0] = lv_pos;
-				mpf_EGlpNumSet (rhs.coef[0], 1.0);
-				mpf_ILLfactor_btran (mpf_cached_lu, &rhs, &v);
-
-				for (int i = 0; i < v.nzcnt; ++i) {
-					mpf_EGlpNumCopy (v_dense[v.indx[i]], v.coef[i]);
+				cand_col = p_mpq->lp->baz[cand_pos];
+				
+				symbolic_spike_metrics metrics;
+				compute_symbolic_spike_metrics(p_mpq->cached_lu, 
+																			 &(p_mpq->lp->matind[p_mpq->lp->matbeg[cand_col]]),
+																			 p_mpq->lp->matcnt[cand_col],
+																			 -1, /* no leaving pos yet */
+																			 reach_workspace,
+																			 &metrics);
+				
+				/* Tie breaking for sparsest spike: pick largest nnz, then smallest pos */
+				int is_better = 0;
+				if (metrics.spike_sparsity < min_spike_sparsity) {
+					is_better = 1;
+				} else if (metrics.spike_sparsity == min_spike_sparsity) {
+					if (p_mpq->lp->matcnt[cand_col] > max_nnz) {
+						is_better = 1;
+					} else if (p_mpq->lp->matcnt[cand_col] == max_nnz) {
+						if (cand_pos < best_entering_pos) {
+							is_better = 1;
+						}
+					}
 				}
-
-				/* Filter entering candidates against this leaving position. */
-				for (int m = 0; m < mismatch_count; ++m) {
-					int cand_pos = mismatch_indices[m];
-					int cand_col;
-					int mbeg;
-					int mcnt;
-
-					if (p_mpq->cached_baz[cand_pos] == p_mpq->lp->baz[cand_pos]) {
-						continue;
-					}
-					cand_col = p_mpq->lp->baz[cand_pos];
-					mbeg = p_mpq->lp->matbeg[cand_col];
-					mcnt = p_mpq->lp->matcnt[cand_col];
-					mpf_EGlpNumZero (pivot_dot);
-					for (int j = 0; j < mcnt; ++j) {
-						int row = p_mpq->lp->matind[mbeg + j];
-						mpf_set_q (coef_mpf, p_mpq->lp->matval[mbeg + j]);
-						mpf_EGlpNumAddInnProdTo (pivot_dot, v_dense[row], coef_mpf);
-					}
-
-					if (mpf_EGlpNumIsNeqZero (pivot_dot, pivot_eps)) {
-						valid[n_valid].pos = cand_pos;
-						valid[n_valid].col = cand_col;
-						valid[n_valid].nnz = mcnt;
-						valid[n_valid].spike_sparsity = 0;
-						valid[n_valid].spike_length_penalty = 0;
-						valid[n_valid].leaving_pos = lv_pos;
-						n_valid++;
-					}
+				
+				if (is_better) {
+					min_spike_sparsity = metrics.spike_sparsity;
+					best_entering_pos = cand_pos;
+					best_entering_col = cand_col;
+					max_nnz = p_mpq->lp->matcnt[cand_col];
 				}
 			}
 
-			/* Clean up MPF resources. */
+			if (best_entering_pos == -1) {
+				ILL_IFFREE (reach_workspace);
+				mpf_ILLsvector_free (&rhs);
+				mpf_ILLsvector_free (&v);
+				mpf_ILLfactor_free_factor_work (mpf_cached_lu);
+				ILL_IFFREE (mpf_cached_lu);
+				mpf_EGlpNumClearVar (coef_mpf);
+				mpf_EGlpNumClearVar (pivot_eps);
+				mpf_EGlpNumClearVar (pivot_dot);
+				QSexact_set_precision (original_precision);
+				refactor = 1;
+				break;
+			}
+
+			/* Step 4: Run FTRAN for the chosen entering column */
+			rhs.nzcnt = p_mpq->lp->matcnt[best_entering_col];
+			for (int j = 0; j < rhs.nzcnt; ++j) {
+				rhs.indx[j] = p_mpq->lp->matind[p_mpq->lp->matbeg[best_entering_col] + j];
+				mpf_set_q (rhs.coef[j], p_mpq->lp->matval[p_mpq->lp->matbeg[best_entering_col] + j]);
+			}
+			
+			mpf_ILLfactor_ftran (mpf_cached_lu, &rhs, &v);
+			
+			/* Convert FTRAN result to dense array for quick lookup */
+			v_dense = mpf_EGlpNumAllocArray (p_mpq->lp->nrows);
+			for (int i = 0; i < p_mpq->lp->nrows; ++i) {
+				mpf_EGlpNumZero (v_dense[i]);
+			}
+			for (int i = 0; i < v.nzcnt; ++i) {
+				mpf_EGlpNumCopy (v_dense[v.indx[i]], v.coef[i]);
+			}
+
+			/* Step 5: Find the mathematically valid leaving position. 
+			 * We iterate through mismatch_indices (right to left) and evaluate valid ones.
+			 * Since mismatch_indices is in ascending order, the first valid position
+			 * we encounter is guaranteed to be the rightmost index. */
+			int best_leaving_pos = -1;
+
+			for (int w = mismatch_count - 1; w >= 0; --w) {
+				int cand_lv_pos = mismatch_indices[w];
+				
+				if (mpf_EGlpNumIsNeqZero (v_dense[cand_lv_pos], pivot_eps)) {
+					best_leaving_pos = cand_lv_pos;
+					break; /* Pick the rightmost index and break immediately */
+				}
+			}
+
 			mpf_EGlpNumFreeArray (v_dense);
+			ILL_IFFREE (reach_workspace);
+			
+			/* Clean up MPF resources. */
 			mpf_ILLsvector_free (&rhs);
 			mpf_ILLsvector_free (&v);
 			mpf_ILLfactor_free_factor_work (mpf_cached_lu);
@@ -1638,43 +1672,21 @@ static int QSexact_basis_status (mpq_QSdata * p_mpq,
 			mpf_EGlpNumClearVar (pivot_dot);
 			QSexact_set_precision (original_precision);
 
-			if (n_valid == 0) {
-				ILL_IFFREE (valid);
-				QSlog ("No valid BTRAN pivot across window of %d leaving positions",
-							 window_size);
+			if (best_leaving_pos == -1) {
+				QSlog ("No valid FTRAN pivot among mismatch positions");
 				refactor = 1;
 				break;
 			}
 
-			/* Step 4: Sort all candidates by nnz, then select best by spike metrics. */
-			qsort (valid, (size_t) n_valid, sizeof (entering_cand_t),
-						 entering_cand_compare_nnz);
-
-			reach_workspace = (char *) ILL_UTIL_SAFE_MALLOC (p_mpq->lp->nrows, char,
-																											 reach_workspace);
-			if (reach_workspace == NULL) {
-				ILL_IFFREE (valid);
-				refactor = 1;
-				break;
-			}
-
-			select_entering_by_symbolic_spike (p_mpq->cached_lu, p_mpq->lp, valid,
-																				 n_valid, reach_workspace,
-																				 &best_cand);
-
-			int update_pos = best_cand.leaving_pos;
-			entering_pos = best_cand.pos;
-			entering_col = best_cand.col;
+			int update_pos = best_leaving_pos;
+			int entering_pos = best_entering_pos;
+			int entering_col = best_entering_col;
 
 			log_message (
 					"Entering pick: leaving %d entering pos %d col %d nnz %d "
-					"spike_nz %d spike_len %d (from %d valid, screened %d)",
-					update_pos, entering_pos, entering_col, best_cand.nnz,
-					best_cand.spike_sparsity, best_cand.spike_length_penalty,
-					n_valid, n_valid);
-
-			ILL_IFFREE (reach_workspace);
-			ILL_IFFREE (valid);
+					"spike_nz %d",
+					update_pos, entering_pos, entering_col, max_nnz,
+					min_spike_sparsity);
 
 			/* Step 5: Swap entering col into the leaving position and update. */
 			if (entering_pos != update_pos) {
@@ -1713,8 +1725,10 @@ static int QSexact_basis_status (mpq_QSdata * p_mpq,
 			// Remove the resolved mismatch from the list
 			for (int idx = 0; idx < mismatch_count; ++idx) {
 				if (mismatch_indices[idx] == update_pos) {
-					/* swap current entry with the last one and shrink */
-					mismatch_indices[idx] = mismatch_indices[mismatch_count - 1];
+					/* shift remaining elements left to preserve order */
+					for (int j = idx; j < mismatch_count - 1; ++j) {
+						mismatch_indices[j] = mismatch_indices[j + 1];
+					}
 					mismatch_count--;
 					break;
 				}

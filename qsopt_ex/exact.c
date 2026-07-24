@@ -1558,7 +1558,8 @@ static int QSexact_basis_status (mpq_QSdata * p_mpq,
 			int best_entering_col = -1;
 			int min_spike_sparsity = p_mpq->lp->nrows + 1;
 			int max_nnz = -1;
-			reach_workspace = (char *) ILL_UTIL_SAFE_MALLOC (p_mpq->lp->nrows, char, reach_workspace);
+			
+			char *reach_workspace = (char *) ILL_UTIL_SAFE_MALLOC (p_mpq->lp->nrows, char, reach_workspace);
 			if (reach_workspace == NULL) {
 				mpf_ILLsvector_free (&rhs);
 				mpf_ILLsvector_free (&v);
@@ -1644,17 +1645,17 @@ static int QSexact_basis_status (mpq_QSdata * p_mpq,
 			}
 
 			/* Step 5: Find the mathematically valid leaving position. 
-			 * We iterate through mismatch_indices (right to left) and evaluate valid ones.
+			 * We iterate through mismatch_indices (left to right) and evaluate valid ones.
 			 * Since mismatch_indices is in ascending order, the first valid position
-			 * we encounter is guaranteed to be the rightmost index. */
+			 * we encounter is guaranteed to be the leftmost index. */
 			int best_leaving_pos = -1;
 
-			for (int w = mismatch_count - 1; w >= 0; --w) {
+			for (int w = 0; w < mismatch_count; ++w) {
 				int cand_lv_pos = mismatch_indices[w];
 				
 				if (mpf_EGlpNumIsNeqZero (v_dense[cand_lv_pos], pivot_eps)) {
 					best_leaving_pos = cand_lv_pos;
-					break; /* Pick the rightmost index and break immediately */
+					break; /* Pick the leftmost index and break immediately */
 				}
 			}
 

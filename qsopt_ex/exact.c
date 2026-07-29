@@ -1276,10 +1276,10 @@ entering_cand_compare_nnz (const void *a, const void *b)
 static int
 entering_cand_is_better (const entering_cand_t *cand, const entering_cand_t *best)
 {
-	if (cand->spike_sparsity != best->spike_sparsity)
-		return cand->spike_sparsity < best->spike_sparsity;
 	if (cand->spike_length_penalty != best->spike_length_penalty)
 		return cand->spike_length_penalty < best->spike_length_penalty;
+	if (cand->spike_sparsity != best->spike_sparsity)
+		return cand->spike_sparsity < best->spike_sparsity;
 	if (cand->nnz != best->nnz)
 		return cand->nnz < best->nnz;
 	return cand->pos < best->pos;

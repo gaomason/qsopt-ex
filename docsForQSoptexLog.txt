@@ -11,4 +11,18 @@
 - 'QSexact_infeasible_test': Verify if a given dual solution (d_sol) proves primal infeasibility in exact rational arithmetic. Very similar to QSexact_optimal_test
 - 'DBL solve': Time for the DBL solve of QSopt_ex to be solved.
 - '---': Separates the DBL solve and MPF solve.
-- 'MPF solve at x bits': Time for an MPF to be solved. Includes the total number of bits for a solve. Should be able to combine with 'DBL solve' and all other 'MPF solves' and get a similar time to 'QSexact Solver' (+- .5).    
+- 'MPF solve at x bits': Time for an MPF to be solved. Includes the total number of bits for a solve. Should be able to combine with 'DBL solve' and all other 'MPF solves' and get a similar time to 'QSexact Solver' (+- .5).  
+
+| ADDING TO LOG FILE |
+ To time another function from QSopt_ex, first find the function in the code. Within that function, place the two wrapper functions below inside. 
+
+    PLACE AT THE TOP OF WHERE TIMING SHOULD START
+	// clock start for timing purposes
+    clock_t start = clock();
+
+    PLACE AT THE END OF FUNCTION AFTER 'CLEANUP' AND RIGHT BEFORE 'return rval;'
+    // testing for log file
+    clock_t end = clock();
+    double duration = (double)(end - start) / CLOCKS_PER_SEC;
+   	log_timing("Total testing time ", duration);
+	log_session_footer(fname);

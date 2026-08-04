@@ -68,6 +68,7 @@ static void usage (char *s)
 	fprintf (stderr, "   -E    edit problem after solving initial version\n");
 #endif
 	fprintf (stderr, "   -L    input file is in lp format (default: mps)\n");
+	fprintf (stderr, "   -N n  use 'n.log' as the log file instead of default\n");
 	fprintf (stderr, "   -O    write the final solution to the given file\n");
 	fprintf (stderr, "         append .gz/.bz2 to the .sol extension to compress the file\n");
 	fprintf (stderr, "   -p #  run primal simplex with pricing rule #\n");
@@ -194,7 +195,7 @@ static int parseargs (int ac, char **av)
 	int boptind = 1;
 	char *boptarg = 0;
 
-	while ((c = ILLutil_bix_getopt (ac, av, "b:B:d:EILm:O:p:P:R:Sv", &boptind, &boptarg)) != EOF)
+	while ((c = ILLutil_bix_getopt (ac, av, "b:B:d:EILm:O:p:P:R:SvN:", &boptind, &boptarg)) != EOF)
 		switch (c)
 		{
 		case 'm':
@@ -232,6 +233,9 @@ static int parseargs (int ac, char **av)
 			break;
 		case 'v':
 			showversion = 1;
+			break;
+		case 'N':
+			set_log_file(boptarg); 
 			break;
 		case '?':
 		default:

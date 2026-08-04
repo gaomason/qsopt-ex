@@ -3,11 +3,17 @@
 #include <stdarg.h>
 #include <stdio.h>  
 
-#define LOG_FILE "qsopt_timing.log"
+// global log filename
+char log_filename[256] = "qsopt_timing.log";
+
+// sets the log filename based on problem name
+void set_log_file(const char *problem_name) {
+    snprintf(log_filename, sizeof(log_filename), "%s.log", problem_name);
+}
 
 // creates the log file
 void log_timing(const char *label, double seconds) {
-    FILE *fp = fopen(LOG_FILE, "a");
+    FILE *fp = fopen(log_filename, "a");
     if (fp) {
         time_t now = time(NULL);
         char *timestamp = ctime(&now);
@@ -19,7 +25,7 @@ void log_timing(const char *label, double seconds) {
 
 // general log line writer
 void log_message(const char *format, ...) {
-    FILE *fp = fopen(LOG_FILE, "a");
+    FILE *fp = fopen(log_filename, "a");
     if (fp) {
         va_list args;
         va_start(args, format);
@@ -32,7 +38,7 @@ void log_message(const char *format, ...) {
 
 // session header
 void log_session_header(const char *label) {
-    FILE *fp = fopen(LOG_FILE, "a");
+    FILE *fp = fopen(log_filename, "a");
     if (fp) {
         time_t now = time(NULL);
         char *timestamp = ctime(&now);
@@ -48,7 +54,7 @@ void log_session_header(const char *label) {
 
 // session footer
 void log_session_footer(const char *label) {
-    FILE *fp = fopen(LOG_FILE, "a");
+    FILE *fp = fopen(log_filename, "a");
     if (fp) {
         time_t now = time(NULL);
         char *timestamp = ctime(&now);
